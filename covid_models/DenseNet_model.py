@@ -1,14 +1,12 @@
 # Build Densenet model
 
-from tensorflow import keras
-from tensorflow.keras import models
 from tensorflow.keras.models import Model
 from tensorflow.keras import layers
 from tensorflow.keras.applications import DenseNet121
 
 
 class DenseNet():
-    def _init_(self, weights):
+    def __init__(self, weights):
         self.weights = weights
         
     def build_model(self, img_size):

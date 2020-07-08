@@ -1,14 +1,13 @@
 # Build EfficientNet model
 
 from tensorflow import keras
-from tensorflow.keras import models
 from tensorflow.keras.models import Model
 from tensorflow.keras import layers
 import efficientnet.tfkeras as efn 
 
 
 class EfficientNet():
-    def _init_(self, weights):
+    def __init__(self, weights):
         self.weights = weights
         
     def build_model(self, img_size):

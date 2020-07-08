@@ -1,4 +1,4 @@
 from .xception_model import XceptionNet
-from .Resnet_model import ResNet
-from .EfficientNet_model import EfficientNet
-from .Densenet_model import DenseNet
+from .resnet_model import ResNet
+from .efficientNet_model import EfficientNet
+from .densenet_model import DenseNet
