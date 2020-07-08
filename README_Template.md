@@ -1,5 +1,5 @@
 # COVIDNet
-> Short blurb about what your product does.
+>An ensembled deep neural network model for predicting COVID-19 with chest x-rays.
 
 [![NPM Version][npm-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
