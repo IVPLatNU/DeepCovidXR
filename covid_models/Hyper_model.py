@@ -6,7 +6,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras import layers
 from tensorflow.keras import optimizers
 
-class hyper_models(HyperModel):
+class hyper_model(HyperModel):
     
     def __init__(self, model, weight):
         self.model = model
