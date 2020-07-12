@@ -7,7 +7,7 @@ from tensorflow.keras.applications import InceptionResNetV2
 from tensorflow.keras import optimizers
 
 
-class DenseNet():
+class InceptionResNet():
     def __init__(self, weights):
         self.weights = weights
         
