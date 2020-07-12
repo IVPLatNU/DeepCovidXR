@@ -4,21 +4,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
-
 class imgUtils():
-    def _init_(self, img, img_size):
-        self.img = img
+    def _init_(self, img_size):
         self.img_size = img_size
         
-    def preprocess(self, std, mean):
-        self.img /= 255
-        centered = np.subtract(self.img, mean)
+    def preprocess(self, img, std, mean):
+        img /= 255
+        centered = np.subtract(img, mean)
         standardized = np.divide(centered, std)
         return self.img
         return standardized
     
-    def data_gen(self, rotation, h_shift, w_shift):
-        train_datagen = ImageDataGenerator(
+    def dataGen(self, rotation, h_shift, w_shift):
+        TTA_datagen = ImageDataGenerator(
                                    preprocessing_function=self.preprocess,
                                    height_shift_range=h_shift,
                                    width_shift_range=w_shift,
@@ -28,26 +26,26 @@ class imgUtils():
                                    fill_mode='constant',
                                    horizontal_flip=True
                                                                             )
-        test_datagen = ImageDataGenerator(
+        nTTA_datagen = ImageDataGenerator(
                                           preprocessing_function=self.preprocess
                                                                             )
         
-        return train_datagen, test_datagen
+        return TTA_datagen, nTTA_datagen
     
     def generator(self, batch_size, train, test, train_dir, test_dir):
         train_generator = train.flow_from_directory(train_dir, 
-                                                    target_size = (self.img_size, self.img_size), 
-                                                    class_mode = 'binary', 
-                                                    color_mode ='rgb', 
-                                                    batch_size = batch_size,
-                                                    interpolation = 'lanczos'
+                                     target_size = (self.img_size, self.img_size), 
+                                     class_mode = 'binary', 
+                                     color_mode ='rgb', 
+                                     batch_size = batch_size,
+                                     interpolation = 'lanczos'
                                                     )
-        validation_generator = test.flow_from_directory(test_dir, 
-                                                        target_size = (self.img_size, self.img_size), 
-                                                        class_mode = 'binary',
-                                                        color_mode = 'rgb', 
-                                                        batch_size = batch_size,
-                                                        interpolation ='lanczos'
+        test_generator = test.flow_from_directory(test_dir, 
+                                        target_size = (self.img_size, self.img_size), 
+                                        class_mode = 'binary',
+                                        color_mode = 'rgb', 
+                                        batch_size = batch_size,
+                                        interpolation ='lanczos'
                                                         )
         return train_generator, validation_generator
     
