@@ -1,9 +1,9 @@
 # Build Densenet model
 
+import tensorflow as tf
 from tensorflow.keras.models import Model
 from tensorflow.keras import layers
 from tensorflow.keras.applications import DenseNet121
-import tensorflow as tf
 from tensorflow.keras import optimizers
 
 
@@ -16,7 +16,6 @@ class DenseNet():
                                  input_shape = (img_size,img_size,3))
         x = base_model.output
         x = layers.GlobalAveragePooling2D()(x)
-        #x = layers.Dropout(dropout_rate)(x)
         predictions = layers.Dense(1, activation='sigmoid', name='last')(x)
         model = Model(inputs=base_model.input, outputs=predictions)
         return model
