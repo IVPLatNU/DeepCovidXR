@@ -4,6 +4,8 @@ import numpy as np
 from itertools import chain
 import tarfile
 from sklearn.model_selection import train_test_split
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
 import pandas as pd
 import urllib
 
@@ -67,7 +69,30 @@ class nihUtils():
         train_df['labels'] = train_df.apply(lambda x: x['Finding Labels'].split('|'), axis=1)
         valid_df['labels'] = valid_df.apply(lambda x: x['Finding Labels'].split('|'), axis=1)
         
-        return train_df, valid_df
+        return train_df, valid_df, labels
+    
+    def nihGenerator(self, batch_size, train, val, train_df, valid_df, labels):
+        train_gen = train_idg.flow_from_dataframe(dataframe=train_df,
+                                             directory=None,
+                                             x_col='path',
+                                             y_col='labels',
+                                             class_mode='categorical',
+                                             batch_size=batch_size,
+                                             classes=labels,
+                                             target_size=(self.image_size, self.image_size))
+
+
+        valid_gen = val_idg.flow_from_dataframe(dataframe=val_df,
+                                             directory=None,
+                                             x_col='path',
+                                             y_col='labels',
+                                             class_mode='categorical',
+                                             batch_size=batch_size,
+                                             classes=labels,
+                                             target_size=(self.image_size, self.image_size))
+        return train_gen, valid_gen
+   
+        
 
 
 
