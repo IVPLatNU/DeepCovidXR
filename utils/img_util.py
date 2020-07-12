@@ -4,8 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
-class imgUtils():
-    def _init_(self, img_size):
+class imgUtils:
+    def __init__(self, img_size):
         self.img_size = img_size
         
     def preprocess(self, img, std, mean):
@@ -47,7 +47,7 @@ class imgUtils():
                                         batch_size = batch_size,
                                         interpolation ='lanczos'
                                                         )
-        return train_generator, validation_generator
+        return train_generator, test_generator
     
     def plot_save(self, history, save_dir, exp_name):
         plt.plot(history.history['acc'])
