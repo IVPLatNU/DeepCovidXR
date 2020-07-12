@@ -34,7 +34,7 @@ edit autoexec.bat
 ## Usage example
 
 A few motivating and useful examples of how your product can be used. Spice this up with code blocks and potentially more screenshots.
-# Pretrain a model with NIH dataset
+### Pretrain a model with NIH dataset
 ```sh
 python pretrain.py NIH_path -c
 ```
