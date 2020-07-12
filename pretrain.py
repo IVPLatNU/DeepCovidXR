@@ -15,7 +15,7 @@ nih = nihUtils()
 nih_path = nih.nihDir()
 nih_path = 'D:\\covid\\Ensemble\\combine\\NIH\\'
 nih.nihDownload(nih_path)
-
+#%%
 nih_img_path = nih_path
 nih_csv_path = nih_path
 csv_name = nih_csv_path + 'NIH_Data_Entry.csv'
