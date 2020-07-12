@@ -16,12 +16,10 @@ class DenseNet():
                                  input_shape = (img_size,img_size,3))
         x = base_model.output
         x = layers.GlobalAveragePooling2D()(x)
-        x = layers.Dropout(dropout_rate)(x)
+        #x = layers.Dropout(dropout_rate)(x)
         predictions = layers.Dense(1, activation='sigmoid', name='last')(x)
         model = Model(inputs=base_model.input, outputs=predictions)
         return model
-    
-    def buildDropModel(self, img_size, )
     
     def freeze(self, model):
         for layer in model.layers[:428]:

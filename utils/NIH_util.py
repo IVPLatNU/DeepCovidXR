@@ -1,4 +1,6 @@
 import os
+import sys
+import time
 from glob import glob
 import numpy as np
 from itertools import chain
@@ -17,6 +19,20 @@ class nihUtils():
         if not os.path.isdir(nih_dir):
             os.mkdir(nih_dir)
         return nih_dir
+    
+    def reporthook(self, count, block_size, total_size):
+        global start_time
+        if count == 0:
+            start_time = time.time()
+            return
+        duration = time.time() - start_time
+        progress_size = int(count * block_size)
+        speed = int(progress_size / (1024 * duration))
+        percent = int(count * block_size * 100 / total_size)
+        sys.stdout.write("\r...%d%%, %d MB, %d KB/s, %d seconds passed" %
+                        (percent, progress_size / (1024 * 1024), speed, duration))
+        sys.stdout.flush()
+     
     
     # Download NIH dataset
     def nihDownload(self, nih_dir):
@@ -37,11 +53,13 @@ class nihUtils():
         
         for idx, link in enumerate(links):
             fn = nih_dir + 'images_%02d.tar.gz' % (idx+1)
-            print ('downloading', fn, '...')
-            urllib.request.urlretrieve(link, fn)  # download the zip file
-            tar = tarfile.open(fn)
-            tar.extractall()
-            tar.close()
+            if not os.path.exists(fn):
+                print ('downloading', fn, '...')
+                urllib.request.urlretrieve(link, fn, self.reporthook)  # download the zip file
+                tar = tarfile.open(fn)
+                tar.extractall()
+                print('extracting', fn, '...')
+                tar.close()
         print ("NIH dataset download and unzip complete. ")
         
     
@@ -71,25 +89,25 @@ class nihUtils():
         
         return train_df, valid_df, labels
     
-    def nihGenerator(self, batch_size, train, val, train_df, valid_df, labels):
-        train_gen = train_idg.flow_from_dataframe(dataframe=train_df,
+    def nihGenerator(self, image_size, batch_size, train, val, train_df, valid_df, labels):
+        train_gen = train.flow_from_dataframe(dataframe=train_df,
                                              directory=None,
                                              x_col='path',
                                              y_col='labels',
                                              class_mode='categorical',
                                              batch_size=batch_size,
                                              classes=labels,
-                                             target_size=(self.image_size, self.image_size))
+                                             target_size=(image_size, image_size))
 
 
-        valid_gen = val_idg.flow_from_dataframe(dataframe=val_df,
+        valid_gen = val.flow_from_dataframe(dataframe=valid_df,
                                              directory=None,
                                              x_col='path',
                                              y_col='labels',
                                              class_mode='categorical',
                                              batch_size=batch_size,
                                              classes=labels,
-                                             target_size=(self.image_size, self.image_size))
+                                             target_size=(image_size, image_size))
         return train_gen, valid_gen
    
         
