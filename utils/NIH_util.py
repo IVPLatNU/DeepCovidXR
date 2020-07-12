@@ -12,8 +12,7 @@ import urllib
 
 class nihUtils():
     # Create a direcotry for NIH dataset
-    def nihDir(self):
-        base = os.getcwd()
+    def createDir(self, base):
         nih_dir = base + '\\NIH\\'
         if not os.path.isdir(nih_dir):
             os.mkdir(nih_dir)
