@@ -1,4 +1,5 @@
 import os
+import io
 import sys
 import time
 from glob import glob
@@ -6,8 +7,6 @@ import numpy as np
 from itertools import chain
 import tarfile
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-
 import pandas as pd
 import urllib
 
@@ -32,6 +31,27 @@ class nihUtils():
         sys.stdout.write("\r...%d%%, %d MB, %d KB/s, %d seconds passed" %
                         (percent, progress_size / (1024 * 1024), speed, duration))
         sys.stdout.flush()
+        
+    # Class for printing exrtaction progress
+    def get_file_progress_file_object_class(self, on_progress):
+        class FileProgressFileObject(tarfile.ExFileObject):
+            def read(self, size, *args):
+                on_progress(self.name, self.position, self.size)
+                return tarfile.ExFileObject.read(self, size, *args)
+        return FileProgressFileObject
+    
+    def on_progress(self, filename, position, total_size):
+        print("%s: %d of %s" %(filename, position, total_size), end='\r', flush = True)
+        
+    class ProgressFileObject(io.FileIO):
+        def __init__(self, path, *args, **kwargs):
+            self._total_size = os.path.getsize(path)
+            io.FileIO.__init__(self, path, *args, **kwargs)
+    
+        def read(self, size):
+            print("Overall process: %d of %d" %(self.tell(), self._total_size), end = '\r', flush = True)
+            return io.FileIO.read(self, size)
+
      
     
     # Download NIH dataset
@@ -56,10 +76,14 @@ class nihUtils():
             if not os.path.exists(fn):
                 print ('downloading', fn, '...')
                 urllib.request.urlretrieve(link, fn, self.reporthook)  # download the zip file
-                tar = tarfile.open(fn)
-                tar.extractall()
-                print('extracting', fn, '...')
-                tar.close()
+            tarfile.TarFile.fileobject = self.get_file_progress_file_object_class(self.on_progress)
+            tar = tarfile.open(fileobj=self.ProgressFileObject(fn))
+            print('extracting', fn, '...')
+            for member in tar.getmembers():
+                if member.isreg():  # skip if the TarInfo is not files
+                    member.name = os.path.basename(member.name) # remove the path by reset it
+                    tar.extract(member,nih_dir) # extract
+            tar.close()
         print ("NIH dataset download and unzip complete. ")
         
     
@@ -70,22 +94,27 @@ class nihUtils():
         df['Finding Labels'] = df['Finding Labels'].map(lambda x: x.replace('No Finding', ''))
         df['path'] = df['Image Index'].map(data_image_paths.get)
         
-        labels = np.unique(list(chain(*df['Finding Labels'].map(lambda x: x.split('|')).tolist())))
+        labels = np.unique(list(chain(*df['Finding Labels'].map(
+                                            lambda x: x.split('|')).tolist())))
         labels = [x for x in labels if len(x) > 0]
         
         for label in labels:
             if len(label) > 1:
-                df[label] = df['Finding Labels'].map(lambda finding: 1.0 if label in finding else 0.0)
+                df[label] = df['Finding Labels'].map(
+                    lambda finding: 1.0 if label in finding else 0.0)
         
         labels = [label for label in labels if df[label].sum() > 1000]
         
         
         train_df, valid_df = train_test_split(df, test_size=0.20, random_state=2018, 
-                                              stratify=df['Finding Labels'].map(lambda x: x[:4]))
+                                              stratify=df['Finding Labels'].map(
+                                                  lambda x: x[:4]))
         
         
-        train_df['labels'] = train_df.apply(lambda x: x['Finding Labels'].split('|'), axis=1)
-        valid_df['labels'] = valid_df.apply(lambda x: x['Finding Labels'].split('|'), axis=1)
+        train_df['labels'] = train_df.apply(
+                            lambda x: x['Finding Labels'].split('|'), axis=1)
+        valid_df['labels'] = valid_df.apply(
+                            lambda x: x['Finding Labels'].split('|'), axis=1)
         
         return train_df, valid_df, labels
     

@@ -1,18 +1,18 @@
-# Build ResNet50 model
+# Build Densenet model
 
 import tensorflow as tf
 from tensorflow.keras.models import Model
 from tensorflow.keras import layers
-from tensorflow.keras.applications import ResNet50
+from tensorflow.keras.applications import InceptionResNetV2
 from tensorflow.keras import optimizers
 
 
-class ResNet():
+class DenseNet():
     def __init__(self, weights):
         self.weights = weights
         
-    def build_model(self, img_size, dropout_rate):
-        base_model = ResNet50(weights=self.weights, include_top=False, 
+    def buildBaseModel(self, img_size):
+        base_model = InceptionResNetV2(weights=self.weights, include_top=False, 
                                  input_shape = (img_size,img_size,3))
         x = base_model.output
         x = layers.GlobalAveragePooling2D()(x)
@@ -21,9 +21,9 @@ class ResNet():
         return model
     
     def freeze(self, model):
-        for layer in model.layers[:176]:
+        for layer in model.layers[:428]:
             layer.trainable = False
-        for layer in model.layers[176:]:
+        for layer in model.layers[428:]:
             layer.trainable = True
             
         return model
@@ -42,5 +42,4 @@ class ResNet():
                     tf.keras.metrics.AUC(name='auc'), 
                     tf.keras.metrics.Precision(name='precision'), 
                     tf.keras.metrics.Recall(name='recall')])
-    
-    
+
