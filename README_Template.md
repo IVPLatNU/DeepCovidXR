@@ -45,7 +45,27 @@ to get more details.
 
 ### 2. Pretrain a model with NIH dataset
 ```sh
-python pretrain.py --model model_name NIH_path --create
+python pretrain.py --model [MODEL NAME] [NIH PATH] --create
+```
+
+```sh
+usage: pretrain.py [-h] [-m MODEL_NAME] [-c [CREATE_DIR]] model_name NIH_path
+
+Pretrain a model on NIH dataset.
+
+positional arguments:
+  model_name            the name of the model to be trained with NIH dataset.
+                        Choose from ResNet-50, Xception, DenseNet-121,
+                        Inception-V3,Inception-ResNet-V2, EfficientNet-B2
+  NIH_path              the path that contains NIH dataset and NIH csv file or
+                        the path in which a new directory for NIH dataset will
+                        be created.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -m MODEL_NAME, --model MODEL_NAME
+  -c [CREATE_DIR], --create [CREATE_DIR]
+                        create a new directory for NIH dataset download
 ```
 ### 3. Train and test each individual model
 
