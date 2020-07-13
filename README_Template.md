@@ -25,14 +25,16 @@
 
 ## How to Train COVIDNet from Scratch
 
-### Preprocessing (prepare the cropped image)
+### 1. Preprocessing (prepare the cropped image)
 
 
-### Pretrain a model with NIH dataset
+### 2. Pretrain a model with NIH dataset
 ```sh
 python pretrain.py --model model_name NIH_path --create
 ```
+### 3. Train and test each individual model
 
+### 4. ensemble the model
 
 ## How to Test COVIDNet on Your Own Dataset
 
