@@ -25,7 +25,22 @@
 
 ## How to Train COVIDNet from Scratch
 
+
 ### 1. Preprocessing (prepare the cropped image)
+
+#### Download Unet Weights
+We used Unet to segment the input image. The link to download the weights is: [trained_model.hdf5](https://github.com/imlab-uiip/lung-segmentation-2d/blob/master/trained_model.hdf5)
+
+#### Crop the Image Folder
+```sh
+python preprocess.py -f [IMAGE FOLDER PATH] -U [trained_model.hdf5 PATH] -o [IMAGE OUTPUT PATH]
+```
+Put images in one folder.
+
+```sh
+python preprocess.py -h
+```
+to get more details.
 
 
 ### 2. Pretrain a model with NIH dataset
