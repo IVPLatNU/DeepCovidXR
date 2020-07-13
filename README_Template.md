@@ -34,7 +34,7 @@ python pretrain.py --model model_name NIH_path --create
 ```
 ### 3. Train and test each individual model
 
-### 4. ensemble the model
+### 4. Ensemble the model
 
 ## How to Test COVIDNet on Your Own Dataset
 
