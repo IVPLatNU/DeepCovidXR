@@ -5,7 +5,6 @@
 [![Build Status][travis-image]][travis-url]
 [![Downloads Stats][npm-downloads]][npm-url]
 
-One to two paragraph statement about your product and what it does.
 | Network Model | Original Paper | 
 |     :---:     |     :---:      |
 | DenseNet-121     | [Densely Connected Convolutional Networks](https://openaccess.thecvf.com/content_cvpr_2017/papers/Huang_Densely_Connected_Convolutional_CVPR_2017_paper.pdf)|
@@ -17,37 +16,30 @@ One to two paragraph statement about your product and what it does.
 
 ![](header.png)
 
-## Installation
+## Environment
 
-OS X & Linux:
+### Dependencies
+- tensorflow==
+- keras==
+- 
 
-```sh
-npm install my-crazy-module --save
-```
+## How to Train COVIDNet from Scratch
 
-Windows:
+### Preprocessing (prepare the cropped image)
 
-```sh
-edit autoexec.bat
-```
 
-## Usage example
-
-A few motivating and useful examples of how your product can be used. Spice this up with code blocks and potentially more screenshots.
 ### Pretrain a model with NIH dataset
 ```sh
 python pretrain.py --model model_name NIH_path --create
 ```
 
 
-## Development setup
+## How to Test COVIDNet on Your Own Dataset
 
-Describe how to install all development dependencies and how to run an automated test-suite of some kind. Potentially do this for multiple platforms.
+### Download the well-trained weights
+Google drive link: 
 
-```sh
-make install
-npm test
-```
+## Grad-CAM Visualization 
 
 ## Release History
 
