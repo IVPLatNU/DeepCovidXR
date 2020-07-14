@@ -26,7 +26,7 @@
 ## Table of Contents
 
 - [Train COVIDNet from Scratch](#Train-COVIDNet-from-Scratch)
-  * [Preprocessing](#1.-Preprocessing)
+  * [Preprocessing](#Preprocessing)
     + [Download Unet Weights](#Download-Unet-Weights)
     + [Crop images](#Crop-images)
   * [Pretrain with NIH dataset](#Pretrain-with-NIH-dataset)
