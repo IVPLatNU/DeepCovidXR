@@ -15,6 +15,12 @@ parser.add_argument('model', metavar = 'model_name',
                     help = 'the name of the model to be trained with NIH dataset.\n Choose from ResNet-50, Xception, DenseNet-121, Inception-V3,' 
                             'Inception-ResNet-V2, EfficientNet-B2')
 
+parser.add_argument('-s', '--size', dest = 'img_size')
+
+parser.add_argument('size', metavar = 'img_size',
+                    type = int, nargs = 1,
+                    help = 'the size of NIH images')
+
 parser.add_argument('path', metavar='NIH_path', type=str, nargs=1,
                     help='the path that contains NIH dataset and NIH csv file or the path in which a new directory for NIH dataset will be created.')
 
@@ -25,8 +31,7 @@ args = parser.parse_args()
 create_dir  = args.create_dir
 nih_path = args.path[0]
 model_name = args.model_name
-
-img_size = 331
+img_size = args.img_size
 batch_size = 16
 rotation_range = 20
 height_shift = 0.05
