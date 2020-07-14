@@ -23,7 +23,20 @@
 - keras==
 - 
 
-## How to Train COVIDNet from Scratch
+## Table of Contents
+
+- [Train COVIDNet from Scratch](#scratch)
+  * [Preprocessing](#preprocessing)
+  * [Pretrain with NIH](#NIH)
+  * [Find best hyper parameters](#tuner)
+  * [Train and test with best parameters](#train-best)
+  * [Ensemble models](#ensemble)
+- [Test CovidNet on your own dataset](#test)
+  * [Download trained weights](#download)
+- [Grad-CAM Visualization](#gradcam)
+- [Citation](#citation)
+
+## Train COVIDNet from Scratch
 
 
 ### 1. Preprocessing (prepare the cropped image)
@@ -43,7 +56,7 @@ python preprocess.py -h
 to get more details.
 
 
-### 2. Pretrain a model with NIH dataset
+### 2. Pretrain with NIH dataset
 ```sh
 python pretrain.py --model [MODEL NAME] --size [IMG SIZE] [NIH PATH] --create
 ```
@@ -72,7 +85,7 @@ optional arguments:
 ```
 ### 3. Train and test each individual model
 
-### 4. Ensemble the model
+### 4. Ensemble models
 
 ## How to Test COVIDNet on Your Own Dataset
 
