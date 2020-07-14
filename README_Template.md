@@ -29,8 +29,8 @@
   * [Preprocessing](#1.-Preprocessing)
     + [Download Unet Weights](#Download-Unet-Weights)
     + [Crop images](#Crop-images)
-  * [Pretrain with NIH dataset](#2.-Pretrain-with-NIH-dataset)
-  * [Find best hyper parameters](#3.-Find-best-hyper-parameters)
+  * [Pretrain with NIH dataset](#Pretrain-with-NIH-dataset)
+  * [Find best hyper parameters](#Find-best-hyper-parameters)
   * [Train model with best parameters](#Train-model-with-best-parameters)
   * [Ensemble models](#Ensemble-models)
 - [Test CovidNet on your own dataset](#How-to-Test-COVIDNet-on-Your-Own-Dataset)
@@ -41,7 +41,7 @@
 ## Train COVIDNet from Scratch
 
 
-### 1. Preprocessing 
+### Preprocessing 
 
 Prepare cropped images.
 
@@ -60,7 +60,7 @@ python preprocess.py -h
 to get more details.
 
 
-### 2. Pretrain with NIH dataset
+### Pretrain with NIH dataset
 ```sh
 python pretrain.py --model [MODEL NAME] --size [IMG SIZE] [NIH PATH] --create
 ```
@@ -88,11 +88,11 @@ optional arguments:
                         create a new directory for NIH dataset download
 ```
 
-### 3. Find best hyper parameters
+### Find best hyper parameters
 
-### 4. Train model with best parameters
+### Train model with best parameters
 
-### 5. Ensemble models
+### Ensemble models
 
 ## How to Test COVIDNet on Your Own Dataset
 
