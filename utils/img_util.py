@@ -50,13 +50,16 @@ class imgUtils:
         return train_generator, test_generator
     
     def plot_save(self, history, save_dir, exp_name):
+        if not os.path.exists(save_dir + 'save_plots_initial/{}'.format(exp_name)):
+            os.makedirs(save_dir + 'save_plots_initial/{}'.format(exp_name))
+            
         plt.plot(history.history['acc'])
         plt.plot(history.history['val_acc'])
         plt.title('Model accuracy')
         plt.ylabel('Accuracy')
         plt.xlabel('Epoch')
         plt.legend(['Train', 'Val'], loc='upper left')
-        plt.savefig(save_dir + 'result_')
+        plt.savefig(save_dir + 'save_plots_initial/{}/loss'.format(exp_name))
         plt.show()
         
         plt.plot(history.history['loss'])

@@ -11,7 +11,7 @@ class InceptionNet():
     def __init__(self, weights):
         self.weights = weights
         
-    def buildBaseModel(self, img_size, dropout_rate):
+    def buildBaseModel(self, img_size):
         base_model = InceptionV3(weights=self.weights, include_top=False, 
                          input_shape = (img_size,img_size,3))
         x = base_model.output
@@ -20,17 +20,17 @@ class InceptionNet():
         model = Model(inputs=base_model.input, outputs=predictions)
         return model
     
+    def buildTunerModel(self, img_size):
+        base_model = InceptionV3(weights=self.weights, include_top=False, 
+                                 input_shape = (img_size,img_size,3))
+        return base_model
+    
     def freeze(self, model):
         for layer in model.layers[:310]:
             layer.trainable = False
         for layer in model.layers[310:]:
             layer.trainable = True
             
-        return model
-    
-    def unfreeze(self, model):
-        for layer in model.layers[0:]:
-            layer.trainable = True
         return model
     
     def compileModel(self, model, lr, momentum, nestrov):

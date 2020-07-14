@@ -37,7 +37,7 @@ rotation_range = 20
 height_shift = 0.05
 width_shift = 0.05
 
-model_save_path = 'nih_saved_weights.h5'
+model_save_path = 'nih_weight_{name}.h5'.format(name = model_name)
 
 nih = nihUtils()
 if create_dir:
@@ -102,7 +102,7 @@ es = features.setES(monitor, patience_es, min_delta)
 cp = features.setCP(monitor, model_save_path)
 
 epochs = 50
-features.generator(model, batch_size, train_generator, val_generator, epochs, cp, rlp, es)
+features.NIHgenerator(model, batch_size, train_generator, val_generator, epochs, cp, rlp, es)
 
 
 

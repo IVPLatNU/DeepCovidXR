@@ -28,10 +28,26 @@ class trainFeatures():
                         patience=patience)
         return rlr
         
-    def generator(self, model, batch_size, train_gen, val_gen, epochs, cp, rlr, es):
+    def NIHgenerator(self, model, batch_size, train_gen, val_gen, epochs, cp, rlr, es):
         model.fit_generator(train_gen,
               steps_per_epoch=len(train_gen.classes)/batch_size,
               validation_data=val_gen,
               validation_steps=len(val_gen.classes)/batch_size,
               epochs=epochs,
               callbacks=[cp, rlr, es])
+     
+    def load(self, model, weights):
+        model.load_weights(weights)
+        return model
+    
+    def unfreeze(self, model):
+        for layer in model.layers[0:]:
+            layer.trainable = True
+        return model
+        
+    def generator(self, model, train_gen, val_gen, epochs, cp, rlr, es):
+        history = model.fit_generator(train_gen, 
+                             epochs = epochs, 
+                             validation_data=val_gen, 
+                             callbacks = [es, cp, rlr])
+        return history
