@@ -4,7 +4,7 @@
     c. split NIH dataset(done, not tested)
     d. train model(done, not tested)
     
-2. Preprocess custom images (not done)
+2. Preprocess custom images (done)
 
 3. Train images clean up (not done)
 
