@@ -26,25 +26,29 @@
 ## Table of Contents
 
 - [Train COVIDNet from Scratch](#Train-COVIDNet-from-Scratch)
-  * [Preprocessing](#preprocessing)
-  * [Pretrain with NIH](#NIH)
-  * [Find best hyper parameters](#)
-  * [Train and test with best parameters](#train-best)
-  * [Ensemble models](#ensemble)
-- [Test CovidNet on your own dataset](#test)
-  * [Download trained weights](#download)
-- [Grad-CAM Visualization](#gradcam)
+  * [Preprocessing](#Preprocessing)
+    + [Download Unet Weights](#Download-Unet-Weights)
+    + [Crop images](#Crop-images)
+  * [Pretrain with NIH dataset](#Pretrain-with-NIH-dataset)
+  * [Find best hyper parameters](#Find-best-hyper-parameters)
+  * [Train model with best parameters](#Train-model-with-best-parameters)
+  * [Ensemble models](#Ensemble-models)
+- [Test CovidNet on your own dataset](#How-to-Test-COVIDNet-on-Your-Own-Dataset)
+  * [Download trained weights](#Download-the-well-trained-weights)
+- [Grad-CAM Visualization](#Grad-CAM-Visualization)
 - [Citation](#citation)
 
 ## Train COVIDNet from Scratch
 
 
-### 1. Preprocessing (prepare the cropped image)
+### 1. Preprocessing 
+
+Prepare cropped images.
 
 #### Download Unet Weights
-We used Unet to segment the input image. The link to download the weights is: [trained_model.h5](https://github.com/imlab-uiip/lung-segmentation-2d/blob/master/trained_model.hdf5)
+We used Unet to segment the input image. The link to download the weights is: [trained_model.hdf5](https://github.com/imlab-uiip/lung-segmentation-2d/blob/master/trained_model.hdf5)
 
-#### Crop the Image Folder
+#### Crop images
 ```sh
 python preprocess.py -f [IMAGE FOLDER PATH] -U [trained_model.hdf5 PATH] -o [IMAGE OUTPUT PATH]
 ```
@@ -86,7 +90,7 @@ optional arguments:
 
 ### 3. Find best hyper parameters
 
-### 4. Train and test each individual model
+### 4. Train model with best parameters
 
 ### 5. Ensemble models
 
