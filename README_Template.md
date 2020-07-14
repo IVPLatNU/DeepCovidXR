@@ -25,10 +25,10 @@
 
 ## Table of Contents
 
-- [Train COVIDNet from Scratch](#scratch)
+- [Train COVIDNet from Scratch](#Train-COVIDNet-from-Scratch)
   * [Preprocessing](#preprocessing)
   * [Pretrain with NIH](#NIH)
-  * [Find best hyper parameters](#tuner)
+  * [Find best hyper parameters](#)
   * [Train and test with best parameters](#train-best)
   * [Ensemble models](#ensemble)
 - [Test CovidNet on your own dataset](#test)
@@ -83,9 +83,12 @@ optional arguments:
   -c [CREATE_DIR], --create [CREATE_DIR]
                         create a new directory for NIH dataset download
 ```
-### 3. Train and test each individual model
 
-### 4. Ensemble models
+### 3. Find best hyper parameters
+
+### 4. Train and test each individual model
+
+### 5. Ensemble models
 
 ## How to Test COVIDNet on Your Own Dataset
 
