@@ -62,33 +62,50 @@ to get more details.
 
 ### Pretrain with NIH dataset
 ```sh
-python pretrain.py --model [MODEL NAME] --size [IMG SIZE] [NIH PATH] --create
+pretrain.py [-h] [-m MODEL_NAME] [-s IMG_SIZE] [-p NIH_PATH]
 ```
 
 ```sh
-usage: pretrain.py [-h] [-m MODEL_NAME] [-s IMG_SIZE] [-c [CREATE_DIR]]
-                   model_name img_size NIH_path
+usage: pretrain.py [-h] -m model_name -s img_size -p NIH_path
 
 Pretrain a model on NIH dataset.
 
-positional arguments:
-  model_name            the name of the model to be trained with NIH dataset.
-                        Choose from ResNet-50, Xception, DenseNet-121,
-                        Inception-V3,Inception-ResNet-V2, EfficientNet-B2
-  img_size              the size of NIH images
-  NIH_path              the path that contains NIH dataset and NIH csv file or
-                        the path in which a new directory for NIH dataset will
-                        be created.
-
 optional arguments:
   -h, --help            show this help message and exit
-  -m MODEL_NAME, --model MODEL_NAME
-  -s IMG_SIZE, --size IMG_SIZE
-  -c [CREATE_DIR], --create [CREATE_DIR]
-                        create a new directory for NIH dataset download
+  -m model_name, -model model_name
+                        the name of the model to be trained with NIH dataset.
+                        Choose from ResNet-50, Xception, DenseNet-121,
+                        Inception-V3,Inception-ResNet-V2, EfficientNet-B2.
+  -s img_size, --size img_size
+                        the size of NIH images
+  -p NIH_path, --path NIH_path
+                        the path that contains NIH dataset and NIH csv file or
+                        the path in which a new directory for NIH dataset will
+                        be created.
 ```
 
 ### Find best hyper parameters
+```sh
+tuner.py [-h] [-m MODEL_NAME] [-s IMG_SIZE] [-p DATA_PATH]
+```
+
+```sh
+usage: tuner.py [-h] -m model_name --size img_size --path DATA_path
+
+Use keras tuner to find best hyper parameter.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -m model_name, --model model_name
+                        the name of the model to be trained. Choose from
+                        ResNet-50, Xception, DenseNet-121,
+                        Inception-V3,Inception-ResNet-V2, EfficientNet-B2
+  --size img_size, -s img_size
+                        the size of dataset images
+  --path DATA_path, -p DATA_path
+                        the path that contains the dataset.
+```
+
 
 ### Train model with best parameters
 
@@ -97,7 +114,7 @@ optional arguments:
 ## How to Test COVIDNet on Your Own Dataset
 
 ### Download the well-trained weights
-Google drive link: 
+[Google drive link to trained weights](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing)
 
 ## Grad-CAM Visualization 
 
