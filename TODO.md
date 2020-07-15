@@ -6,12 +6,12 @@
     
 2. Preprocess custom images (done)
 
-3. Train images clean up (not done)
+3. Train images clean up (done, not tested)
 
-4. Ensemble clean up (not done)
+4. Ensemble clean up (done, not tested)
 
 5. Complete README.md (in progress)
-    a. table of content (not done)
+    a. table of content (done)
     b. Introduction (not done)
     c. Usage (in progress)
     d. Results (not done)
