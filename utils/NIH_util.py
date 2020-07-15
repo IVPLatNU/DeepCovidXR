@@ -12,11 +12,15 @@ import urllib
 
 class nihUtils():
     # Create a direcotry for NIH dataset
-    def createDir(self, base):
-        nih_dir = base + '\\NIH\\'
+    def createDir(self, nih_dir):
+        create = False
+        base = os.getcwd()
         if not os.path.isdir(nih_dir):
-            os.mkdir(nih_dir)
-        return nih_dir
+            create = True
+            nih_dir = os.path.join(base, 'NIH')
+            if not os.path.isdir(nih_dir):
+              os.mkdir(nih_dir)
+        return nih_dir, create
     
     def reporthook(self, count, block_size, total_size):
         global start_time
@@ -71,7 +75,7 @@ class nihUtils():
         ]
         
         for idx, link in enumerate(links):
-            fn = nih_dir + 'images_%02d.tar.gz' % (idx+1)
+            fn = os.path.join(nih_dir, 'images_%02d.tar.gz' % (idx+1))
             if not os.path.exists(fn):
                 print ('downloading', fn, '...')
                 urllib.request.urlretrieve(link, fn, self.reporthook)  # download the zip file
