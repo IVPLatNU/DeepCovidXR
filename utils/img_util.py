@@ -59,7 +59,7 @@ class imgUtils:
         plt.ylabel('Accuracy')
         plt.xlabel('Epoch')
         plt.legend(['Train', 'Val'], loc='upper left')
-        plt.savefig(save_dir + 'save_plots_initial/{}/loss'.format(exp_name))
+        plt.savefig(os.path.join(save_dir, 'save_plots_initial/{}/loss'.format(exp_name)))
         plt.show()
         
         plt.plot(history.history['loss'])
@@ -68,7 +68,7 @@ class imgUtils:
         plt.ylabel('Loss')
         plt.xlabel('Epoch')
         plt.legend(['Train', 'Val'], loc='upper left')
-        plt.savefig(save_dir + 'save_plots_initial/{}/loss'.format(exp_name))
+        plt.savefig(os.path.join(save_dir, 'save_plots_initial/{}/loss'.format(exp_name)))
         plt.show()
         
         plt.plot(history.history['auc'])
@@ -77,7 +77,7 @@ class imgUtils:
         plt.ylabel('AUC')
         plt.xlabel('Epoch')
         plt.legend(['Train', 'Val'], loc='upper left')
-        plt.savefig(save_dir + 'save_plots_initial/{}/auc_hist'.format(exp_name))
+        plt.savefig(os.path.join(save_dir, 'save_plots_initial/{}/auc_hist'.format(exp_name)))
         plt.show()
         
         plt.plot(history.history['precision'])
@@ -86,7 +86,7 @@ class imgUtils:
         plt.ylabel('Precision')
         plt.xlabel('Epoch')
         plt.legend(['Train', 'Val'], loc='upper left')
-        plt.savefig(save_dir + 'save_plots_initial/{}/prec'.format(exp_name))
+        plt.savefig(os.path.join(save_dir, 'save_plots_initial/{}/prec'.format(exp_name)))
         plt.show()
         
         plt.plot(history.history['recall'])
@@ -95,5 +95,5 @@ class imgUtils:
         plt.ylabel('Recall')
         plt.xlabel('Epoch')
         plt.legend(['Train', 'Val'], loc='upper left')
-        plt.savefig(save_dir + 'save_plots_initial/{}/recall'.format(exp_name))
+        plt.savefig(os.path.join(save_dir, 'save_plots_initial/{}/recall'.format(exp_name)))
         plt.show()
