@@ -61,6 +61,11 @@ to get more details.
 
 
 ### Pretrain with NIH dataset
+
+A base model without dropout layer can be trained with NIH dataset. The resulting weight will be saved and used for further training.
+If the NIH dataset already exists, you can provide a path to the dataset for training. If NIH does not exist, provide a path you would like to download the dataset in.
+You also need to provide the name of the model to be trained and the size of the image you would like to train with. 
+
 ```sh
 pretrain.py [-h] [-m MODEL_NAME] [-s IMG_SIZE] [-p NIH_PATH]
 ```
@@ -85,6 +90,10 @@ optional arguments:
 ```
 
 ### Find best hyper parameters
+
+Keras tuner will be used to find best values for learning rate, momentum and dropout rate for dropout layers. 
+All layers except for the global average pooling layer be frozen at first. And then the entire model will be unfrozon and used to find best hyper parameters.
+
 ```sh
 tuner.py [-h] [-m MODEL_NAME] [-s IMG_SIZE] [-p DATA_PATH]
 ```
@@ -108,6 +117,30 @@ optional arguments:
 
 
 ### Train model with best parameters
+
+Each model can be trained on a custom dataset. All layers except for the global average pooling layer be frozen at first.
+And then the entire model will be unfrozen and trained. The resulting weight will be further used for ensembling.  
+
+```sh
+train.py [-h] [-m MODEL_NAME] [-s IMG_SIZE] [-p DATA_PATH]
+```
+
+```sh
+usage: train.py [-h] -m model_name --size img_size --path DATA_path
+
+Train a model on a given dataset.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -m model_name, --model model_name
+                        the name of the model to be trained. Choose from
+                        ResNet-50, Xception, DenseNet-121,
+                        Inception-V3,Inception-ResNet-V2, EfficientNet-B2
+  --size img_size, -s img_size
+                        the size of dataset images
+  --path DATA_path, -p DATA_path
+                        the path that contains the dataset.
+```
 
 ### Ensemble models
 
