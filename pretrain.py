@@ -2,7 +2,6 @@
 import argparse
 import os
 from utils import nihUtils, imgUtils, trainFeatures
-from covid_models import DenseNet, ResNet, XceptionNet, EfficientNet, InceptionNet, InceptionResNet 
 
 def get_args():
     # Implement command line argument
@@ -23,38 +22,6 @@ def get_args():
                         required = True, 
                         help='the path that contains NIH dataset and NIH csv file or the path in which a new directory for NIH dataset will be created.')
     return parser.parse_args()
-    
-
-def get_model(model_name):
-    if model_name == 'ResNet-50':
-        resnet = ResNet('imagenet')
-        model = resnet.buildBaseModel(img_size)
-        resnet.compileModel(model, lr, momentum, nestrov)
-        
-    elif model_name == 'Xception':
-        xception = XceptionNet('imagenet')
-        model = xception.buildBaseModel(img_size)
-        xception.compileModel(model, lr, momentum, nestrov)
-    elif model_name == 'DenseNet-121':
-        dense = DenseNet('imagenet')
-        model = dense.buildBaseModel(img_size)
-        dense.compileModel(model, lr, momentum, nestrov)
-        
-    elif model_name == 'Inception-V3':
-        inception = InceptionNet('imagenet')
-        model = inception.buildBaseModel(img_size)
-        inception.compileModel(model, lr, momentum, nestrov)
-        
-    elif model_name == 'Inception-ResNet-V2':
-        inceptionres = InceptionResNet('imagenet')
-        model = inceptionres.buildBaseModel(img_size)
-        inceptionres.compileModel(model, lr, momentum, nestrov)
-        
-    elif model_name == 'EfficientNet-B2':
-        efficient = EfficientNet('imagenet')
-        model = efficient.buildBaseModel(img_size)
-        efficient.compileModel(model, lr, momentum, nestrov)
-    return model
 
 if __name__=='__main__':
 
@@ -70,7 +37,7 @@ if __name__=='__main__':
 
     nih = nihUtils()
     nih_path, create_dir = nih.createDir(nih_path)
-    model_save_path = os.path.join(nih_path, 'nih_weight_{name}.h5'.format(name = model_name))
+    model_save_path = 'nih_weight_{name}.h5'.format(name = model_name)
     
     if create_dir:
         nih.nihDownload(nih_path)
@@ -86,8 +53,7 @@ if __name__=='__main__':
     train_generator, val_generator = nih.nihGenerator(img_size, 
                                                       batch_size, train_idg, val_idg, 
                                                       train_df, val_df, labels)
-    
-    model = get_model(model_name)
+
     
     # Train a given model on NIH dataset
     lr = 0.001
@@ -104,6 +70,9 @@ if __name__=='__main__':
     rlp = features.setRLP(monitor, factor, patience_rlr)
     es = features.setES(monitor, patience_es, min_delta)
     cp = features.setCP(monitor, model_save_path)
+           
+    _, model, _ = features.getModel(model_name)
+    features.compileModel(model)
     
     epochs = 50
     features.NIHgenerator(model, batch_size, train_generator, val_generator, epochs, cp, rlp, es)

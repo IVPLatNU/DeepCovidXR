@@ -2,7 +2,7 @@
 import argparse
 import os
 from utils import imgUtils, trainFeatures
-from covid_models import hyperModel, DenseNet, ResNet, XceptionNet, EfficientNet, InceptionNet, InceptionResNet 
+from covid_models import hyperModel
 import kerastuner
 from kerastuner.tuners import BayesianOptimization
 
@@ -32,71 +32,26 @@ def make_path(data_dir, base, exp_name):
     if (not os.path.isdir(train_path)) or (not os.path.isdir(valid_path)):
         print('Please split images into train directory and validation directory.')
         exit()
-        
-    freeze_save_path = os.path.join(base, 'initial_cps/{}.h5'.format(model_name))
-    unfreeze_save_path = os.path.join(base, 'cps/{}'.format(exp_name))
-    best_model_path = os.path.join(base, 'best_models_and_params/{}/model'.format(exp_name))
-    best_weight_path = os.path.join(base, 'best_models_and_params/{}/model_weights.h5'.format(exp_name))
-    best_param_path = os.path.join(base, 'best_models_and_params/{}/model_params'.format(exp_name))
     
-    if not os.path.exists(os.path.join(base, 'initial_cps/{}'.format(exp_name))):
-        os.makedirs(os.path.join(base, 'initial_cps/{}'.format(exp_name)))
+    if not os.path.isdir(os.path.join(base, 'tuner')):
+        os.mkdir(os.path.join(base, 'tuner'))
         
-    if not os.path.exists(os.path.join(base, 'cps/{}'.format(exp_name))):
-        os.makedirs(os.path.join(base, 'cps/{}'.format(exp_name)))
+    freeze_save_path = os.path.join(base, '/tuner/initial_cps/{}.h5'.format(model_name))
+    unfreeze_save_path = os.path.join(base, '/tuner/cps/{}.h5'.format(model_name))
+    best_model_path = os.path.join(base, '/tuner/best_models_and_params/{}/model'.format(exp_name))
+    best_weight_path = os.path.join(base, '/tuner/best_models_and_params/{}/model_weights.h5'.format(exp_name))
+    best_param_path = os.path.join(base, '/tuner/best_models_and_params/{}/model_params'.format(exp_name))
     
-    if not os.path.exists(base + 'best_models_and_params/{}/model'.format(exp_name)):
-        os.makedirs(base + 'best_models_and_params/{}/model'.format(exp_name))
+    if not os.path.exists(os.path.join(base, '/tuner/initial_cps/'.format(exp_name))):
+        os.makedirs(os.path.join(base, '/tuner/initial_cps/{}'.format(exp_name)))
+        
+    if not os.path.exists(os.path.join(base, '/tuner/cps/{}'.format(exp_name))):
+        os.makedirs(os.path.join(base, '/tuner/cps/{}'.format(exp_name)))
+    
+    if not os.path.exists(os.path.join(base, '/tuner/best_models_and_params/{}/model'.format(exp_name))):
+        os.makedirs(os.path.join(base, '/tuner/best_models_and_params/{}/model'.format(exp_name)))
     
     return train_path, valid_path, freeze_save_path, unfreeze_save_path, best_model_path, best_weight_path, best_param_path
-
-def get_model(model_name):
-    # Train with only pooling layers
-    if model_name == 'ResNet-50':
-        resnet = ResNet(nih_weight)
-        base = resnet.buildTunerModel(img_size)
-        model = resnet.buildBaseModel(img_size)
-        model = resnet.freeze(model)
-        resnet.compileModel(model, lr, momentum, nestrov)
-        
-    elif model_name == 'Xception':
-        xception = XceptionNet(nih_weight)
-        base = xception.buildTunerModel(img_size)
-        model = xception.buildBaseModel(img_size)
-        model = xception.freeze(model)
-        xception.compileModel(model, lr, momentum, nestrov)
-    
-    elif model_name == 'DenseNet-121':
-        dense = DenseNet(nih_weight)
-        base = dense.buildTunerModel(img_size)
-        model = dense.buildBaseModel(img_size)
-        model = dense.freeze(model)
-        dense.compileModel(model, lr, momentum, nestrov)
-        
-    elif model_name == 'Inception-V3':
-        inception = InceptionNet(nih_weight)
-        base = inception.buildTunerModel(img_size)
-        model = inception.buildBaseModel(img_size)
-        model = inception.freeze(model)
-        inception.compileModel(model, lr, momentum, nestrov)
-        
-    elif model_name == 'Inception-ResNet-V2':
-        inceptionres = InceptionResNet(nih_weight)
-        base = inceptionres.buildTunerModel(img_size)
-        model = inceptionres.buildBaseModel(img_size)
-        model = inceptionres.freeze(model)
-        inceptionres.compileModel(model, lr, momentum, nestrov)
-        
-    elif model_name == 'EfficientNet-B2':
-        efficient = EfficientNet(nih_weight)
-        base = efficient.buildTunerModel(img_size)
-        model = efficient.buildBaseModel(img_size)
-        model = efficient.freeze(model)
-        efficient.compileModel(model, lr, momentum, nestrov)
-        
-    return model, base
-
-
         
 if __name__=='__main__':
     
@@ -142,15 +97,16 @@ if __name__=='__main__':
     es = features.setES(monitor, patience_es, min_delta)
     cp = features.setCP(monitor, freeze_dir)
     
-    model, base = get_model(model_name)
+    freeze_model, model, base = features.getModel(model_name)
+    features.compileModel(freeze_model, lr, momentum, nestrov)
 
-    model_history = features.generator(model, train_gen, val_gen, epoch, cp, rlr, es)
+    model_history = features.generator(freeze_model, train_gen, val_gen, epoch, cp, rlr, es)
     img_proc.plot_save(model_history, base_dir, exp_name)
 
     # Add dropout layer and run tuner with entire model
     
     model = features.load(model, freeze_dir)
-    model = features.unfreeze(model)
+    model = features.unfreeze(freeze_model)
 
     patience_es = 10
     
