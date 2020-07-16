@@ -4,6 +4,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
 
 class imgUtils:
     def __init__(self, img_size):
@@ -62,17 +63,6 @@ class imgUtils:
                                                         )
         return test_generator
     
-    def trainGenerator(self, batch_size, train, data_dir):
-        train_generator = train.flow_from_directory(data_dir, 
-                                        target_size = (self.img_size, self.img_size), 
-                                        class_mode = 'binary',
-                                        color_mode = 'rgb', 
-                                        batch_size = batch_size,
-                                        interpolation ='lanczos',
-                                        shuffle = False
-                                                        )
-        return train_generator
-    
     def plot_save(self, history, save_dir, exp_name):
         if not os.path.exists(save_dir + 'save_plots_initial/{}'.format(exp_name)):
             os.makedirs(save_dir + 'save_plots_initial/{}'.format(exp_name))
@@ -121,3 +111,16 @@ class imgUtils:
         plt.legend(['Train', 'Val'], loc='upper left')
         plt.savefig(os.path.join(save_dir, 'save_plots_initial/{}/recall'.format(exp_name)))
         plt.show()
+    
+    # Generates confusion matrix
+    def confusionMatrix(self, test_generator, ensemble_pred_round):
+        print('Confusion Matrix for {size1}x{size2} images'.format(size1 = self.img_size, size2 = self.img_size))
+        cm = confusion_matrix(test_generator.classes, ensemble_pred_round)
+        target_names = ['COVID-Neg', 'COVID-Pos']
+        disp = ConfusionMatrixDisplay(cm, display_labels=target_names)
+        disp = disp.plot(cmap='Blues', values_format='.0f')
+        plt.show()
+        print('Classification Report')
+        print(classification_report(test_generator.classes, ensemble_pred_round, target_names=target_names))
+        return cm
+        
