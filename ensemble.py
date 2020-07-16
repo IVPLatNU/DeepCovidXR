@@ -8,7 +8,6 @@ from deepstack.ensemble import StackEnsemble
 from sklearn.ensemble import RandomForestRegressor
 from deepstack.ensemble import DirichletEnsemble
 from deepstack.base import KerasMember
-
 from tqdm import tqdm
 
 batch_size = 100

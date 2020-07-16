@@ -9,12 +9,13 @@ class InceptionNet():
         self.weights = weights
         
     def buildBaseModel(self, img_size):
-        base_model = InceptionV3(weights=self.weights, include_top=False, 
+        base_model = InceptionV3(weights='imagenet', include_top=False, 
                          input_shape = (img_size,img_size,3))
         x = base_model.output
         x = layers.GlobalAveragePooling2D()(x)
         predictions = layers.Dense(1, activation='sigmoid', name='last')(x)
         model = Model(inputs=base_model.input, outputs=predictions)
+        model.load_weights(self.weights)
         return model
     
     def buildTunerModel(self, img_size):
