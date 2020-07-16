@@ -29,7 +29,7 @@
   * [Find best hyper parameters](#Find-best-hyper-parameters)
   * [Train model with best parameters](#Train-model-with-best-parameters)
   * [Ensemble models](#Ensemble-models)
-- [Test CovidNet on your own dataset](#How-to-Test-COVIDNet-on-Your-Own-Dataset)
+- [Test COVIDNet on individual image](#Test-COVIDNet-on-individual-image)
   * [Download trained weights](#Download-the-well-trained-weights)
 - [Grad-CAM Visualization](#Grad-CAM-Visualization)
 - [Citation](#citation)
@@ -201,7 +201,24 @@ optional arguments:
                         the path that contains the entire dataset.
 ```
 
-## How to Test COVIDNet on Your Own Dataset
+## Test COVIDNet on individual image
+```sh
+test.py [-h] [-w WEIGHTS_PATH] [-i IMAGE_PATH]
+```
+
+```sh
+usage: test.py [-h] --weight weight_path --image IMAGE_path
+
+For each input image, generates COVID possibilities for 224x224 and 331x331
+versions.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --weight weight_path, -w weight_path
+                        the path that contains trained weights.
+  --image IMAGE_path, -i IMAGE_path
+                        the path to the image.
+```
 
 ### Download the well-trained weights
 [Google drive link to trained weights](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing)
