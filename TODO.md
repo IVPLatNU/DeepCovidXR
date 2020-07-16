@@ -13,6 +13,6 @@
 5. Complete README.md (in progress)
     a. table of content (done)
     b. Introduction (not done)
-    c. Usage (in progress)
+    c. Usage (temporarily done)
     d. Results (not done)
     e. Reference (not done) 
