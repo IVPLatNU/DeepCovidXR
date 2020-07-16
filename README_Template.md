@@ -1,10 +1,6 @@
 # COVIDNet
 >An ensembled deep neural network model for predicting COVID-19 with chest x-rays.
 
-[![NPM Version][npm-image]][npm-url]
-[![Build Status][travis-image]][travis-url]
-[![Downloads Stats][npm-downloads]][npm-url]
-
 | Network Model | Original Paper | 
 |     :---:     |     :---:      |
 | DenseNet-121     | [Densely Connected Convolutional Networks](https://openaccess.thecvf.com/content_cvpr_2017/papers/Huang_Densely_Connected_Convolutional_CVPR_2017_paper.pdf)|
@@ -40,6 +36,50 @@
 
 ## Train COVIDNet from Scratch
 
+To train COVIDNet, the dataset should be structured as below:
+
+```sh
+├───224
+│   ├───crop
+│   │   ├───Test
+│   │   │   ├───Negative
+│   │   │   └───Positive
+│   │   ├───Train
+│   │   │   ├───Negative
+│   │   │   └───Positive
+│   │   └───Validation
+│   └───uncrop
+│       ├───Test
+│       │   ├───Negative
+│       │   └───Positive
+│       ├───Train
+│       │   ├───Negative
+│       │   └───Positive
+│       └───Validation
+└───331
+    ├───crop
+    │   ├───Test
+    │   │   ├───Negative
+    │   │   └───Positive
+    │   ├───Train
+    │   │   ├───Negative
+    │   │   └───Positive
+    │   └───Validation
+    │       ├───Negative
+    │       └───Positive
+    └───uncrop
+        ├───Test
+        │   ├───Negative
+        │   └───Positive
+        ├───Train
+        │   ├───Negative
+        │   └───Positive
+        └───Validation
+            ├───Negative
+            └───Positive
+```
+
+The cropped version of dataset can be obtained with preprocessing.
 
 ### Preprocessing 
 
@@ -144,6 +184,23 @@ optional arguments:
 
 ### Ensemble models
 
+```sh
+ensemble.py [-h] [-w WEIGHTS_PATH] [-d DATA_PATH]
+```
+
+```sh
+usage: ensemble.py [-h] --weight weight_path --data CROPPED_DATA_path
+
+Ensemble trained models to generate confusion matrices.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --weight weight_path, -w weight_path
+                        the path that contains trained weights.
+  --data CROPPED_DATA_path, -d CROPPED_DATA_path
+                        the path that contains the entire dataset.
+```
+
 ## How to Test COVIDNet on Your Own Dataset
 
 ### Download the well-trained weights
@@ -151,41 +208,5 @@ optional arguments:
 
 ## Grad-CAM Visualization 
 
-## Release History
+## Citation
 
-* 0.2.1
-    * CHANGE: Update docs (module code remains unchanged)
-* 0.2.0
-    * CHANGE: Remove `setDefaultXYZ()`
-    * ADD: Add `init()`
-* 0.1.1
-    * FIX: Crash when calling `baz()` (Thanks @GenerousContributorName!)
-* 0.1.0
-    * The first proper release
-    * CHANGE: Rename `foo()` to `bar()`
-* 0.0.1
-    * Work in progress
-
-## Meta
-
-Your Name – [@YourTwitter](https://twitter.com/dbader_org) – YourEmail@example.com
-
-Distributed under the XYZ license. See ``LICENSE`` for more information.
-
-[https://github.com/yourname/github-link](https://github.com/dbader/)
-
-## Contributing
-
-1. Fork it (<https://github.com/yourname/yourproject/fork>)
-2. Create your feature branch (`git checkout -b feature/fooBar`)
-3. Commit your changes (`git commit -am 'Add some fooBar'`)
-4. Push to the branch (`git push origin feature/fooBar`)
-5. Create a new Pull Request
-
-<!-- Markdown link & img dfn's -->
-[npm-image]: https://img.shields.io/npm/v/datadog-metrics.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/datadog-metrics
-[npm-downloads]: https://img.shields.io/npm/dm/datadog-metrics.svg?style=flat-square
-[travis-image]: https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square
-[travis-url]: https://travis-ci.org/dbader/node-datadog-metrics
-[wiki]: https://github.com/yourname/yourproject/wiki
