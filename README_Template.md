@@ -1,10 +1,6 @@
 # COVIDNet
 >An ensembled deep neural network model for predicting COVID-19 with chest x-rays.
 
-[![NPM Version][npm-image]][npm-url]
-[![Build Status][travis-image]][travis-url]
-[![Downloads Stats][npm-downloads]][npm-url]
-
 | Network Model | Original Paper | 
 |     :---:     |     :---:      |
 | DenseNet-121     | [Densely Connected Convolutional Networks](https://openaccess.thecvf.com/content_cvpr_2017/papers/Huang_Densely_Connected_Convolutional_CVPR_2017_paper.pdf)|
