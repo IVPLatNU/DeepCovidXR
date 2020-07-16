@@ -1,8 +1,10 @@
 # Set checkpoint, early stopping and reduce learning rate on plataeu
 import os
+import tensorflow as tf
 from tensorflow.keras import optimizers
 from keras.callbacks.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 from covid_models import DenseNet, ResNet, XceptionNet, EfficientNet, InceptionNet, InceptionResNet 
+
 
 class trainFeatures():
     def getModel(self, model_name, img_size, weight):
@@ -163,5 +165,7 @@ class trainFeatures():
                     tf.keras.metrics.AUC(name='auc'), 
                     tf.keras.metrics.Precision(name='precision'), 
                     tf.keras.metrics.Recall(name='recall')])
+    
+
         
     

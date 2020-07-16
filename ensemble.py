@@ -1,4 +1,4 @@
-# Ensemble trained models
+# Ensemble trained models and generates confusion matrices for 224 and 331 images
 
 import argparse
 import os
@@ -6,7 +6,6 @@ from utils import imgUtils, trainFeatures
 import numpy as np
 from deepstack.ensemble import StackEnsemble
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import accuracy_score
 from deepstack.ensemble import DirichletEnsemble
 from deepstack.base import KerasMember
 
@@ -19,14 +18,14 @@ width_shift = 0.05
 
 def get_args():
     # Implement command line argument
-    parser = argparse.ArgumentParser(description='Train a model on a given dataset.')
+    parser = argparse.ArgumentParser(description='Ensemble trained models to generate confusion matrices.')
     parser.add_argument('--weight', '-w', dest='weight_path', metavar='weight_path', 
                         type=str, nargs=1,
                         required = True, help='the path that contains trained weights.')
     
     parser.add_argument('--data', '-d', dest='data_path', 
                         metavar='CROPPED_DATA_path', type=str, nargs=1,
-                        required = True, help='the path that contains the cropped dataset.')
+                        required = True, help='the path that contains the entire dataset.')
     
     return parser.parse_args()
 
@@ -34,23 +33,24 @@ def get_generator(data_path, batch_size):
     all_ntta_generators = []
     all_tta_generators = []
     dir_list = []
-    crop_224_train_dir = os.path.join(data_path, '224\crop\Train')
     crop_224_valid_dir = os.path.join(data_path, '224\crop\Validation')
-    uncrop_224_train_dir = os.path.join(data_path, '224\\uncrop\Train')
+    crop_224_test_dir = os.path.join(data_path, '224\crop\Test')
     uncrop_224_valid_dir = os.path.join(data_path, '224\\uncrop\Validation')
-    crop_331_train_dir = os.path.join(data_path, '331\crop\Train')
+    uncrop_224_test_dir = os.path.join(data_path, '224\\uncrop\Test')
     crop_331_valid_dir = os.path.join(data_path, '331\crop\Validation')
-    uncrop_331_train_dir = os.path.join(data_path, '331\\uncrop\Train')
+    crop_331_test_dir = os.path.join(data_path, '331\\crop\Test')
     uncrop_331_valid_dir = os.path.join(data_path, '331\\uncrop\Validation')
+    uncrop_331_test_dir = os.path.join(data_path, '331\\uncrop\Test')
     
-    dir_list.extend([crop_224_train_dir, uncrop_224_train_dir, crop_224_valid_dir, 
-                     uncrop_224_valid_dir, crop_331_train_dir, uncrop_331_train_dir, 
-                     crop_331_valid_dir, uncrop_331_valid_dir])
+    dir_list.extend([crop_224_valid_dir, uncrop_224_valid_dir, 
+                     crop_224_test_dir, uncrop_224_test_dir,
+                     crop_331_valid_dir, uncrop_331_valid_dir,
+                     crop_331_test_dir, uncrop_331_test_dir])
     
-    if not (os.path.exists(crop_224_train_dir) and os.path.exists(crop_331_train_dir)
-            and os.path.exists(crop_224_valid_dir) and os.path.exists(crop_331_valid_dir)
-            and os.path.exists(uncrop_224_train_dir) and os.path.exists(uncrop_331_train_dir)
-            and os.path.exists(uncrop_224_valid_dir) and os.path.exists(uncrop_331_valid_dir) ):
+    if not (os.path.exists(crop_224_valid_dir) and os.path.exists(crop_331_valid_dir)
+            and os.path.exists(uncrop_224_valid_dir) and os.path.exists(uncrop_331_valid_dir) 
+            and os.path.exists(crop_224_test_dir) and os.path.exists(uncrop_224_test_dir) 
+            and os.path.exists(crop_331_test_dir) and os.path.exists(uncrop_331_test_dir) ):
         print('Data path is invalid. Please check if data path contains directory for 224 and 331,'
               'cropped and uncropped data. ')
         exit()
@@ -61,9 +61,11 @@ def get_generator(data_path, batch_size):
     
     for i in range(4):
         test_gen = img_proc1.testGenerator(batch_size, val_idg_224, dir_list[i])
-        train_gen = img_proc1.trainGenerator(batch_size, train_idg_224, dir_list[i])
+        if i%2 == 1:
+            train_gen = img_proc1.testGenerator(batch_size, train_idg_224, dir_list[i])
+            all_tta_generators.append(train_gen)
         all_ntta_generators.append(test_gen)
-        all_tta_generators.append(train_gen)
+        
     
     img_proc2 = imgUtils(331)
     
@@ -71,11 +73,15 @@ def get_generator(data_path, batch_size):
     
     for i in range(4):
         test_gen = img_proc2.testGenerator(batch_size, val_idg_331, dir_list[i+4])
-        train_gen = img_proc1.trainGenerator(batch_size, train_idg_331, dir_list[i+4])
+        if i%2 == 1:
+            train_gen = img_proc1.trainGenerator(batch_size, train_idg_331, dir_list[i+4])
+            all_tta_generators.append(train_gen)
         all_ntta_generators.append(test_gen)
-        all_tta_generators.append(train_gen)
-    
-    
+        
+    for i in range(3):
+        for j in range(4):
+            all_ntta_generators.append(all_tta_generators[j])
+        
     return all_ntta_generators, all_tta_generators
 
 def create_member(model_name, model, generator_list):
@@ -178,8 +184,17 @@ def ensemble_members(member_list, model_list, tta_generator_list):
     
     ensemble_pred  = np.sum(combined_weighted_probs, axis=0)
     ensemble_pred_round = np.round(ensemble_pred)
+
+    cm_generator_224 = tta_generator_list[3]
+    cm_generator_331 = tta_generator_list[7]
     
-    return ensemble_pred_round_notta, ensemble_pred_round
+    proc1 = imgUtils(224)
+    proc2 = imgUtils(331)
+    
+    cm_224 = proc1.confusionMatrix(cm_generator_224, ensemble_pred_round)
+    cm_331 = proc2.comfusionMatrix(cm_generator_331, ensemble_pred_round)
+    
+    return cm_224, cm_331
 
 if __name__=='__main__':
     
@@ -190,7 +205,12 @@ if __name__=='__main__':
     img_size1 = 224
     img_size2 = 331
      
-    ntta_generators, tta_generators = get_generator(data_dir, batch_size)
+    ntta_generators, tta_generators, cm_generators = get_generator(data_dir, batch_size)
+    member_list, model_list, model_name_list = get_members(ntta_generators)
+    cm_224, cm_331 = ensemble_members(member_list, model_list, tta_generators)
+
+    
+    
     
 
     
