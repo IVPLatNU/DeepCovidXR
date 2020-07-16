@@ -1,6 +1,7 @@
 # Functions for image preprocessing and plotting and saving results
 
 import numpy as np
+import os
 import matplotlib.pyplot as plt
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
@@ -48,6 +49,29 @@ class imgUtils:
                                         interpolation ='lanczos'
                                                         )
         return train_generator, test_generator
+    
+    # The train and test generators used for ensembling
+    def testGenerator(self, batch_size, test, data_dir):
+        test_generator = test.flow_from_directory(data_dir, 
+                                        target_size = (self.img_size, self.img_size), 
+                                        class_mode = 'binary',
+                                        color_mode = 'rgb', 
+                                        batch_size = batch_size,
+                                        interpolation ='lanczos',
+                                        shuffle = False
+                                                        )
+        return test_generator
+    
+    def trainGenerator(self, batch_size, train, data_dir):
+        train_generator = train.flow_from_directory(data_dir, 
+                                        target_size = (self.img_size, self.img_size), 
+                                        class_mode = 'binary',
+                                        color_mode = 'rgb', 
+                                        batch_size = batch_size,
+                                        interpolation ='lanczos',
+                                        shuffle = False
+                                                        )
+        return train_generator
     
     def plot_save(self, history, save_dir, exp_name):
         if not os.path.exists(save_dir + 'save_plots_initial/{}'.format(exp_name)):

@@ -71,7 +71,7 @@ if __name__=='__main__':
     es = features.setES(monitor, patience_es, min_delta)
     cp = features.setCP(monitor, model_save_path)
            
-    _, model, _ = features.getModel(model_name)
+    _, model, _ = features.getModel(model_name, 'imagenet')
     features.compileModel(model)
     
     epochs = 50

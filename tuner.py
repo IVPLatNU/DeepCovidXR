@@ -97,7 +97,7 @@ if __name__=='__main__':
     es = features.setES(monitor, patience_es, min_delta)
     cp = features.setCP(monitor, freeze_dir)
     
-    freeze_model, model, base = features.getModel(model_name)
+    freeze_model, model, base = features.getModel(model_name, img_size, nih_weight)
     features.compileModel(freeze_model, lr, momentum, nestrov)
 
     model_history = features.generator(freeze_model, train_gen, val_gen, epoch, cp, rlr, es)
