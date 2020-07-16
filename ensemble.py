@@ -102,30 +102,30 @@ def create_member(model_name, model, generator_list):
     return member
     
 
-def get_members(ntta_generator_list):
+def get_members(ntta_generator_list, weight_path):
     model_list = []
     model_name_list = []
     member_list = []
     features = trainFeatures()
-    res_224_crop, xception_224_crop, dense_224_crop, inception_224_crop, inceptionres_224_crop, efficient_224_crop = features.getAllModel(img_size1, weights, 'crop')
+    res_224_crop, xception_224_crop, dense_224_crop, inception_224_crop, inceptionres_224_crop, efficient_224_crop = features.getAllModel(img_size1, weight_path, 'crop')
     model_list.extend([res_224_crop, xception_224_crop, dense_224_crop, 
                        inception_224_crop, inceptionres_224_crop, efficient_224_crop])
     model_name_list.extend(["res_224_crop", "xception_224_crop", "dense_224_crop", 
                        "inception_224_crop", "inceptionres_224_crop", "efficient_224_crop"])
     
-    res_224_uncrop, xception_224_uncrop, dense_224_uncrop, inception_224_uncrop, inceptionres_224_uncrop, efficient_224_uncrop = features.getAllModel(img_size1, weights, 'uncrop')
+    res_224_uncrop, xception_224_uncrop, dense_224_uncrop, inception_224_uncrop, inceptionres_224_uncrop, efficient_224_uncrop = features.getAllModel(img_size1, weight_path, 'uncrop')
     model_list.extend([res_224_uncrop, xception_224_uncrop, dense_224_uncrop, 
                        inception_224_uncrop, inceptionres_224_uncrop, efficient_224_uncrop])
     model_name_list.extend(["res_224_uncrop", "xception_224_uncrop", "dense_224_uncrop", 
                        "inception_224_uncrop", "inceptionres_224_uncrop", "efficient_224_uncrop"])
     
-    res_331_crop, xception_331_crop, dense_331_crop, inception_331_crop, inceptionres_331_crop, efficient_331_crop = features.getAllModel(img_size2, weights, 'crop')
+    res_331_crop, xception_331_crop, dense_331_crop, inception_331_crop, inceptionres_331_crop, efficient_331_crop = features.getAllModel(img_size2, weight_path, 'crop')
     model_list.extend([res_331_crop, xception_331_crop, dense_331_crop, 
                        inception_331_crop, inceptionres_331_crop, efficient_331_crop])
     model_name_list.extend(["res_331_crop", "xception_331_crop", "dense_331_crop", 
                        "inception_331_crop", "inceptionres_331_crop", "efficient_331_crop"])
     
-    res_331_uncrop, xception_331_uncrop, dense_331_uncrop, inception_331_uncrop, inceptionres_331_uncrop, efficient_331_uncrop = features.getAllModel(img_size2, weights, 'uncrop')
+    res_331_uncrop, xception_331_uncrop, dense_331_uncrop, inception_331_uncrop, inceptionres_331_uncrop, efficient_331_uncrop = features.getAllModel(img_size2, weight_path, 'uncrop')
     model_list.extend([res_331_uncrop, xception_331_uncrop, dense_331_uncrop, 
                        inception_331_uncrop, inceptionres_331_uncrop, efficient_331_uncrop])
     model_name_list.extend(["res_331_uncrop", "xception_331_uncrop", "dense_331_uncrop", 
@@ -206,7 +206,7 @@ if __name__=='__main__':
     img_size2 = 331
      
     ntta_generators, tta_generators, cm_generators = get_generator(data_dir, batch_size)
-    member_list, model_list, model_name_list = get_members(ntta_generators)
+    member_list, model_list, model_name_list = get_members(ntta_generators, weights)
     cm_224, cm_331 = ensemble_members(member_list, model_list, tta_generators)
 
     

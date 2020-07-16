@@ -5,17 +5,30 @@ import os
 import matplotlib.pyplot as plt
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
+from tensorflow.keras.preprocessing import image
+
+imagenet_mean = np.array([0.485, 0.456, 0.406])
+imagenet_std = np.array([0.229, 0.224, 0.225])
 
 class imgUtils:
     def __init__(self, img_size):
         self.img_size = img_size
         
-    def preprocess(self, img, std, mean):
+    def preprocess(self, img):
         img /= 255
-        centered = np.subtract(img, mean)
-        standardized = np.divide(centered, std)
+        centered = np.subtract(img, imagenet_mean)
+        standardized = np.divide(centered, imagenet_std)
         return self.img
         return standardized
+    
+    def proc_img(self, img_path):
+        img = image.load_img(img_path, target_size = (self.img_size, self.img_size),
+                             color_mode='rgb', interpolation = 'lanczos')
+        img_array = np.asarray(img, dtype='float64')
+        img_preprocess = self.preprocess(img_array)
+        input_img = np.expand_dims(img_preprocess, axis=0)
+        
+        return input_img
     
     def dataGen(self, rotation, h_shift, w_shift):
         TTA_datagen = ImageDataGenerator(
