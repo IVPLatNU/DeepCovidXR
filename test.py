@@ -1,13 +1,11 @@
 # Test individual image
 
 import argparse
-import os
 from utils import imgUtils, trainFeatures
 import numpy as np
-from deepstack.base import KerasMember
 import pickle
 import time
-import tqdm
+from tqdm import tqdm
 
 img_size1 = 224
 img_size2 = 331
@@ -86,6 +84,14 @@ def test_individual(model_list, pickle_path, input_img_224, input_img_331):
         combined_probs.append(Y_pred)
         combined_weighted_probs.append(y_pred)
         
+    combined_probs = np.asarray(combined_probs)
+    combined_weighted_probs = np.asarray(combined_weighted_probs)
+    
+    ensemble_pred_224 = np.sum(combined_weighted_probs)
+    
+    combined_probs = []
+    combined_weighted_probs = []
+        
     for model, weight in zip(model_list_331, ensemble_weights_331):
         predictions = []
         for i in tqdm(range(tta_steps)):
@@ -99,15 +105,15 @@ def test_individual(model_list, pickle_path, input_img_224, input_img_331):
     combined_probs = np.asarray(combined_probs)
     combined_weighted_probs = np.asarray(combined_weighted_probs)
     
-    ensemble_pred = np.sum(combined_weighted_probs)
-    return ensemble_pred
+    ensemble_pred_331 = np.sum(combined_weighted_probs)
+    return ensemble_pred_224, ensemble_pred_331
 
 if __name__=='__main__':
     args = get_args()
     weights = args.weight_path[0]
     img_dir = args.img_path[0]
     
-    pickle_path = '/ensemble_weights.pickle'
+    pickle_path = 'ensemble_weights.pickle'
     start_time = time.time()
     
     img_util_224 = imgUtils(224)

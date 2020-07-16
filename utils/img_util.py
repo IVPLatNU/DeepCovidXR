@@ -18,8 +18,8 @@ class imgUtils:
         img /= 255
         centered = np.subtract(img, imagenet_mean)
         standardized = np.divide(centered, imagenet_std)
-        return self.img
-        return standardized
+        #return standardized
+        return img
     
     def proc_img(self, img_path):
         img = image.load_img(img_path, target_size = (self.img_size, self.img_size),
