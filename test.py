@@ -12,7 +12,7 @@ img_size2 = 331
 
 def get_args():
     # Implement command line argument
-    parser = argparse.ArgumentParser(description='Ensemble trained models to generate confusion matrices.')
+    parser = argparse.ArgumentParser(description='For each input image, generates COVID possibilities for 224x224 and 331x331 versions.')
     parser.add_argument('--weight', '-w', dest='weight_path', metavar='weight_path', 
                         type=str, nargs=1,
                         required = True, help='the path that contains trained weights.')
