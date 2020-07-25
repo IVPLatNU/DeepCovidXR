@@ -41,6 +41,7 @@ if __name__=='__main__':
     
     if create_dir:
         nih.nihDownload(nih_path)
+        
     nih_img_path = nih_path
     nih_csv_path = nih_path
     csv_name = os.path.join(nih_csv_path, 'NIH_Data_Entry.csv')

@@ -14,12 +14,9 @@ class nihUtils():
     # Create a direcotry for NIH dataset
     def createDir(self, nih_dir):
         create = False
-        base = os.getcwd()
         if not os.path.isdir(nih_dir):
             create = True
-            nih_dir = os.path.join(base, 'NIH')
-            if not os.path.isdir(nih_dir):
-              os.mkdir(nih_dir)
+            os.mkdir(nih_dir)
         return nih_dir, create
     
     def reporthook(self, count, block_size, total_size):
@@ -72,6 +69,7 @@ class nihUtils():
         'https://nihcc.box.com/shared/static/l6nilvfa9cg3s28tqv1qc1olm3gnz54p.gz',
         'https://nihcc.box.com/shared/static/hhq8fkdgvcari67vfhs7ppg2w6ni4jze.gz',
         'https://nihcc.box.com/shared/static/ioqwiy20ihqwyr8pf4c24eazhh281pbu.gz'
+        
         ]
         
         for idx, link in enumerate(links):
