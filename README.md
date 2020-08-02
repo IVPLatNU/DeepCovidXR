@@ -1,4 +1,4 @@
-# COVIDNet
+# DeepCOVID-XR
 >An ensembled deep neural network model for predicting COVID-19 with chest x-rays.
 
 | Network Model | Original Paper | 
@@ -21,7 +21,7 @@
 
 ## Table of Contents
 
-- [Train COVIDNet from Scratch](#Train-COVIDNet-from-Scratch)
+- [Train DeepCOVID-XR from Scratch](#Train-DeepCOVID-XR-from-Scratch)
   * [Preprocessing](#Preprocessing)
     + [Download Unet Weights](#Download-Unet-Weights)
     + [Crop images](#Crop-images)
@@ -29,14 +29,14 @@
   * [Find best hyper parameters](#Find-best-hyper-parameters)
   * [Train model with best parameters](#Train-model-with-best-parameters)
   * [Ensemble models](#Ensemble-models)
-- [Test COVIDNet on individual image](#Test-COVIDNet-on-individual-image)
+- [Test DeepCOVID-XR on individual image](#Test-DeepCOVID-XR-on-individual-image)
   * [Download trained weights](#Download-the-well-trained-weights)
 - [Grad-CAM Visualization](#Grad-CAM-Visualization)
 - [Citation](#citation)
 
-## Train COVIDNet from Scratch
+## Train DeepCOVID-XR from Scratch
 
-To train COVIDNet, the dataset should be structured as below:
+To train DeepCOVID-XR, the dataset should be structured as below:
 
 ```sh
 ├───224
@@ -201,7 +201,7 @@ optional arguments:
                         the path that contains the entire dataset.
 ```
 
-## Test COVIDNet on individual image
+## Test DeepCOVID-XR on individual image
 ```sh
 test.py [-h] [-w WEIGHTS_PATH] [-i IMAGE_PATH]
 ```
