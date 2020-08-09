@@ -32,12 +32,13 @@ class InceptionResNet():
         return model
     
     def buildDropModel(self, img_size, dropout):
-        base_model = InceptionResNetV2(weights=self.weights, include_top=False, 
+        base_model = InceptionResNetV2(weights=None, include_top=False, 
                                  input_shape = (img_size,img_size,3))
         x = base_model.output
         x = layers.GlobalAveragePooling2D()(x)
         x = layers.Dropout(dropout)(x)
         predictions = layers.Dense(1, activation='sigmoid', name='last')(x)
         model = Model(inputs=base_model.input, outputs=predictions)
+        model.load_weights(self.weights)
         return model
 
