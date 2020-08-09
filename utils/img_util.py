@@ -6,7 +6,11 @@ import matplotlib.pyplot as plt
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
 from tensorflow.keras.preprocessing import image
-
+from vis.visualization import visualize_cam, overlay
+from vis.utils import utils
+from skimage.io import imsave
+from matplotlib import cm
+os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
 imagenet_mean = np.array([0.485, 0.456, 0.406])
 imagenet_std = np.array([0.229, 0.224, 0.225])
 
@@ -18,8 +22,7 @@ class imgUtils:
         img /= 255
         centered = np.subtract(img, imagenet_mean)
         standardized = np.divide(centered, imagenet_std)
-        #return standardized
-        return img
+        return standardized
     
     def proc_img(self, img_path):
         img = image.load_img(img_path, target_size = (self.img_size, self.img_size),
@@ -136,4 +139,28 @@ class imgUtils:
         print('Classification Report')
         print(classification_report(test_generator.classes, ensemble_pred_round, target_names=target_names))
         return cm
+    
+    # Generates gradcam images
+    def gradCAM(self, input_img, img_array, model_list):
+        pred_list = []
+        layer_name_list = ['conv5_block3_3_bn', 'block14_sepconv2_bn', 'bn', 
+                           'mixed10', 'conv_7b_bn', 'top_bn']
+        i = 0
+        for model in model_list:
+            visualization = visualize_cam(model, 
+                              layer_idx= utils.find_layer_idx(model, 'last'), 
+                              filter_indices=0, 
+                              seed_input=input_img, 
+                              penultimate_layer_idx = utils.find_layer_idx(model, layer_name_list[i]), 
+                             backprop_modifier=None)
+            pred_list.append(visualization)
+            i += 1
+        visualization = np.mean(pred_list, axis=0)
+        heatmap = np.uint8(visualization[..., :3]*255)
+        original = np.uint8(cm.gray(img_array[..., 0])[..., :3]*255)
+        result = overlay(heatmap, original)
+        result_name = 'sample1_gradcam.jpg'
+        imsave(result_name, result)
+        return visualization
+        
         

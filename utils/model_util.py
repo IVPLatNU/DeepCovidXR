@@ -107,6 +107,35 @@ class trainFeatures():
         efficient_model = efficient.buildBaseModel(img_size)
         
         return res_model, xception_model, dense_model, inception_model, inceptionres_model, efficient_model
+    
+    def getAllDropModel(self, img_size, weight_dir, crop_stat, dropout):
+        res_weight = os.path.join(weight_dir, 
+                                  'ResNet50_{size}_up_{crop}.h5'.format(size = img_size, crop = crop_stat))
+        xception_weight = os.path.join(weight_dir,
+                                       'Xception_{size}_up_{crop}.h5'.format(size = img_size, crop = crop_stat))
+        dense_weight = os.path.join(weight_dir,
+                                    'DenseNet_{size}_up_{crop}.h5'.format(size = img_size, crop = crop_stat))
+        inception_weight = os.path.join(weight_dir, 
+                                        'Inception_{size}_up_{crop}.h5'.format(size = img_size, crop = crop_stat))
+        inceptionres_weight = os.path.join(weight_dir, 
+                                           'InceptionResNet_{size}_up_{crop}.h5'.format(size = img_size, crop = crop_stat))
+        efficient_weight = os.path.join(weight_dir, 
+                                        'EfficientNet_{size}_up_{crop}.h5'.format(size = img_size, crop = crop_stat))
+        
+        resnet = ResNet(res_weight)
+        res_model = resnet.buildDropModel(img_size, dropout)
+        xception = XceptionNet(xception_weight)
+        xception_model = xception.buildDropModel(img_size, dropout)
+        dense = DenseNet(dense_weight)
+        dense_model = dense.buildDropModel(img_size, dropout)
+        inception = InceptionNet(inception_weight)
+        inception_model = inception.buildDropModel(img_size, dropout)
+        inceptionres = InceptionResNet(inceptionres_weight)
+        inceptionres_model = inceptionres.buildDropModel(img_size, dropout)
+        efficient = EfficientNet(efficient_weight)
+        efficient_model = efficient.buildDropModel(img_size, dropout)
+        
+        return res_model, xception_model, dense_model, inception_model, inceptionres_model, efficient_model
 
     def setCP(self, monitor, model_path):
         checkpoint = ModelCheckpoint(
