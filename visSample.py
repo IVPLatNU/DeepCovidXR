@@ -2,7 +2,6 @@
 import numpy as np
 import os
 from tensorflow.keras.preprocessing import image
-
 import argparse
 
 from utils import imgUtils, trainFeatures
@@ -19,7 +18,7 @@ def get_args():
 if __name__=='__main__':
     args = get_args()
     weights = args.weight_path[0]
-
+#    weights = 'D:\covid\Ensemble\covid_weights'
     img_size = 224
     dropout = 0.3
     crop_stat = 'uncrop'
