@@ -162,5 +162,26 @@ class imgUtils:
         result_name = 'sample1_gradcam.jpg'
         imsave(result_name, result)
         return visualization
+    
+    def getRawCam(self, img_array, model_list):
+        pred_list = []
+        layer_name_list = ['conv5_block3_3_bn', 'block14_sepconv2_bn', 'bn', 
+                           'mixed10', 'conv_7b_bn', 'top_bn']
+        i = 0
+        for model in model_list:
+            visualization = visualize_cam(model, 
+                              layer_idx= utils.find_layer_idx(model, 'last'), 
+                              filter_indices=0, 
+                              seed_input=img_array, 
+                              penultimate_layer_idx = utils.find_layer_idx(model, layer_name_list[i]), 
+                             backprop_modifier=None)
+            pred_list.append(visualization)
+            i += 1
+        visualization = np.mean(pred_list, axis=0)
+        heatmap = np.uint8(cm.jet(cm.jet(visualization)[..., :3]*255))
+        original = np.uint8(cm.gray(img_array[..., 0])[..., :3]*255)
+        result = overlay(heatmap, original)
+        result_name = 'sample1_gradcam.jpg'
+        imsave(result_name, result)
         
         
