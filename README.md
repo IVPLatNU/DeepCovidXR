@@ -15,9 +15,10 @@
 ## Environment
 
 ### Dependencies
-- tensorflow==
-- keras==
-- 
+- python == 3.6.8
+- tensorflow== 2.0.0
+- keras== 2.2.4-tf
+- CUDA version: 10.0
 
 ## Table of Contents
 
