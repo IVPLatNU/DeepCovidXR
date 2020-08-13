@@ -93,12 +93,11 @@ We used Unet to segment the input image. The link to download the weights is: [t
 ```sh
 python Crop_img.py -f [IMAGE FOLDER PATH] -U [trained_model.hdf5 PATH] -o [IMAGE OUTPUT PATH]
 ```
-Please put images in one folder.
+Please put images in one folder. Use '-h' to get more details.
 
 ```sh
 python Crop_img.py -h
 ```
-to get more details.
 
 #### b. Resize images
 ```sh
