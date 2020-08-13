@@ -84,22 +84,27 @@ The cropped version of dataset can be obtained with preprocessing.
 
 ### Preprocessing 
 
-Prepare cropped images.
+Prepare cropped and resized images.
 
 #### Download Unet Weights
 We used Unet to segment the input image. The link to download the weights is: [trained_model.hdf5](https://github.com/imlab-uiip/lung-segmentation-2d/blob/master/trained_model.hdf5)
 
-#### Crop images
+#### a. Crop images
 ```sh
-python preprocess.py -f [IMAGE FOLDER PATH] -U [trained_model.hdf5 PATH] -o [IMAGE OUTPUT PATH]
+python Crop_img.py -f [IMAGE FOLDER PATH] -U [trained_model.hdf5 PATH] -o [IMAGE OUTPUT PATH]
 ```
-Put images in one folder.
+Please put images in one folder.
 
 ```sh
-python preprocess.py -h
+python Crop_img.py -h
 ```
 to get more details.
 
+#### b. Resize images
+```sh
+python Resize_img.py -i [IMAGE INPUT PATH] -o [IMAGE OUTPUT PATH] -s [RESIZE SHAPE (331 or 244)]
+```
+After preprocessing step a and b, you would get 224_crop/224_uncrop/331_crop/331_uncrop dataset respectively.
 
 ### Pretrain with NIH dataset
 
