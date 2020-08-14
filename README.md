@@ -7,7 +7,7 @@ DeepCOVID-XR focuses on finding characteristics of covid-19 from chest x-rays. (
 DeepCOVID-XR is pretrained with NIH dataset. NIH dataset is publicly available and can be downloaded by running pretrian.py. The dataset contains 112,120 frontal CXR images that are labeled with 14 separate disease classifications.
 
 ## Model
-
+![ensembled model](/img/model.jpg)
 | Network Model | Original Paper | 
 |     :---:     |     :---:      |
 | DenseNet-121     | [Densely Connected Convolutional Networks](https://openaccess.thecvf.com/content_cvpr_2017/papers/Huang_Densely_Connected_Convolutional_CVPR_2017_paper.pdf)|
@@ -251,6 +251,8 @@ optional arguments:
   --weight weight_path, -w weight_path
                         the path that contains trained weights.
 ```
+
+![grad-CAM](/img/covid_positive.png)
 
 ## Citation
 
