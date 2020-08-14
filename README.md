@@ -1,11 +1,12 @@
 # DeepCOVID-XR
 >An ensembled convolutional neural network model for predicting COVID-19 with frontal chest x-rays.
-DeepCOVID-XR focuses on finding characteristics of covid-19 from chest x-rays. (However, it is not to replace the real-time polymerase chain reaction test for covid-19 dianosis.) 
+
+DeepCOVID-XR focuses on finding characteristics of covid-19 from chest x-rays. (However, it is not to replace the real-time polymerase chain reaction test for covid-19 dianosis.) DenseNet-121, EfficientNet-B2, Inception-V3, Inception-ResNet-V2, ResNet-50 and Xception networks are ensembled to get a prediction of covid-19 positive probability.  
+
 ## Dataset
 DeepCOVID-XR is pretrained with NIH dataset. NIH dataset is publicly available and can be downloaded by running pretrian.py. The dataset contains 112,120 frontal CXR images that are labeled with 14 separate disease classifications.
 
 ## Model
-
 
 | Network Model | Original Paper | 
 |     :---:     |     :---:      |
@@ -235,6 +236,21 @@ optional arguments:
 [Google drive link to trained weights](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing)
 
 ## Grad-CAM Visualization 
+
+```sh
+test.py [-h] [-w WEIGHTS_PATH]
+```
+
+```sh
+usage: visSample.py [-h] --weight weight_path
+
+For each input image, generates and saves a grad-CAM image.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --weight weight_path, -w weight_path
+                        the path that contains trained weights.
+```
 
 ## Citation
 
