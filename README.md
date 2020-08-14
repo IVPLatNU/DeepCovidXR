@@ -1,5 +1,11 @@
 # DeepCOVID-XR
->An ensembled deep neural network model for predicting COVID-19 with chest x-rays.
+>An ensembled convolutional neural network model for predicting COVID-19 with frontal chest x-rays.
+DeepCOVID-XR focuses on finding characteristics of covid-19 from chest x-rays. (However, it is not to replace the real-time polymerase chain reaction test for covid-19 dianosis.) 
+## Dataset
+DeepCOVID-XR is pretrained with NIH dataset. NIH dataset is publicly available and can be downloaded by running pretrian.py. The dataset contains 112,120 frontal CXR images that are labeled with 14 separate disease classifications.
+
+## Model
+
 
 | Network Model | Original Paper | 
 |     :---:     |     :---:      |
