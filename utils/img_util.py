@@ -10,6 +10,7 @@ from vis.visualization import visualize_cam, overlay
 from vis.utils import utils
 from skimage.io import imsave
 from matplotlib import cm
+import cv2
 os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
 imagenet_mean = np.array([0.485, 0.456, 0.406])
 imagenet_std = np.array([0.229, 0.224, 0.225])
@@ -156,32 +157,11 @@ class imgUtils:
             pred_list.append(visualization)
             i += 1
         visualization = np.mean(pred_list, axis=0)
-        heatmap = np.uint8(visualization[..., :3]*255)
+        heatmap = np.uint8(visualization)
         original = np.uint8(cm.gray(img_array[..., 0])[..., :3]*255)
         result = overlay(heatmap, original)
         result_name = 'sample1_gradcam.jpg'
-        imsave(result_name, result)
+        result_path = os.path.join(os.getcwd(), 'sample_images', result_name)
+        cv2.imwrite(result_path, result)
         return visualization
-    
-    def getRawCam(self, img_array, model_list):
-        pred_list = []
-        layer_name_list = ['conv5_block3_3_bn', 'block14_sepconv2_bn', 'bn', 
-                           'mixed10', 'conv_7b_bn', 'top_bn']
-        i = 0
-        for model in model_list:
-            visualization = visualize_cam(model, 
-                              layer_idx= utils.find_layer_idx(model, 'last'), 
-                              filter_indices=0, 
-                              seed_input=img_array, 
-                              penultimate_layer_idx = utils.find_layer_idx(model, layer_name_list[i]), 
-                             backprop_modifier=None)
-            pred_list.append(visualization)
-            i += 1
-        visualization = np.mean(pred_list, axis=0)
-        heatmap = np.uint8(cm.jet(cm.jet(visualization)[..., :3]*255))
-        original = np.uint8(cm.gray(img_array[..., 0])[..., :3]*255)
-        result = overlay(heatmap, original)
-        result_name = 'sample1_gradcam.jpg'
-        imsave(result_name, result)
-        
         
