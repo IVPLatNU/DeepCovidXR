@@ -3,7 +3,6 @@
 from tensorflow.keras.models import Model
 from tensorflow.keras import layers
 from tensorflow.keras.applications import ResNet50
-import os
 
 class ResNet():
     def __init__(self, weights):
@@ -28,8 +27,9 @@ class ResNet():
         return model
     
     def buildTunerModel(self, img_size):
-        base_model = ResNet50(weights=self.weights, include_top=False, 
+        base_model = ResNet50(weights='imagenet', include_top=False, 
                                  input_shape = (img_size,img_size,3))
+        base_model.load_weights(self.weights, by_name = True)
         return base_model
     
     def buildDropModel(self, img_size, dropout):

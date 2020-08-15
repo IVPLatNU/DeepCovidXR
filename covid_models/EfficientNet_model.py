@@ -4,7 +4,6 @@ from tensorflow import keras
 from tensorflow.keras.models import Model
 from tensorflow.keras import layers
 import efficientnet.tfkeras as efn 
-import os
 
 class EfficientNet():
     def __init__(self, weights):
@@ -27,7 +26,7 @@ class EfficientNet():
                                         backend = keras.backend, layers = keras.layers, 
                                         models = keras.models, utils = keras.utils,
                                         input_shape = (img_size,img_size,3))
-        base_model.load_weights(self.weights)
+        base_model.load_weights(self.weights, by_name = True)
         
         return base_model
     
