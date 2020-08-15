@@ -63,8 +63,8 @@ if __name__=='__main__':
     args = get_args()
 
     data_path = args.path[0]
-    model_name = args.model_name
-    img_size = args.img_size
+    model_name = args.model_name[0]
+    img_size = args.img_size[0]
     
     nih_weight = 'nih_weights_{name}.h5'.format(name = model_name)
 

@@ -3,10 +3,13 @@
 from tensorflow.keras.models import Model
 from tensorflow.keras import layers
 from tensorflow.keras.applications import ResNet50
+import os
 
 class ResNet():
     def __init__(self, weights):
-        self.weights = weights
+        current_path = os.getcwd()
+        weight_path = os.path.join(current_path, weights)
+        self.weights = weight_path
         
     def buildBaseModel(self, img_size):
         base_model = ResNet50(weights=None, include_top=False, 

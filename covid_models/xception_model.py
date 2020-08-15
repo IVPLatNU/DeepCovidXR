@@ -3,10 +3,13 @@
 from tensorflow.keras.models import Model
 from tensorflow.keras import layers
 from tensorflow.keras.applications import Xception
+import os
 
 class XceptionNet():
     def __init__(self, weights):
-        self.weights = weights
+        current_path = os.getcwd()
+        weight_path = os.path.join(current_path, weights)
+        self.weights = weight_path
         
     def buildBaseModel(self, img_size):
         base_model = Xception(weights='imagenet', include_top=False, 
