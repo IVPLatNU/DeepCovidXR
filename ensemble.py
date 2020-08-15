@@ -1,8 +1,8 @@
 # Ensemble trained models and generates confusion matrices for 224 and 331 images
 
 # Install deep stack just for debug
-import os
-os.system('pip install deepstack')
+# import os
+# os.system('pip install deepstack')
 
 import argparse
 import os
@@ -35,6 +35,8 @@ def get_args():
     return parser.parse_args()
 
 def get_generator(data_path, batch_size):
+    # Create lists of generators with or without test time augmentation
+    
     all_ntta_generators = []
     all_tta_generators = []
     all_data_generators = []
@@ -78,9 +80,6 @@ def get_generator(data_path, batch_size):
         for i in range(6):
             data_gen = img_proc1.testGenerator(batch_size, train_idg_224, all_dir_list[j])
             all_data_generators.append(data_gen)
-            
-
-        
     
     img_proc2 = imgUtils(331)
     
@@ -106,6 +105,8 @@ def get_generator(data_path, batch_size):
     return all_ntta_generators, all_tta_generators, all_data_generators
 
 def create_member(model_name, model, generator_list):
+    # Create all models that will be ensembled
+    
     name_parts = model_name.split("_")
     if "224" in name_parts and "crop" in name_parts:
         member = KerasMember(name = model_name, keras_model = model, 
