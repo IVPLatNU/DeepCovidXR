@@ -1,14 +1,6 @@
 import glob
 from PIL import Image
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-import os, shutil
-import pandas as pd
-import csv
-import nibabel as nib
-import skimage
-import cv2
+import os
 import argparse
 
 parser = argparse.ArgumentParser()
