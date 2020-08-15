@@ -7,9 +7,7 @@ import os
 
 class InceptionNet():
     def __init__(self, weights):
-        current_path = os.getcwd()
-        weight_path = os.path.join(current_path, weights)
-        self.weights = weight_path
+        self.weights = weights
         
     def buildBaseModel(self, img_size):
         base_model = InceptionV3(weights='imagenet', include_top=False, 
