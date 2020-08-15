@@ -46,6 +46,40 @@ class trainFeatures():
 
         return freeze_model, model, base
     
+    def getNihModel(self, model_name, img_size, weight, label_len):
+        if model_name == 'ResNet-50':
+            resnet = ResNet(weight)
+            model = resnet.buildNihModel(img_size, label_len)
+            freeze_model = resnet.freeze(model)
+
+        elif model_name == 'Xception':
+            xception = XceptionNet(weight)
+            model = xception.buildNihModel(img_size, label_len)
+            freeze_model = xception.freeze(model)
+
+        elif model_name == 'DenseNet-121':
+            dense = DenseNet(weight)
+            model = dense.buildNihModel(img_size, label_len)
+            freeze_model = dense.freeze(model)
+
+        elif model_name == 'Inception-V3':
+            inception = InceptionNet(weight)
+            model = inception.buildNihModel(img_size, label_len)
+            freeze_model = inception.freeze(model)
+
+        elif model_name == 'Inception-ResNet-V2':
+            inceptionres = InceptionResNet(weight)
+            model = inceptionres.buildNihModel(img_size, label_len)
+            freeze_model = inceptionres.freeze(model)
+
+        elif model_name == 'EfficientNet-B2':
+            efficient = EfficientNet(weight)
+            model = efficient.buildNihModel(img_size, label_len)
+            freeze_model = efficient.freeze(model)
+
+        return freeze_model, model
+    
+    
     def getDropoutModel(self, model_name, img_size, weight, dropout):
         if model_name == 'ResNet-50':
             resnet = ResNet(weight)

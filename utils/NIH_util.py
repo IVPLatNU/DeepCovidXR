@@ -30,18 +30,7 @@ class nihUtils():
         percent = int(count * block_size * 100 / total_size)
         sys.stdout.write("\r...%d%%, %d MB, %d KB/s, %d seconds passed" %
                         (percent, progress_size / (1024 * 1024), speed, duration))
-        sys.stdout.flush()
-
-    def show_progress(block_num, block_size, total_size):      
-        global pbar     
-        if pbar is None:         
-            pbar = progressbar.ProgressBar(maxval=total_size)      
-            downloaded = block_num * block_size     
-            if downloaded < total_size:         
-                pbar.update(downloaded)     
-            else:         
-                pbar.finish()         
-                pbar = None      
+        sys.stdout.flush()    
         
     # Class for printing exrtaction progress
     def get_file_progress_file_object_class(self, on_progress):
@@ -127,6 +116,7 @@ class nihUtils():
                             lambda x: x['Finding Labels'].split('|'), axis=1)
         valid_df['labels'] = valid_df.apply(
                             lambda x: x['Finding Labels'].split('|'), axis=1)
+        label_len = len(labels)
         
         return train_df, valid_df, labels
     

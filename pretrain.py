@@ -34,6 +34,7 @@ if __name__=='__main__':
     rotation_range = 20
     height_shift = 0.05
     width_shift = 0.05
+    out_num = 16
 
     nih = nihUtils()
     nih_path, create_dir = nih.createDir(nih_path)
@@ -47,6 +48,8 @@ if __name__=='__main__':
     csv_name = os.path.join(nih_csv_path, 'NIH_Data_Entry.csv')
 
     train_df, val_df, labels = nih.nihSplit(csv_name, nih_img_path)
+    
+    label_len = len(labels)
     
     img_proc = imgUtils(img_size)
     train_idg, val_idg = img_proc.dataGen(rotation_range, height_shift, width_shift)
@@ -72,9 +75,9 @@ if __name__=='__main__':
     es = features.setES(monitor, patience_es, min_delta)
     cp = features.setCP(monitor, model_save_path)
            
-    _, model, _ = features.getModel(model_name, 'imagenet')
-    features.compileModel(model)
-    
+    _, model = features.getNihModel(model_name, img_size, 'imagenet', label_len)
+    features.compileModel(model, lr, momentum, nestrov)
+    print('Model compiled!')
     epochs = 50
     features.NIHgenerator(model, batch_size, train_generator, val_generator, epochs, cp, rlp, es)
 
