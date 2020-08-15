@@ -160,8 +160,8 @@ def ensemble_members(member_list, model_list, tta_generator_list):
     
     combined_weighted_probs_notta = np.asarray(combined_weighted_probs_notta)
     combined_probs_notta = np.asarray(combined_probs_notta)
-    ensemble_pred_notta = np.sum(combined_weighted_probs_notta)
-    ensemble_pred_round_notta = np.round(ensemble_pred_notta)
+    #ensemble_pred_notta = np.sum(combined_weighted_probs_notta)
+    #ensemble_pred_round_notta = np.round(ensemble_pred_notta)
     
     # Predictions with test time augmentation
     tta_steps = 10

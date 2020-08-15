@@ -69,7 +69,8 @@ if __name__=='__main__':
     model_name = args.model_name[0]
     img_size = args.img_size[0]
     nih_weight = args.nih_path[0]
-    
+    nih_name = 'nih_weights_{name}.h5'.format(name = model_name)
+    nih_weight = os.path.join(nih_weight, nih_name)
     #nih_weight = 'nih_weights_{name}.h5'.format(name = model_name)
 
     if not os.path.exists(nih_weight):
