@@ -116,7 +116,6 @@ class nihUtils():
                             lambda x: x['Finding Labels'].split('|'), axis=1)
         valid_df['labels'] = valid_df.apply(
                             lambda x: x['Finding Labels'].split('|'), axis=1)
-        label_len = len(labels)
         
         return train_df, valid_df, labels
     
