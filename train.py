@@ -66,7 +66,7 @@ if __name__=='__main__':
 
     if not os.path.exists(nih_weight):
         print('NIH weight does not exists.'
-              ' Please provide a NIH weight file in the format of nih_weight_[model name].h5')
+              ' Please provide a NIH weight file in the format of nih_weights_[model name].h5')
         exit()
     
     exp_name = 'train_individual'
