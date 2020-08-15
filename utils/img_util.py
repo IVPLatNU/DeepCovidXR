@@ -8,7 +8,6 @@ from sklearn.metrics import classification_report, confusion_matrix, ConfusionMa
 from tensorflow.keras.preprocessing import image
 from vis.visualization import visualize_cam, overlay
 from vis.utils import utils
-from skimage.io import imsave
 from matplotlib import cm
 import cv2
 os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
@@ -158,10 +157,15 @@ class imgUtils:
             i += 1
         visualization = np.mean(pred_list, axis=0)
         heatmap = np.uint8(visualization)
-        original = np.uint8(cm.gray(img_array[..., 0])[..., :3]*255)
-        result = overlay(heatmap, original)
-        result_name = 'sample1_gradcam.jpg'
-        result_path = os.path.join(os.getcwd(), 'sample_images', result_name)
-        cv2.imwrite(result_path, result)
-        return visualization
+
+        # Superimpose the heatma
+# =============================================================================
+#         original = np.uint8(cm.gray(img_array[..., 0])[..., :3]*255)
+#         result = overlay(heatmap, original)
+#         result_name = 'sample1_gradcam.jpg'
+#             
+#         result_path = os.path.join(os.getcwd(), 'sample_images', result_name)
+#         cv2.imwrite(result_path, result)
+# =============================================================================
+        return visualization, heatmap
         

@@ -7,6 +7,8 @@ import pickle
 import time
 from tqdm import tqdm
 
+from Crop_img import single_img_crop
+
 img_size1 = 224
 img_size2 = 331
 
@@ -65,16 +67,20 @@ def get_model_list(weight_path):
 def test_individual(model_list, pickle_path, input_img_224, input_img_331):
     ensemble_weights = pickle.load(open(pickle_path, "rb"))
 
-    model_list_224 = model_list[0:2]+model_list[4:6]+model_list[8:10]+model_list[12:14]+model_list[16:18]+model_list[20:22]
-    model_list_331 = model_list[2:4]+model_list[6:8]+model_list[10:12]+model_list[14:16]+model_list[18:20]+model_list[22:24]
-    ensemble_weights_224 = ensemble_weights[0:2]+ensemble_weights[4:6]+ensemble_weights[8:10]+ensemble_weights[12:14]+ensemble_weights[16:18]+ensemble_weights[20:22]
-    ensemble_weights_331 = ensemble_weights[2:4]+ensemble_weights[6:8]+ensemble_weights[10:12]+ensemble_weights[14:16]+ensemble_weights[18:20]+ensemble_weights[22:24]
-    
+    model_list_224_uncrop = model_list[0]+model_list[4]+model_list[8]+model_list[12]+model_list[16]+model_list[20]
+    model_list_224_crop = model_list[1]+model_list[5]+model_list[9]+model_list[13]+model_list[17]+model_list[21]
+    model_list_331_uncrop = model_list[2]+model_list[6]+model_list[10]+model_list[14]+model_list[18]+model_list[22]
+    model_list_331_crop = model_list[3]+model_list[7]+model_list[11]+model_list[15]+model_list[19]+model_list[23]
+    ensemble_weights_224_uncrop = ensemble_weights[0]+ensemble_weights[4]+ensemble_weights[8]+ensemble_weights[12]+ensemble_weights[16]+ensemble_weights[20]
+    ensemble_weights_224_crop = ensemble_weights[1]+ensemble_weights[5]+ensemble_weights[9]+ensemble_weights[13]+ensemble_weights[17]+ensemble_weights[21]
+    ensemble_weights_331_uncrop = ensemble_weights[2]+ensemble_weights[6]+ensemble_weights[10]+ensemble_weights[14]+ensemble_weights[18]+ensemble_weights[22]
+    ensemble_weights_331_crop = ensemble_weights[3]+ensemble_weights[7]+ensemble_weights[11]+ensemble_weights[15]+ensemble_weights[19]+ensemble_weights[23]
+    #ensemble_weights = ensemble_weights_224 + ensemble_weights_331
     tta_steps = 5
     combined_weighted_probs = []
     combined_probs = []
     
-    for model, weight in zip(model_list_224, ensemble_weights_224):
+    for model, weight in zip(model_list, ensemble_weights):
         predictions = []
         for i in tqdm(range(tta_steps)):
             preds = model.predict(input_img_224, verbose=1)
@@ -92,7 +98,7 @@ def test_individual(model_list, pickle_path, input_img_224, input_img_331):
     combined_probs = []
     combined_weighted_probs = []
         
-    for model, weight in zip(model_list_331, ensemble_weights_331):
+    for model, weight in zip(model_list, ensemble_weights):
         predictions = []
         for i in tqdm(range(tta_steps)):
             preds = model.predict(input_img_331, verbose=1)
@@ -106,6 +112,7 @@ def test_individual(model_list, pickle_path, input_img_224, input_img_331):
     combined_weighted_probs = np.asarray(combined_weighted_probs)
     
     ensemble_pred_331 = np.sum(combined_weighted_probs)
+    
     return ensemble_pred_224, ensemble_pred_331
 
 if __name__=='__main__':
