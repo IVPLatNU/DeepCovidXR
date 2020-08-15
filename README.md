@@ -52,6 +52,7 @@ $pip install -r requirements.txt
   * [Preprocessing](#Preprocessing)
     + [Download Unet Weights](#Download-Unet-Weights)
     + [Crop images](#Crop-images)
+    + [Resize images] (#Resize-images)
   * [Pretrain with NIH dataset](#Pretrain-with-NIH-dataset)
   * [Find best hyper parameters](#Find-best-hyper-parameters)
   * [Train model with best parameters](#Train-model-with-best-parameters)
