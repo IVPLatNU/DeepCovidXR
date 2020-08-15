@@ -23,6 +23,9 @@ def get_args():
     
     parser.add_argument('--path', '-p', dest='path', metavar='DATA_path', type=str, nargs=1,
                         required = True, help='the path that contains the dataset.')
+    
+    parser.add_argument('--nihpath', '-n', dest='nih_path', metavar='NIH_weight_path', 
+                        type=str, nargs=1, required=True, help='the path to pretrained NIH weight file.')
     return parser.parse_args()
 
 def make_path(data_dir, base, exp_name):
@@ -42,7 +45,7 @@ def make_path(data_dir, base, exp_name):
     best_weight_path = os.path.join(base, '/tuner/best_models_and_params/{}/model_weights.h5'.format(exp_name))
     best_param_path = os.path.join(base, '/tuner/best_models_and_params/{}/model_params'.format(exp_name))
     
-    if not os.path.exists(os.path.join(base, '/tuner/initial_cps/'.format(exp_name))):
+    if not os.path.exists(os.path.join(base, '/tuner/initial_cps/{}'.format(exp_name))):
         os.makedirs(os.path.join(base, '/tuner/initial_cps/{}'.format(exp_name)))
         
     if not os.path.exists(os.path.join(base, '/tuner/cps/{}'.format(exp_name))):
@@ -65,12 +68,13 @@ if __name__=='__main__':
     data_path = args.path[0]
     model_name = args.model_name[0]
     img_size = args.img_size[0]
+    nih_weight = args.nih_path[0]
     
-    nih_weight = 'nih_weights_{name}.h5'.format(name = model_name)
+    #nih_weight = 'nih_weights_{name}.h5'.format(name = model_name)
 
     if not os.path.exists(nih_weight):
         print('NIH weight does not exists.'
-              ' Please provide a NIH weight file in the format of nih_weight_[model name].h5')
+              ' Please provide a NIH weight file in the format of nih_weights_[model name].h5')
         exit()
     
     exp_name = 'tuner_pretrain'
