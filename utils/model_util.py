@@ -42,7 +42,7 @@ class trainFeatures():
             efficient = EfficientNet(weight)
             base = efficient.buildTunerModel(img_size)
             model = efficient.buildBaseModel(img_size)
-            model = efficient.freeze(model)
+            freeze_model = efficient.freeze(model)
 
         return freeze_model, model, base
     
