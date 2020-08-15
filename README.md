@@ -27,6 +27,11 @@ DeepCOVID-XR is pretrained with NIH dataset. NIH dataset is publicly available a
 - Keras== 2.2.4-tf
 - CUDA version: 10.0
 
+To set up the environment and install all the packages, run
+```sh
+$pip install -r requirements.txt
+```
+
 ## Table of Contents
 
 - [Train DeepCOVID-XR from Scratch](#Train-DeepCOVID-XR-from-Scratch)
