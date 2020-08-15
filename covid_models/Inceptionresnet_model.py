@@ -3,7 +3,6 @@
 from tensorflow.keras.models import Model
 from tensorflow.keras import layers
 from tensorflow.keras.applications import InceptionResNetV2
-import os
 
 class InceptionResNet():
     def __init__(self, weights):
@@ -20,8 +19,9 @@ class InceptionResNet():
         return model
     
     def buildTunerModel(self, img_size):
-        base_model = InceptionResNetV2(weights=self.weights, include_top=False, 
+        base_model = InceptionResNetV2(weights='imagenet', include_top=False, 
                                  input_shape = (img_size,img_size,3))
+        base_model.load_weights(self.weights, by_name = True)
         return base_model
     
     def freeze(self, model):
