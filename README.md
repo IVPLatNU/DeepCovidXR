@@ -166,11 +166,12 @@ Keras tuner will be used to find best values for learning rate, momentum and dro
 All layers except for the global average pooling layer be frozen at first. And then the entire model will be unfrozon and used to find best hyper parameters.
 
 ```sh
-tuner.py [-h] [-m MODEL_NAME] [-s IMG_SIZE] [-p DATA_PATH]
+tuner.py [-h] [-m MODEL_NAME] [-s IMG_SIZE] [-p DATA_PATH] [-n nih_path]
 ```
 
 ```sh
-usage: tuner.py [-h] -m model_name --size img_size --path DATA_path
+usage: tuner.py [-h] -m model_name --size img_size --path DATA_path --nihpath
+                NIH_weight_path
 
 Use keras tuner to find best hyper parameter.
 
@@ -184,6 +185,8 @@ optional arguments:
                         the size of dataset images
   --path DATA_path, -p DATA_path
                         the path that contains the dataset.
+  --nihpath NIH_weight_path, -n NIH_weight_path
+                        the path to pretrained NIH weight file.
 ```
 
 
@@ -193,11 +196,12 @@ Each model can be trained on a custom dataset. All layers except for the global 
 And then the entire model will be unfrozen and trained. The resulting weight will be further used for ensembling.  
 
 ```sh
-train.py [-h] [-m MODEL_NAME] [-s IMG_SIZE] [-p DATA_PATH]
+train.py [-h] [-m MODEL_NAME] [-s IMG_SIZE] [-p DATA_PATH] [-n nih_path]
 ```
 
 ```sh
-usage: train.py [-h] -m model_name --size img_size --path DATA_path
+usage: train.py [-h] -m model_name --size img_size --path DATA_path --nihpath
+                NIH_weight_path
 
 Train a model on a given dataset.
 
@@ -211,6 +215,8 @@ optional arguments:
                         the size of dataset images
   --path DATA_path, -p DATA_path
                         the path that contains the dataset.
+  --nihpath NIH_weight_path, -n NIH_weight_path
+                        the path to pretrained nih weight.
 ```
 
 ### Ensemble models
