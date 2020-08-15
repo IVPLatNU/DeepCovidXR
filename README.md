@@ -51,8 +51,8 @@ $pip install -r requirements.txt
 - [Train DeepCOVID-XR from Scratch](#Train-DeepCOVID-XR-from-Scratch)
   * [Preprocessing](#Preprocessing)
     + [Download Unet Weights](#Download-Unet-Weights)
-    + [Crop images](#a.-Crop-images)
-    + [Resize images](#b.-Resize-images)
+    + [Crop images](#Crop-images)
+    + [Resize images](#Resize-images)
   * [Pretrain with NIH dataset](#Pretrain-with-NIH-dataset)
   * [Find best hyper parameters](#Find-best-hyper-parameters)
   * [Train model with best parameters](#Train-model-with-best-parameters)
@@ -116,7 +116,7 @@ Prepare cropped and resized images.
 #### Download Unet Weights
 We used Unet to segment the input image. The link to download the weights is: [trained_model.hdf5](https://github.com/imlab-uiip/lung-segmentation-2d/blob/master/trained_model.hdf5)
 
-#### a. Crop images
+#### Crop images
 ```sh
 python Crop_img.py -f [IMAGE FOLDER PATH] -U [trained_model.hdf5 PATH] -o [IMAGE OUTPUT PATH]
 ```
@@ -126,7 +126,7 @@ Please put images in one folder. Use '-h' to get more details.
 python Crop_img.py -h
 ```
 
-#### b. Resize images
+#### Resize images
 ```sh
 python Resize_img.py -i [IMAGE INPUT PATH] -o [IMAGE OUTPUT PATH] -s [RESIZE SHAPE (331 or 244)]
 ```
