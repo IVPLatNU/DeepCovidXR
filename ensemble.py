@@ -1,5 +1,9 @@
 # Ensemble trained models and generates confusion matrices for 224 and 331 images
 
+# Install deep stack just for debug
+import os
+os.system('pip install deepstack')
+
 import argparse
 import os
 from utils import imgUtils, trainFeatures
@@ -10,6 +14,8 @@ from deepstack.ensemble import DirichletEnsemble
 from deepstack.base import KerasMember
 from tqdm import tqdm
 
+
+#%%
 batch_size = 100
 rotation_range = 20
 height_shift = 0.05
@@ -31,20 +37,23 @@ def get_args():
 def get_generator(data_path, batch_size):
     all_ntta_generators = []
     all_tta_generators = []
+    all_data_generators = []
     dir_list = []
-    crop_224_valid_dir = os.path.join(data_path, '224\crop\Validation')
-    crop_224_test_dir = os.path.join(data_path, '224\crop\Test')
-    uncrop_224_valid_dir = os.path.join(data_path, '224\\uncrop\Validation')
-    uncrop_224_test_dir = os.path.join(data_path, '224\\uncrop\Test')
-    crop_331_valid_dir = os.path.join(data_path, '331\crop\Validation')
-    crop_331_test_dir = os.path.join(data_path, '331\\crop\Test')
-    uncrop_331_valid_dir = os.path.join(data_path, '331\\uncrop\Validation')
-    uncrop_331_test_dir = os.path.join(data_path, '331\\uncrop\Test')
+    # Changed tempararily for debug
+    crop_224_valid_dir = os.path.join(data_path, '224','crop','Validation')
+    crop_224_test_dir = os.path.join(data_path, '224','crop','Test')
+    uncrop_224_valid_dir = os.path.join(data_path, '224','uncrop','Validation')
+    uncrop_224_test_dir = os.path.join(data_path, '224','uncrop','Test')
+    crop_331_valid_dir = os.path.join(data_path, '331','crop','Validation')
+    crop_331_test_dir = os.path.join(data_path, '331','crop','Test')
+    uncrop_331_valid_dir = os.path.join(data_path, '331','uncrop','Validation')
+    uncrop_331_test_dir = os.path.join(data_path, '331','uncrop','Test')
     
     dir_list.extend([crop_224_valid_dir, uncrop_224_valid_dir, 
                      crop_224_test_dir, uncrop_224_test_dir,
                      crop_331_valid_dir, uncrop_331_valid_dir,
                      crop_331_test_dir, uncrop_331_test_dir])
+    all_dir_list = [crop_224_test_dir, uncrop_224_test_dir, crop_331_test_dir, uncrop_331_test_dir]
     
     if not (os.path.exists(crop_224_valid_dir) and os.path.exists(crop_331_valid_dir)
             and os.path.exists(uncrop_224_valid_dir) and os.path.exists(uncrop_331_valid_dir) 
@@ -65,6 +74,13 @@ def get_generator(data_path, batch_size):
             all_tta_generators.append(train_gen)
         all_ntta_generators.append(test_gen)
         
+    for j in range(2):
+        for i in range(6):
+            data_gen = img_proc1.testGenerator(batch_size, train_idg_224, all_dir_list[j])
+            all_data_generators.append(data_gen)
+            
+
+        
     
     img_proc2 = imgUtils(331)
     
@@ -73,15 +89,21 @@ def get_generator(data_path, batch_size):
     for i in range(4):
         test_gen = img_proc2.testGenerator(batch_size, val_idg_331, dir_list[i+4])
         if i%2 == 1:
-            train_gen = img_proc1.trainGenerator(batch_size, train_idg_331, dir_list[i+4])
+            train_gen = img_proc2.testGenerator(batch_size, train_idg_331, dir_list[i+4])
             all_tta_generators.append(train_gen)
         all_ntta_generators.append(test_gen)
         
     for i in range(3):
         for j in range(4):
             all_ntta_generators.append(all_tta_generators[j])
+            
+    for j in range(2):
+        for i in range(6):
+            data_gen = img_proc2.testGenerator(batch_size, train_idg_331, all_dir_list[j+2])
+            all_data_generators.append(data_gen)
+    
         
-    return all_ntta_generators, all_tta_generators
+    return all_ntta_generators, all_tta_generators, all_data_generators
 
 def create_member(model_name, model, generator_list):
     name_parts = model_name.split("_")
@@ -136,7 +158,7 @@ def get_members(ntta_generator_list, weight_path):
         
     return member_list, model_list, model_name_list
 
-def ensemble_members(member_list, model_list, tta_generator_list):
+def ensemble_members(member_list, model_list, tta_generator_list, data_generator_list):
     wAvgEnsemble = DirichletEnsemble()
     wAvgEnsemble.add_members(member_list)
     wAvgEnsemble.fit()
@@ -160,15 +182,13 @@ def ensemble_members(member_list, model_list, tta_generator_list):
     
     combined_weighted_probs_notta = np.asarray(combined_weighted_probs_notta)
     combined_probs_notta = np.asarray(combined_probs_notta)
-    #ensemble_pred_notta = np.sum(combined_weighted_probs_notta)
-    #ensemble_pred_round_notta = np.round(ensemble_pred_notta)
     
     # Predictions with test time augmentation
     tta_steps = 10
     combined_weighted_probs = []
     combined_probs = []
     
-    for model, data_generator, weight in zip(model_list, tta_generator_list, wAvgEnsemble.bestweights):
+    for model, data_generator, weight in zip(model_list, data_generator_list, wAvgEnsemble.bestweights):
         predictions = []
         for i in tqdm(range(tta_steps)):
             preds = model.predict(data_generator, verbose=1)
@@ -184,14 +204,14 @@ def ensemble_members(member_list, model_list, tta_generator_list):
     ensemble_pred  = np.sum(combined_weighted_probs, axis=0)
     ensemble_pred_round = np.round(ensemble_pred)
 
-    cm_generator_224 = tta_generator_list[3]
-    cm_generator_331 = tta_generator_list[7]
+    cm_generator_224 = tta_generator_list[1]
+    cm_generator_331 = tta_generator_list[3]
     
     proc1 = imgUtils(224)
     proc2 = imgUtils(331)
     
     cm_224 = proc1.confusionMatrix(cm_generator_224, ensemble_pred_round)
-    cm_331 = proc2.comfusionMatrix(cm_generator_331, ensemble_pred_round)
+    cm_331 = proc2.confusionMatrix(cm_generator_331, ensemble_pred_round)
     
     return cm_224, cm_331
 
@@ -200,13 +220,19 @@ if __name__=='__main__':
     args = get_args()
     weights = args.weight_path[0]
     data_dir = args.data_path[0]
-
+    
+# =============================================================================
+#     weights = r'D:\covid\Ensemble\covid_weights'
+#     data_dir = r'D:\covid\Ensemble\sample_data_set'
+# =============================================================================
+    
     img_size1 = 224
     img_size2 = 331
      
-    ntta_generators, tta_generators, cm_generators = get_generator(data_dir, batch_size)
+    ntta_generators, tta_generators, data_generators = get_generator(data_dir, batch_size)
+    print(len(tta_generators))
     member_list, model_list, model_name_list = get_members(ntta_generators, weights)
-    cm_224, cm_331 = ensemble_members(member_list, model_list, tta_generators)
+    cm_224, cm_331 = ensemble_members(member_list, model_list, tta_generators, data_generators)
 
     
     
