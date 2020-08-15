@@ -76,6 +76,8 @@ To train DeepCOVID-XR, the dataset should be structured as below:
 │   │   │   ├───Negative
 │   │   │   └───Positive
 │   │   └───Validation
+│   │       ├───Negative
+│   │       └───Positive
 │   └───uncrop
 │       ├───Test
 │       │   ├───Negative
@@ -84,6 +86,8 @@ To train DeepCOVID-XR, the dataset should be structured as below:
 │       │   ├───Negative
 │       │   └───Positive
 │       └───Validation
+│           ├───Negative
+│           └───Positive
 └───331
     ├───crop
     │   ├───Test
