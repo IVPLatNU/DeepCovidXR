@@ -97,16 +97,9 @@ if __name__=='__main__':
         axes[0].imshow(img_array[..., 0], cmap='gray') 
         axes[0].set_title('Input')
         
-        #heatmap_avg = np.uint8(visualization_avg)
         original = np.uint8(cm.gray(img_array[..., 0])[..., :3]*255)
         axes[1].imshow(heatmap)
         axes[1].set_title('Grad-CAM')
         axes[2].imshow(overlay(heatmap, original))
         axes[2].set_title('Overlay')
-        plt.savefig(result_path)
-        #plt.show()
-    
-    
-
-
-
+        plt.savefig(result_path) 
