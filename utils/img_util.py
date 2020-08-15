@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
 from tensorflow.keras.preprocessing import image
-from vis.visualization import visualize_cam, overlay
+from vis.visualization import visualize_cam
 from vis.utils import utils
-from matplotlib import cm
-import cv2
+from PIL import Image
+
 os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
 imagenet_mean = np.array([0.485, 0.456, 0.406])
 imagenet_std = np.array([0.229, 0.224, 0.225])
@@ -24,6 +24,11 @@ class imgUtils:
         standardized = np.divide(centered, imagenet_std)
         return standardized
     
+    def resizeImg(self, input_img_path):
+        im = Image.open(input_img_path)
+        im = im.resize((self.img_size,self.img_size), resample=Image.LANCZOS)
+        return im
+        
     def proc_img(self, img_path):
         img = image.load_img(img_path, target_size = (self.img_size, self.img_size),
                              color_mode='rgb', interpolation = 'lanczos')
@@ -49,6 +54,8 @@ class imgUtils:
                                                                             )
         
         return TTA_datagen, nTTA_datagen
+    
+        
     
     def generator(self, batch_size, train, test, train_dir, test_dir):
         train_generator = train.flow_from_directory(train_dir, 
