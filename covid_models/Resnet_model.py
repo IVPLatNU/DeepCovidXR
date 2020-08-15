@@ -18,6 +18,17 @@ class ResNet():
         model.load_weights(self.weights)
         return model
     
+    def buildNihModel(self, img_size, label_len):
+        base_model = ResNet50(weights='imagenet', include_top=False, 
+                                 input_shape = (img_size,img_size,3))
+        x = base_model.output
+        x = layers.GlobalAveragePooling2D()(x)
+        predictions = layers.Dense(label_len, activation='sigmoid', name='last')(x)
+        model = Model(inputs=base_model.input, outputs=predictions)
+        if not self.weights == 'imagenet':
+            model.load_weights(self.weights)
+        return model
+    
     def freeze(self, model):
         for layer in model.layers[:176]:
             layer.trainable = False
