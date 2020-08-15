@@ -280,5 +280,3 @@ optional arguments:
 
 ![grad-CAM](/img/covid_positive.png)
 
-## Citation
-
