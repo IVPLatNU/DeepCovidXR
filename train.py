@@ -96,7 +96,7 @@ if __name__=='__main__':
     es = features.setES(monitor, patience_es, min_delta)
     cp = features.setCP(monitor, weight_dir1)
     
-    dropout_model = features.getDropoutModel(model_name, nih_weight, dropout_rate)
+    dropout_model = features.getDropoutModel(model_name, img_size, nih_weight, dropout_rate)
     features.compileModel(dropout_model, lr, momentum, nestrov)
     model_history = features.generator(dropout_model, train_gen, val_gen, pre_epoch, cp, rlr, es)
     img_proc.plot_save(model_history, img_dir1, exp_name)
