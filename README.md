@@ -22,10 +22,24 @@ DeepCOVID-XR is pretrained with NIH dataset. NIH dataset is publicly available a
 ## Environment
 
 ### Dependencies
-- Python == 3.6.8
-- Tensorflow== 2.0.0
-- Keras== 2.2.4-tf
-- CUDA version: 10.0
+- pandas==0.25.0
+- nibabel==3.1.0
+- efficientnet==1.1.0
+- scikit_image==0.15.0
+- tqdm==4.46.0
+- keras_vis==0.5.0
+- keras_tuner==1.0.1
+- opencv_python==4.2.0.34
+- matplotlib==3.2.1
+- numpy==1.17.0
+- Keras==2.3.1
+- tf_nightly_gpu_2.0_preview==2.0.0.dev20190814
+- deepstack==0.0.9
+- Pillow==7.2.0
+- scikit_learn==0.23.2
+- skimage==0.0
+- tensorflow==2.3.0
+- vis==0.0.5
 
 To set up the environment and install all the packages, run
 ```sh
