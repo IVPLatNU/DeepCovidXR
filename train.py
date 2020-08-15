@@ -20,6 +20,10 @@ def get_args():
     
     parser.add_argument('--path', '-p', dest='path', metavar='DATA_path', type=str, nargs=1,
                         required = True, help='the path that contains the dataset.')
+    
+    parser.add_argument('--nihpath', '-n', dest='nih_path', metavar='NIH_weight_path', type=str, nargs=1,
+                        required = True, help='the path to pretrained nih weight.')
+    
     return parser.parse_args()
 
 def make_path(data_dir, base, exp_name):
@@ -61,8 +65,9 @@ if __name__=='__main__':
     data_path = args.path[0]
     model_name = args.model_name[0]
     img_size = args.img_size[0]
+    nih_weight = args.nih_path[0]
     
-    nih_weight = 'nih_weights_{name}.h5'.format(name = model_name)
+    #nih_weight = 'nih_weights_{name}.h5'.format(name = model_name)
 
     if not os.path.exists(nih_weight):
         print('NIH weight does not exists.'
