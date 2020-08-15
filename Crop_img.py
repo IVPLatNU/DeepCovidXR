@@ -7,6 +7,8 @@ import time
 import multiprocessing
 import time
 import argparse
+from keras.models import load_model
+from keras.preprocessing.image import ImageDataGenerator
 
 def load_CXR_from_list(filelist, im_shape):
     X = np.zeros((len(filelist), im_shape[0], im_shape[1], 1))
@@ -367,9 +369,10 @@ def single_img_crop(img, resized_raw_img, raw_img, file_path, UNet, result_folde
     pred = np.squeeze(UNet.predict(img))
     pr = (pred > 0.5).astype(np.uint8)
 
-    filename = file_path.stem
-    suffix = file_path.suffix
-    print('outputting result for ' + filename)
+    if not file_path == None:
+        filename = file_path.stem
+        suffix = file_path.suffix
+        print('outputting result for ' + filename)
 
     denoised, raw_bbox, spine_pos = select_lung(pr, resized_raw_img, cut_thresh = cut_thresh, debug = debugging, filename = filename, out_pad_size = out_pad_size)
     # denoised_sqaured, sqaured_bbox = square_bbox(denoised_no_bbox, raw_bbox)
@@ -423,15 +426,16 @@ def single_img_crop(img, resized_raw_img, raw_img, file_path, UNet, result_folde
             fig2.savefig(str(out_path))
 
     if not debugging:
-        result_sub = result_folder.joinpath('crop')
-        result_sub.mkdir(parents=True, exist_ok=True)
-        out_path = result_sub.joinpath(filename + '_crop' + suffix)
-        io.imsave(str(out_path), lung_img )
-
-        result_sub = result_folder.joinpath('crop_squared')
-        result_sub.mkdir(parents=True, exist_ok=True)
-        out_path = result_sub.joinpath(filename + '_crop_squared' + suffix)
-        io.imsave(str(out_path), lung_img_squared )
+        if not result_folder == None:
+            result_sub = result_folder.joinpath('crop')
+            result_sub.mkdir(parents=True, exist_ok=True)
+            out_path = result_sub.joinpath(filename + '_crop' + suffix)
+            io.imsave(str(out_path), lung_img )
+    
+            result_sub = result_folder.joinpath('crop_squared')
+            result_sub.mkdir(parents=True, exist_ok=True)
+            out_path = result_sub.joinpath(filename + '_crop_squared' + suffix)
+            io.imsave(str(out_path), lung_img_squared )
     
     if not (debug_folder is None) or debugging:
         plt.close(fig)
@@ -441,10 +445,7 @@ def single_img_crop(img, resized_raw_img, raw_img, file_path, UNet, result_folde
 
 def lungseg_fromdata(X, resized_raw, raw_images, file_paths, UNet, result_folder, 
                         im_shape = (256, 256), cut_thresh = 0.02, out_pad_size = 8, debug_folder = None ,debugging = False):
-    from keras.models import load_model
-    from keras.preprocessing.image import ImageDataGenerator
-    import keras
-    import tensorflow as tf
+
     # tf.debugging.set_log_device_placement(True)
     # print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
 

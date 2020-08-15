@@ -126,22 +126,45 @@ def test_individual(model_list, pickle_path, input_img_224, input_img_224_crop,
                     input_img_331, input_img_331_crop):
     
     ensemble_weights = pickle.load(open(pickle_path, "rb"))
+    
+    model_list_224_crop = []
+    model_list_224_uncrop = []
+    model_list_331_crop = []
+    model_list_331_uncrop = []
 
-    model_list_224_uncrop = model_list[0]+model_list[4]+model_list[8]+model_list[12]+model_list[16]+model_list[20]
-    model_list_224_crop = model_list[1]+model_list[5]+model_list[9]+model_list[13]+model_list[17]+model_list[21]
-    model_list_331_uncrop = model_list[2]+model_list[6]+model_list[10]+model_list[14]+model_list[18]+model_list[22]
-    model_list_331_crop = model_list[3]+model_list[7]+model_list[11]+model_list[15]+model_list[19]+model_list[23]
-    ensemble_weights_224_uncrop = ensemble_weights[0]+ensemble_weights[4]+ensemble_weights[8]+ensemble_weights[12]+ensemble_weights[16]+ensemble_weights[20]
-    ensemble_weights_224_crop = ensemble_weights[1]+ensemble_weights[5]+ensemble_weights[9]+ensemble_weights[13]+ensemble_weights[17]+ensemble_weights[21]
-    ensemble_weights_331_uncrop = ensemble_weights[2]+ensemble_weights[6]+ensemble_weights[10]+ensemble_weights[14]+ensemble_weights[18]+ensemble_weights[22]
-    ensemble_weights_331_crop = ensemble_weights[3]+ensemble_weights[7]+ensemble_weights[11]+ensemble_weights[15]+ensemble_weights[19]+ensemble_weights[23]
+    model_list_224_uncrop.extend([model_list[0], model_list[4], model_list[8], 
+                                 model_list[12], model_list[16],model_list[20]])
+    model_list_224_crop.extend([model_list[1], model_list[5], model_list[9], 
+                               model_list[13], model_list[17], model_list[21]])
+    model_list_331_uncrop.extend([model_list[2], model_list[6], model_list[10], 
+                                 model_list[14], model_list[18], model_list[22]])
+    model_list_331_crop.extend([model_list[3], model_list[7], model_list[11], 
+                               model_list[15], model_list[19], model_list[23]])
+    
+    ensemble_weights_224_crop = []
+    ensemble_weights_224_uncrop = []
+    ensemble_weights_331_crop = []
+    ensemble_weights_331_uncrop = []
+    
+    ensemble_weights_224_uncrop.extend([ensemble_weights[0], ensemble_weights[4], 
+                                       ensemble_weights[8], ensemble_weights[12], 
+                                       ensemble_weights[16], ensemble_weights[20]])
+    ensemble_weights_224_crop.extend([ensemble_weights[1], ensemble_weights[5], 
+                                     ensemble_weights[9], ensemble_weights[13], 
+                                     ensemble_weights[17], ensemble_weights[21]])
+    ensemble_weights_331_uncrop.extend([ensemble_weights[2], ensemble_weights[6], 
+                                       ensemble_weights[10], ensemble_weights[14],
+                                       ensemble_weights[18], ensemble_weights[22]])
+    ensemble_weights_331_crop.extend([ensemble_weights[3], ensemble_weights[7], 
+                                     ensemble_weights[11], ensemble_weights[15], 
+                                     ensemble_weights[19], ensemble_weights[23]])
     
     pred_224_uncrop = get_pred(input_img_224, model_list_224_uncrop, ensemble_weights_224_uncrop)
     pred_331_uncrop = get_pred(input_img_331, model_list_331_uncrop, ensemble_weights_331_uncrop)
     pred_224_crop = get_pred(input_img_224_crop, model_list_224_crop, ensemble_weights_224_crop)
     pred_331_crop = get_pred(input_img_331_crop, model_list_331_crop, ensemble_weights_331_crop)
     
-    ensemble_pred = np.mean(pred_224_uncrop, pred_224_crop, pred_331_uncrop, pred_331_crop)
+    ensemble_pred = np.mean([pred_224_uncrop, pred_224_crop, pred_331_uncrop, pred_331_crop])
     
     return ensemble_pred
 
@@ -195,10 +218,7 @@ if __name__=='__main__':
         img_name = (os.path.splitext(base_name))[0]
         img_name_224 = img_name + '_224'+(os.path.splitext(base_name))[1]
         img_name_331 = img_name + '_331'+(os.path.splitext(base_name))[1]
-# =============================================================================
-#         img_224 = (img_util_224.proc_img(img_dir))[0,...]
-#         img_331 = (img_util_331.proc_img(img_dir))[0,...]
-# =============================================================================
+
         im = Image.open(img_dir)
         im_224 = im.resize((224,224), resample=Image.LANCZOS)
         im_331 = im.resize((331, 331), resample = Image.LANCZOS)       
@@ -206,10 +226,6 @@ if __name__=='__main__':
         out_331_name = os.path.join(dir_331, img_name_331)
         im_224.save(out_224_name)
         im_331.save(out_331_name)
-# =============================================================================
-#         cv2.imwrite(out_224_name, img_224)
-#         cv2.imwrite(out_331_name, img_331)
-# =============================================================================
             
         # Perform cropping on 224 and 331 images
         output_dir_224, output_dir_331 = get_crop(img_dir1)
@@ -242,7 +258,7 @@ if __name__=='__main__':
         img_224_crop = img_list_224_crop[i]
         img_331_crop = img_list_331_crop[i]
         score = test_individual(models, pickle_path, img_224, img_224_crop, 
-                                           img_331, img_331_crop) 
+                                img_331, img_331_crop) 
         print('Prediction for'+ img_name + ' is {pred1:.3f}.'.format(pred1 = score))
         i = i+1
 #    end_time = time.time()
