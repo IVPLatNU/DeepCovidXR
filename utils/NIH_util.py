@@ -9,7 +9,6 @@ import tarfile
 from sklearn.model_selection import train_test_split
 import pandas as pd
 import urllib
-import progressbar
 
 class nihUtils():
     # Create a direcotry for NIH dataset
