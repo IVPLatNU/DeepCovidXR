@@ -4,11 +4,13 @@ from tensorflow import keras
 from tensorflow.keras.models import Model
 from tensorflow.keras import layers
 import efficientnet.tfkeras as efn 
-
+import os
 
 class EfficientNet():
     def __init__(self, weights):
-        self.weights = weights
+        current_path = os.getcwd()
+        weight_path = os.path.join(current_path, weights)
+        self.weights = weight_path
         
     def buildBaseModel(self, img_size):
         base_model = efn.EfficientNetB2(weights='imagenet', include_top=False, 
@@ -23,10 +25,12 @@ class EfficientNet():
         return model
     
     def buildTunerModel(self, img_size):
-        base_model = efn.EfficientNetB2(weights=self.weights, include_top=False, 
+        base_model = efn.EfficientNetB2(weights='imagenet', include_top=False, 
                                         backend = keras.backend, layers = keras.layers, 
                                         models = keras.models, utils = keras.utils,
                                         input_shape = (img_size,img_size,3))
+        base_model.load_weights(self.weights)
+        
         return base_model
     
     def freeze(self, model):

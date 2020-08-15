@@ -3,10 +3,13 @@
 from tensorflow.keras.models import Model
 from tensorflow.keras import layers
 from tensorflow.keras.applications import InceptionResNetV2
+import os
 
 class InceptionResNet():
     def __init__(self, weights):
-        self.weights = weights
+        current_path = os.getcwd()
+        weight_path = os.path.join(current_path, weights)
+        self.weights = weight_path
         
     def buildBaseModel(self, img_size):
         base_model = InceptionResNetV2(weights='imagenet', include_top=False, 

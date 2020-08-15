@@ -164,15 +164,5 @@ class imgUtils:
             i += 1
         visualization = np.mean(pred_list, axis=0)
         heatmap = np.uint8(visualization)
-
-        # Superimpose the heatma
-# =============================================================================
-#         original = np.uint8(cm.gray(img_array[..., 0])[..., :3]*255)
-#         result = overlay(heatmap, original)
-#         result_name = 'sample1_gradcam.jpg'
-#             
-#         result_path = os.path.join(os.getcwd(), 'sample_images', result_name)
-#         cv2.imwrite(result_path, result)
-# =============================================================================
         return visualization, heatmap
         

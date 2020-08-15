@@ -9,6 +9,7 @@ import tarfile
 from sklearn.model_selection import train_test_split
 import pandas as pd
 import urllib
+import progressbar
 
 class nihUtils():
     # Create a direcotry for NIH dataset
@@ -26,11 +27,22 @@ class nihUtils():
             return
         duration = time.time() - start_time
         progress_size = int(count * block_size)
-        speed = int(progress_size / (1024 * duration))
+        speed = int(progress_size / (1024 * (int(duration)+1)))
         percent = int(count * block_size * 100 / total_size)
         sys.stdout.write("\r...%d%%, %d MB, %d KB/s, %d seconds passed" %
                         (percent, progress_size / (1024 * 1024), speed, duration))
         sys.stdout.flush()
+
+    def show_progress(block_num, block_size, total_size):      
+        global pbar     
+        if pbar is None:         
+            pbar = progressbar.ProgressBar(maxval=total_size)      
+            downloaded = block_num * block_size     
+            if downloaded < total_size:         
+                pbar.update(downloaded)     
+            else:         
+                pbar.finish()         
+                pbar = None      
         
     # Class for printing exrtaction progress
     def get_file_progress_file_object_class(self, on_progress):

@@ -2,7 +2,7 @@
 import os
 import tensorflow as tf
 from tensorflow.keras import optimizers
-from keras.callbacks.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 from covid_models import DenseNet, ResNet, XceptionNet, EfficientNet, InceptionNet, InceptionResNet 
 
 
@@ -46,35 +46,35 @@ class trainFeatures():
 
         return freeze_model, model, base
     
-    def getDropoutModel(self, model_name, weight, dropout):
+    def getDropoutModel(self, model_name, img_size, weight, dropout):
         if model_name == 'ResNet-50':
             resnet = ResNet(weight)
-            drop_model = resnet.buildDropModel(dropout)
+            drop_model = resnet.buildDropModel(img_size, dropout)
             drop_model = resnet.freeze(drop_model)
 
         elif model_name == 'Xception':
             xception = XceptionNet(weight)
-            drop_model = xception.buildDropModel(dropout)
+            drop_model = xception.buildDropModel(img_size, dropout)
             drop_model = xception.freeze(drop_model)
 
         elif model_name == 'DenseNet-121':
             dense = DenseNet(weight)
-            drop_model = dense.buildDropModel(dropout)
+            drop_model = dense.buildDropModel(img_size, dropout)
             drop_model = dense.freeze(drop_model)
 
         elif model_name == 'Inception-V3':
             inception = InceptionNet(weight)
-            drop_model = inception.buildDropModel(dropout)
+            drop_model = inception.buildDropModel(img_size, dropout)
             drop_model = inception.freeze(drop_model)
 
         elif model_name == 'Inception-ResNet-V2':
             inceptionres = InceptionResNet(weight)
-            drop_model = inceptionres.buildDropModel(dropout)
+            drop_model = inceptionres.buildDropModel(img_size, dropout)
             drop_model = inceptionres.freeze(drop_model)
 
         elif model_name == 'EfficientNet-B2':
             efficient = EfficientNet(weight)
-            drop_model = efficient.buildDropModel(dropout)
+            drop_model = efficient.buildDropModel(img_size, dropout)
             drop_model = efficient.freeze(drop_model)
 
         return drop_model
