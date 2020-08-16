@@ -16,6 +16,7 @@ DeepCOVID-XR is pretrained with NIH dataset. NIH dataset is publicly available a
 | Inception-ResNet-V2| [Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning](https://arxiv.org/pdf/1602.07261.pdf)|
 | ResNet-50   | [Deep Residual Learning for Image Recognition](https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf) |
 | Xception| [Xception: Deep Learning with Depthwise Separable Convolutions](https://arxiv.org/pdf/1610.02357.pdf)|
+| U-Net | [U-Net: Convolutional Networks for Biomedical Image Segmentation](https://arxiv.org/pdf/1505.04597.pdf)|
 
 ![](header.png)
 
@@ -169,6 +170,7 @@ optional arguments:
 
 Keras tuner will be used to find best values for learning rate, momentum and dropout rate for dropout layers. 
 All layers except for the global average pooling layer be frozen at first. And then the entire model will be unfrozon and used to find best hyper parameters.
+Note: nih_path is the directory that contains the pretrained nih weight file.
 
 ```sh
 tuner.py [-h] [-m MODEL_NAME] [-s IMG_SIZE] [-p DATA_PATH] [-n nih_path]
@@ -199,6 +201,7 @@ optional arguments:
 
 Each model can be trained on a custom dataset. All layers except for the global average pooling layer be frozen at first.
 And then the entire model will be unfrozen and trained. The resulting weight will be further used for ensembling.  
+Note: nih_path is the directory that contains the pretrained nih weight file.
 
 ```sh
 train.py [-h] [-m MODEL_NAME] [-s IMG_SIZE] [-p DATA_PATH] [-n nih_path]
@@ -244,6 +247,9 @@ optional arguments:
 ```
 
 ## Test DeepCOVID-XR on individual image
+
+Provided a single image, a prediction can be made toward the possibility of covid positive using the ensembled model. 
+
 ```sh
 test.py [-h] [-w WEIGHTS_PATH] [-i IMAGE_PATH]
 ```
@@ -266,6 +272,9 @@ optional arguments:
 [Google drive link to trained weights](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing)
 
 ## Grad-CAM Visualization 
+
+Grad-CAM heat maps can be generated for an individual image of a folder contains several images. 
+An example is provided as below
 
 ```sh
 test.py [-h] [-w WEIGHTS_PATH]
