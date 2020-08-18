@@ -7,7 +7,7 @@ While findings on chest imaging are not sensitive nor specific enough to replace
 DeepCOVID-XR is pretrained on 112,120 images from the NIH CXR-14 dataset (NIH dataset is publicly available and can be downloaded by running pretrian.py. The dataset contains  frontal CXR images that are labeled with 14 separate disease classifications. The algorithm was then fine tuned on over 14,000 clinical images (>4,000 COVID-19 positive) from the COVID-19 era and tested on a hold out dataset of over 2,000 images (>1,000 COVID-19 positive) from a hold-out institution that the model was not exposed to during training. 
 
 ## Performance 
-Deep-COVIDXR correctly classified images as COVID-19 positive or COVID-19 negative using RT-PCR for the SARS-COV2 virus as the reference standard with an accuracy of 85% and an area under the ROC curve of 0.899, outperforming 3 individual experienced thoracic radiologists and with performance similar to that of the consensus of all 3 radiologists.  
+DeepCOVID-XR correctly classified images as COVID-19 positive or COVID-19 negative using RT-PCR for the SARS-COV2 virus as the reference standard with an accuracy of 85% and an area under the ROC curve of 0.899, outperforming 3 individual experienced thoracic radiologists and with performance similar to that of the consensus of all 3 radiologists.  
 
 ## Model
 ![ensembled model](/img/model.jpg)
