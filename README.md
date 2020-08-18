@@ -1,13 +1,18 @@
 # DeepCOVID-XR
->An ensembled convolutional neural network model for predicting COVID-19 with frontal chest x-rays.
+>An ensemble convolutional neural network (CNN) model for detecting frontal chext x-rays (CXRs) suspicious for COVID-19.
 
-DeepCOVID-XR focuses on finding characteristics of covid-19 from chest x-rays. (However, it is not to replace the real-time polymerase chain reaction test for covid-19 dianosis.) DenseNet-121, EfficientNet-B2, Inception-V3, Inception-ResNet-V2, ResNet-50 and Xception networks are ensembled to get a prediction of covid-19 positive probability.  
+While findings on chest imaging are not sensitive nor specific enough to replace diagnostic testing for COVID-19, artificially intelligent (AI) systems for automated analysis of CXRs have a potential role in triage and infection control within a hospital setting. Much of the current evidence regarding AI platforms for analysis of CXRs is limited by very small datasets and/or publicly available data of questionable quality. DeepCOVID-XR is a weighted ensemble of six popular CNN architectures - DenseNet-121, EfficientNet-B2, Inception-V3, Inception-ResNet-V2, ResNet-50 and Xception - trained and tested on a large clinical dataset from a major US healthcare system, the largest clinical dataset of CXRs from the COVID-19 era to date. 
 
 ## Dataset
-DeepCOVID-XR is pretrained with NIH dataset. NIH dataset is publicly available and can be downloaded by running pretrian.py. The dataset contains 112,120 frontal CXR images that are labeled with 14 separate disease classifications.
+DeepCOVID-XR was first pretrained on 112,120 images from the NIH CXR-14 dataset. The NIH dataset is publicly available and can be downloaded [here](https://nihcc.app.box.com/v/ChestXray-NIHCC). The dataset contains  frontal CXR images that are labeled with 14 separate disease classifications. 
+
+The algorithm was then fine tuned on over 14,000 clinical images (>4,000 COVID-19 positive) from the COVID-19 era and tested on a hold out dataset of over 2,000 images (>1,000 COVID-19 positive) from a hold-out institution that the model was not exposed to during training. 
+
+## Performance 
+DeepCOVID-XR correctly classified images as COVID-19 positive or COVID-19 negative using RT-PCR for the SARS-COV2 virus as the reference standard with an accuracy of 83% and an area under the ROC curve of 0.899 on the hold-out test set, outperforming 3 individual experienced thoracic radiologists and with performance similar to that of the consensus of all 3 radiologists on a subsample of these images.  
 
 ## Model
-![ensembled model](/img/model.jpg)
+![ensembled model](/img/Model.png)
 | Network Model | Original Paper | 
 |     :---:     |     :---:      |
 | DenseNet-121     | [Densely Connected Convolutional Networks](https://openaccess.thecvf.com/content_cvpr_2017/papers/Huang_Densely_Connected_Convolutional_CVPR_2017_paper.pdf)|
@@ -20,32 +25,37 @@ DeepCOVID-XR is pretrained with NIH dataset. NIH dataset is publicly available a
 
 ![](header.png)
 
+Note the trained weights of each of the CNN members of the weighted ensemble are available [here](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing). The trained weights for averaging predictions of each of the models for ensembling purposes are available here. The instructions below walk through the entire process of training a model from scratch and also provide code for using our already trained weights for analyzing external datasets and/or images. 
+
+
 ## Environment
 
 ### Dependencies
 - pandas==0.25.0
 - nibabel==3.1.0
-- efficientnet==1.1.0
+- efficientnet==1.1.0 https://github.com/qubvel/efficientnet
 - scikit_image==0.15.0
 - tqdm==4.46.0
-- keras_vis==0.5.0
-- keras_tuner==1.0.1
-- opencv_python==4.2.0.34
+- keras_vis==0.5.0 [(installed directly from github link)](https://github.com/raghakot/keras-vis)
+- keras_tuner==1.0.1 https://keras-team.github.io/keras-tuner/
+- opencv_python==4.2.0.34 
 - matplotlib==3.2.1
 - numpy==1.17.0
 - Keras==2.3.1
 - tf_nightly_gpu_2.0_preview==2.0.0.dev20190814
-- deepstack==0.0.9
+- deepstack==0.0.9 https://github.com/jcborges/DeepStack
 - Pillow==7.2.0
 - scikit_learn==0.23.2
 - skimage==0.0
-- tensorflow==2.3.0
+- tensorflow==2.3.0 
 - vis==0.0.5
 
 To set up the environment and install all the packages, run
 ```sh
 $pip install -r requirements.txt
 ```
+
+
 
 ## Table of Contents
 
@@ -116,10 +126,12 @@ The cropped version of dataset can be obtained with preprocessing.
 
 ### Preprocessing 
 
+The data is first cropped in order to produce a version of the image that focuses on the lung fields. A square cropping region is used in order to retain important extraparenchymal anatomy (pleural spaces) and retrocardiac anatomy (left lower pulmonary lobe). Both cropped and uncropped images serve as inputs into the ensemble algorithm. Each image (cropped and uncropped) is then downsampled using Lanczos resmapling to two different sizes, 224X224 pixels and 331X331 pixels, for a total of 4 images as input into each of the CNN members of the weighted ensemble.
+
 Prepare cropped and resized images.
 
 #### Download Unet Weights
-We used Unet to segment the input image. The link to download the weights is: [trained_model.hdf5](https://github.com/imlab-uiip/lung-segmentation-2d/blob/master/trained_model.hdf5)
+We used a Unet to segment the input image, then crop a square region surrounding the lung fields. The UNet model used in preprocessing is based on that developed here: https://github.com/imlab-uiip/lung-segmentation-2d/. The link to download the weights is: [trained_model.hdf5](https://github.com/imlab-uiip/lung-segmentation-2d/blob/master/trained_model.hdf5)
 
 #### Crop images
 ```sh
@@ -135,12 +147,13 @@ python Crop_img.py -h
 ```sh
 python Resize_img.py -i [IMAGE INPUT PATH] -o [IMAGE OUTPUT PATH] -s [RESIZE SHAPE (331 or 244)]
 ```
-After preprocessing step a and b, you would get 224_crop/224_uncrop/331_crop/331_uncrop dataset respectively.
+After cropping and resizing images, the resulting datasets will be 224_crop/224_uncrop/331_crop/331_uncrop, respectively.
 
 ### Pretrain with NIH dataset
 
 A base model without dropout layer can be trained with NIH dataset. The resulting weight will be saved and used for further training.
 If the NIH dataset already exists, you can provide a path to the dataset for training. If NIH does not exist, provide a path you would like to download the dataset in.
+
 You also need to provide the name of the model to be trained and the size of the image you would like to train with. 
 
 ```sh
@@ -169,7 +182,7 @@ optional arguments:
 ### Find best hyper parameters
 
 Keras tuner will be used to find best values for learning rate, momentum and dropout rate for dropout layers. 
-All layers except for the global average pooling layer be frozen at first. And then the entire model will be unfrozon and used to find best hyper parameters.
+All layers except for the global average pooling layer be frozen at first. And then the entire model will be unfrozen and used to find best hyper parameters.
 Note: nih_path is the directory that contains the pretrained nih weight file.
 
 ```sh
@@ -257,8 +270,7 @@ test.py [-h] [-w WEIGHTS_PATH] [-i IMAGE_PATH]
 ```sh
 usage: test.py [-h] --weight weight_path --image IMAGE_path
 
-For each input image, generates COVID possibilities for 224x224 and 331x331
-versions.
+Generates a prediction of COVID-19 positive or negative (using an output of >0.5 as a threshold for positivity) for each input image.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -268,8 +280,9 @@ optional arguments:
                         the path to the image.
 ```
 
-### Download the well-trained weights
+### Download the trained weights
 [Google drive link to trained weights](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing)
+
 
 ## Grad-CAM Visualization 
 
@@ -277,11 +290,11 @@ Grad-CAM heat maps can be generated for an individual image of a folder contains
 An example is provided as below
 
 ```sh
-test.py [-h] [-w WEIGHTS_PATH]
+visSample.py [-h] [-w WEIGHTS_PATH] [-p IMAGE_PATH]
 ```
 
 ```sh
-usage: visSample.py [-h] --weight weight_path
+usage: visSample.py [-h] --weight weight_path --path path to image/folder of images
 
 For each input image, generates and saves a grad-CAM image.
 
@@ -289,6 +302,8 @@ optional arguments:
   -h, --help            show this help message and exit
   --weight weight_path, -w weight_path
                         the path that contains trained weights.
+  --path image_path, -p image_path
+                        the path to the image or folder of images being analyzed.
 ```
 
 ![grad-CAM](/img/covid_positive.png)

@@ -163,6 +163,5 @@ class imgUtils:
             pred_list.append(visualization)
             i += 1
         visualization = np.mean(pred_list, axis=0)
-        heatmap = np.uint8(visualization)
-        return visualization, heatmap
+        return visualization
         
