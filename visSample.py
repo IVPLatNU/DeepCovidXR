@@ -24,9 +24,6 @@ if __name__=='__main__':
     weights = args.weight_path[0]
     input_path = args.img_path[0]
 
-#     weights = r'D:\covid\Ensemble\covid_weights'
-#     input_path = r'C:\Users\sheng\OneDrive\文档\GitHub\deepcovidxr\sample_images'
-
     img_size = 224
     crop_stat = 'uncrop'
     img_list = []
@@ -82,6 +79,7 @@ if __name__=='__main__':
     print('Models loaded')
 
     i = 0
+    
     for img in img_list:
         img_preproc = img_preproc_list[i]
         result_path = img_name_list[i]
@@ -93,13 +91,13 @@ if __name__=='__main__':
     
         # Matplotlib preparations
         fig, axes = plt.subplots(1, 3)
-        
         axes[0].imshow(img_array[..., 0], cmap='gray') 
         axes[0].set_title('Input')
-        
+
+        heatmap_middle = np.uint8(cm.jet(visualization_avg)[..., :3]*255)      
         original = np.uint8(cm.gray(img_array[..., 0])[..., :3]*255)
-        axes[1].imshow(heatmap)
+        axes[1].imshow(heatmap_middle)
         axes[1].set_title('Grad-CAM')
-        axes[2].imshow(overlay(heatmap, original))
+        axes[2].imshow(overlay(heatmap_middle, original))
         axes[2].set_title('Overlay')
         plt.savefig(result_path) 
