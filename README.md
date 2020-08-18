@@ -28,7 +28,7 @@ DeepCOVID-XR is pretrained with NIH dataset. NIH dataset is publicly available a
 - efficientnet==1.1.0
 - scikit_image==0.15.0
 - tqdm==4.46.0
-- keras_vis==0.5.0
+- keras_vis==0.5.0 [(installed directly from github link)](https://github.com/raghakot/keras-vis)
 - keras_tuner==1.0.1
 - opencv_python==4.2.0.34
 - matplotlib==3.2.1
