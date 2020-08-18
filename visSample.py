@@ -23,6 +23,9 @@ if __name__=='__main__':
     args = get_args()
     weights = args.weight_path[0]
     input_path = args.img_path[0]
+    
+    #weights = r'D:\covid\Ensemble\covid_weights'
+    #input_path = r'D:\covid\Ensemble\pos_sample1.png'
 
     img_size = 224
     crop_stat = 'uncrop'
@@ -58,7 +61,7 @@ if __name__=='__main__':
             result_path = os.path.join(result_base, result_name)
             img_name_list.append(result_path)
     else:
-        input_img = image.load_img(img_path, target_size = (img_size, img_size), 
+        input_img = image.load_img(input_path, target_size = (img_size, img_size), 
                                     color_mode='rgb', interpolation = 'lanczos')
         img_array = np.asarray(input_img, dtype = 'float64')
         img_preproc = img_proc.preprocess(img_array)
@@ -68,10 +71,10 @@ if __name__=='__main__':
         
         # Split filename for result image name
         base_name = os.path.basename(input_path)
-        img_name = os.path.splitext(base_name)
+        img_name = os.path.splitext(base_name)[0]
         result_name = img_name + '_gradCAM.jpg'
         result_path = os.path.join(result_base, result_name)
-        img_name_list.append(result_name)
+        img_name_list.append(result_path)
 
     print('Loading models...')
     res_224, xception_224, dense_224, inception_224, inceptionres_224, efficient_224 = features.getAllModel(img_size, weights, crop_stat)
