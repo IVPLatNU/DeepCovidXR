@@ -270,8 +270,7 @@ test.py [-h] [-w WEIGHTS_PATH] [-i IMAGE_PATH]
 ```sh
 usage: test.py [-h] --weight weight_path --image IMAGE_path
 
-For each input image, generates COVID possibilities for 224x224 and 331x331
-versions.
+Generates a prediction of COVID-19 positive or negative (using an output of >0.5 as a threshold for positivity) for each input image.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -281,7 +280,7 @@ optional arguments:
                         the path to the image.
 ```
 
-### Download the well-trained weights
+### Download the trained weights
 [Google drive link to trained weights](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing)
 
 
@@ -291,11 +290,11 @@ Grad-CAM heat maps can be generated for an individual image of a folder contains
 An example is provided as below
 
 ```sh
-test.py [-h] [-w WEIGHTS_PATH]
+visSample.py [-h] [-w WEIGHTS_PATH] [-p IMAGE_PATH]
 ```
 
 ```sh
-usage: visSample.py [-h] --weight weight_path
+usage: visSample.py [-h] --weight weight_path --path path to image/folder of images
 
 For each input image, generates and saves a grad-CAM image.
 
@@ -303,6 +302,8 @@ optional arguments:
   -h, --help            show this help message and exit
   --weight weight_path, -w weight_path
                         the path that contains trained weights.
+  --path image_path, -p image_path
+                        the path to the image or folder of images being analyzed.
 ```
 
 ![grad-CAM](/img/covid_positive.png)
