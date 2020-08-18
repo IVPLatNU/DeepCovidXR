@@ -82,25 +82,24 @@ if __name__=='__main__':
     print('Models loaded')
 
     i = 0
-    
     for img in img_list:
         img_preproc = img_preproc_list[i]
         result_path = img_name_list[i]
 
-        visualization_avg, heatmap = img_proc.gradCAM(img, img_preproc, models)
+        visualization = img_proc.gradCAM(img, img_preproc, models)
         i = i + 1
-    
+
         plt.rcParams['figure.figsize'] = (18, 6)
-    
+
         # Matplotlib preparations
         fig, axes = plt.subplots(1, 3)
-        axes[0].imshow(img_array[..., 0], cmap='gray') 
-        axes[0].set_title('Input')
 
-        heatmap_middle = np.uint8(cm.jet(visualization_avg)[..., :3]*255)      
-        original = np.uint8(cm.gray(img_array[..., 0])[..., :3]*255)
-        axes[1].imshow(heatmap_middle)
+        axes[0].imshow(img_array[..., 0], cmap='gray')
+        axes[0].set_title('Input')
+        axes[1].imshow(visualization)
         axes[1].set_title('Grad-CAM')
-        axes[2].imshow(overlay(heatmap_middle, original))
+        heatmap = np.uint8(cm.jet(visualization)[..., :3] * 255)
+        original = np.uint8(cm.gray(img_array[..., 0])[..., :3] * 255)
+        axes[2].imshow(overlay(heatmap, original))
         axes[2].set_title('Overlay')
-        plt.savefig(result_path) 
+        plt.savefig(result_path)
