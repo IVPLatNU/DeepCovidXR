@@ -10,7 +10,7 @@ DeepCOVID-XR is pretrained on 112,120 images from the NIH CXR-14 dataset (NIH da
 DeepCOVID-XR correctly classified images as COVID-19 positive or COVID-19 negative using RT-PCR for the SARS-COV2 virus as the reference standard with an accuracy of 85% and an area under the ROC curve of 0.899, outperforming 3 individual experienced thoracic radiologists and with performance similar to that of the consensus of all 3 radiologists.  
 
 ## Model
-![ensembled model](/img/model.jpg)
+![ensembled model](/img/model.png)
 | Network Model | Original Paper | 
 |     :---:     |     :---:      |
 | DenseNet-121     | [Densely Connected Convolutional Networks](https://openaccess.thecvf.com/content_cvpr_2017/papers/Huang_Densely_Connected_Convolutional_CVPR_2017_paper.pdf)|
