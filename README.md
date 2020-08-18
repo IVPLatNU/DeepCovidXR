@@ -1,10 +1,13 @@
 # DeepCOVID-XR
->An ensembled convolutional neural network model for predicting COVID-19 with frontal chest x-rays.
+>An ensemble convolutional neural network (CNN) model for detecting frontal chext x-rays (CXRs) suspicious for COVID-19.
 
-DeepCOVID-XR focuses on finding characteristics of covid-19 from chest x-rays. (However, it is not to replace the real-time polymerase chain reaction test for covid-19 dianosis.) DenseNet-121, EfficientNet-B2, Inception-V3, Inception-ResNet-V2, ResNet-50 and Xception networks are ensembled to get a prediction of covid-19 positive probability.  
+While findings on chest imaging are not sensitive nor specific enough to replace diagnostic testing for COVID-19, artificially intelligent (AI) systems for automated analysis of CXRs have a potential role in triage and infection control within a hospital setting. Much of the current evidence regarding AI platforms for analysis of CXRs is limited by very small datasets and/or publicly available data of questionable quality. DeepCOVID-XR is a weighted ensemble of six popular CNN architectures - DenseNet-121, EfficientNet-B2, Inception-V3, Inception-ResNet-V2, ResNet-50 and Xception - trained and tested on a large clinical dataset from a major US healthcare system, the largest clinical dataset of CXRs from the COVID-19 era to date. 
 
 ## Dataset
-DeepCOVID-XR is pretrained with NIH dataset. NIH dataset is publicly available and can be downloaded by running pretrian.py. The dataset contains 112,120 frontal CXR images that are labeled with 14 separate disease classifications.
+DeepCOVID-XR is pretrained on 112,120 images from the NIH CXR-14 dataset (NIH dataset is publicly available and can be downloaded by running pretrian.py. The dataset contains  frontal CXR images that are labeled with 14 separate disease classifications. The algorithm was then fine tuned on over 14,000 clinical images (>4,000 COVID-19 positive) from the COVID-19 era and tested on a hold out dataset of over 2,000 images (>1,000 COVID-19 positive) from a hold-out institution that the model was not exposed to during training. 
+
+## Performance 
+Deep-COVIDXR correctly classified images as COVID-19 positive or COVID-19 negative using RT-PCR for the SARS-COV2 virus as the reference standard with an accuracy of 85% and an area under the ROC curve of 0.899, outperforming 3 individual experienced thoracic radiologists and with performance similar to that of the consensus of all 3 radiologists.  
 
 ## Model
 ![ensembled model](/img/model.jpg)
