@@ -20,18 +20,20 @@ def get_args():
     
     parser.add_argument('-p', '--path', dest='path', metavar='NIH_path', type=str, nargs=1, default = '',
                         required = True, 
-                        help='the path that contains NIH dataset and NIH csv file or the path in which a new directory for NIH dataset will be created.')
+                        help='the path that contains NIH dataset and NIH csv file or the path in which a new '
+                             'directory for NIH dataset will be created.')
+
     return parser.parse_args()
 
 if __name__=='__main__':
 
     args = get_args()
-    nih_path = args.path[0]
+    nih_path = os.path.normpath(args.path[0])
     img_size = args.img_size[0]
     model_name = args.model_name[0]
 
     batch_size = 16
-    rotation_range = 20
+    rotation_range = 15
     height_shift = 0.05
     width_shift = 0.05
     out_num = 16
@@ -80,9 +82,4 @@ if __name__=='__main__':
     print('Model compiled!')
     epochs = 50
     features.NIHgenerator(model, batch_size, train_generator, val_generator, epochs, cp, rlp, es)
-
-
-
-
-
-
+    print('Done')

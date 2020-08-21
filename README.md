@@ -1,7 +1,10 @@
 # DeepCOVID-XR
->An ensemble convolutional neural network (CNN) model for detecting frontal chext x-rays (CXRs) suspicious for COVID-19.
+>An ensemble convolutional neural network (CNN) model for detecting frontal chest x-rays (CXRs) suspicious for COVID-19.
 
 While findings on chest imaging are not sensitive nor specific enough to replace diagnostic testing for COVID-19, artificially intelligent (AI) systems for automated analysis of CXRs have a potential role in triage and infection control within a hospital setting. Much of the current evidence regarding AI platforms for analysis of CXRs is limited by very small datasets and/or publicly available data of questionable quality. DeepCOVID-XR is a weighted ensemble of six popular CNN architectures - DenseNet-121, EfficientNet-B2, Inception-V3, Inception-ResNet-V2, ResNet-50 and Xception - trained and tested on a large clinical dataset from a major US healthcare system, the largest clinical dataset of CXRs from the COVID-19 era to date. 
+
+For those looking for the pre-trained model weights only, they can be downloaded here:
+ [Google drive link to trained weights](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing)
 
 ## Dataset
 DeepCOVID-XR was first pretrained on 112,120 images from the NIH CXR-14 dataset. The NIH dataset is publicly available and can be downloaded [here](https://nihcc.app.box.com/v/ChestXray-NIHCC). The dataset contains  frontal CXR images that are labeled with 14 separate disease classifications. 
@@ -26,7 +29,6 @@ DeepCOVID-XR correctly classified images as COVID-19 positive or COVID-19 negati
 ![](header.png)
 
 Note the trained weights of each of the CNN members of the weighted ensemble are available [here](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing). The trained weights for averaging predictions of each of the models for ensembling purposes are available here. The instructions below walk through the entire process of training a model from scratch and also provide code for using our already trained weights for analyzing external datasets and/or images. 
-
 
 ## Environment
 
@@ -54,8 +56,6 @@ To set up the environment and install all the packages, run
 ```sh
 $pip install -r requirements.txt
 ```
-
-
 
 ## Table of Contents
 
@@ -122,39 +122,42 @@ To train DeepCOVID-XR, the dataset should be structured as below:
             └───Positive
 ```
 
-The cropped version of dataset can be obtained with preprocessing.
+The cropped and resized versions of dataset can be obtained with preprocessing. 
+If there is significant class imbalance in your dataset, you should consider oversampling the minority class to improve training. 
+Further details on oversampling can be found [here](https://www.tensorflow.org/tutorials/structured_data/imbalanced_data#oversample_the_minority_class).
 
 ### Preprocessing 
+Note: All input data should be in 8-bit png or jpeg format. DICOM/Nifti files should be converted to 8-bit png or jpeg files via appropriate preprocessing and windowing based on metadata.
 
 The data is first cropped in order to produce a version of the image that focuses on the lung fields. A square cropping region is used in order to retain important extraparenchymal anatomy (pleural spaces) and retrocardiac anatomy (left lower pulmonary lobe). Both cropped and uncropped images serve as inputs into the ensemble algorithm. Each image (cropped and uncropped) is then downsampled using Lanczos resmapling to two different sizes, 224X224 pixels and 331X331 pixels, for a total of 4 images as input into each of the CNN members of the weighted ensemble.
 
 Prepare cropped and resized images.
 
 #### Download Unet Weights
-We used a Unet to segment the input image, then crop a square region surrounding the lung fields. The UNet model used in preprocessing is based on that developed here: https://github.com/imlab-uiip/lung-segmentation-2d/. The link to download the weights is: [trained_model.hdf5](https://github.com/imlab-uiip/lung-segmentation-2d/blob/master/trained_model.hdf5)
+We used a Unet to segment the input image, then crop a square region surrounding the lung fields. The UNet model used in preprocessing is based on that developed here: [https://github.com/imlab-uiip/lung-segmentation-2d/]. The link to download the weights is: [trained_model.hdf5](https://github.com/imlab-uiip/lung-segmentation-2d/blob/master/trained_model.hdf5). These are also provided in our Github repo.
 
 #### Crop images
 ```sh
-python Crop_img.py -f [IMAGE FOLDER PATH] -U [trained_model.hdf5 PATH] -o [IMAGE OUTPUT PATH]
+python crop_img.py -f [IMAGE FOLDER PATH] -U [trained_model.hdf5 PATH] -o [IMAGE OUTPUT PATH]
 ```
 Please put images in one folder. Use '-h' to get more details.
 
 ```sh
-python Crop_img.py -h
+python crop_img.py -h
 ```
 
 #### Resize images
 ```sh
-python Resize_img.py -i [IMAGE INPUT PATH] -o [IMAGE OUTPUT PATH] -s [RESIZE SHAPE (331 or 244)]
+python resize_img.py -i [IMAGE INPUT PATH] -o [IMAGE OUTPUT PATH] -s [RESIZE SHAPE (331 or 244)]
 ```
 After cropping and resizing images, the resulting datasets will be 224_crop/224_uncrop/331_crop/331_uncrop, respectively.
 
 ### Pretrain with NIH dataset
 
-A base model without dropout layer can be trained with NIH dataset. The resulting weight will be saved and used for further training.
-If the NIH dataset already exists, you can provide a path to the dataset for training. If NIH does not exist, provide a path you would like to download the dataset in.
+A base model without dropout layer can be trained with NIH dataset. The resulting weights will be saved and used for further training.
+If the NIH dataset already exists, you can provide a path to the dataset for training. If NIH does not exist, provide a path you would like to download the dataset to.
 
-You also need to provide the name of the model to be trained and the size of the image you would like to train with. 
+You also need to provide the name of the model to be trained and the size of the images you would like to train with. 
 
 ```sh
 pretrain.py [-h] [-m MODEL_NAME] [-s IMG_SIZE] [-p NIH_PATH]
@@ -180,10 +183,9 @@ optional arguments:
 ```
 
 ### Find best hyper parameters
-
-Keras tuner will be used to find best values for learning rate, momentum and dropout rate for dropout layers. 
-All layers except for the global average pooling layer be frozen at first. And then the entire model will be unfrozen and used to find best hyper parameters.
-Note: nih_path is the directory that contains the pretrained nih weight file.
+Keras tuner will be used to find best values for learning rate, momentum and dropout rate for a single dropout layer before the output layer. 
+All layers except for the output layer will be frozen initially, then the entire model will be unfrozen and used to find best hyper parameters.
+Note: nih_path is the directory that contains the pretrained nih weight file. This module outputs weights of highest performing hypermodels, as well as a pickled dictionary containing values of the best performing hyperparameters.
 
 ```sh
 tuner.py [-h] [-m MODEL_NAME] [-s IMG_SIZE] [-p DATA_PATH] [-n nih_path]
@@ -211,18 +213,17 @@ optional arguments:
 
 
 ### Train model with best parameters
-
-Each model can be trained on a custom dataset. All layers except for the global average pooling layer be frozen at first.
-And then the entire model will be unfrozen and trained. The resulting weight will be further used for ensembling.  
-Note: nih_path is the directory that contains the pretrained nih weight file.
+Each model can be trained on a custom dataset. All layers except for the final output layer will be frozen at first.
+And then the entire model will be unfrozen and trained. Note: nih_path is the directory that contains the pretrained nih weight file. Hyperparameters is the path to the pickled dictionary of the best performing hyperparameter values for the model being trained.
 
 ```sh
-train.py [-h] [-m MODEL_NAME] [-s IMG_SIZE] [-p DATA_PATH] [-n nih_path]
+train.py [-h] [-m MODEL_NAME] [-s IMG_SIZE] [-p DATA_PATH] [-w weight_path] [-o output_path] [-h hyperparameters_path]
 ```
 
 ```sh
-usage: train.py [-h] -m model_name --size img_size --path DATA_path --nihpath
-                NIH_weight_path
+usage: train.py [-h] -m model_name --size img_size --path DATA_path --output
+                prediction_output_path --weight_path weight_path
+                [--hyperparameters Hyperparameters]
 
 Train a model on a given dataset.
 
@@ -236,18 +237,37 @@ optional arguments:
                         the size of dataset images
   --path DATA_path, -p DATA_path
                         the path that contains the dataset.
-  --nihpath NIH_weight_path, -n NIH_weight_path
-                        the path to pretrained nih weight.
+  --output prediction_output_path, -o prediction_output_path
+                        the directory to output training curves and saved
+                        weights
+  --weight_path weight_path, -w weight_path
+                        the path to pretrained weights, either NIH if training
+                        from scratch or corresponding model weights from our
+                        pretrained weights if fine-tuning DeepCOVID-XR.
+  --hyperparameters Hyperparameters, -hy Hyperparameters
+                        the path to pickled hyperparameters dictionary; will
+                        use default parameters if not provided.
+
 ```
+
+### Download the trained weights
+Our pretrained model weights are provided so that DeepCOVIDXR can be be fine tuned on external datasets.
+[Google drive link to trained weights](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing)
 
 ### Ensemble models
+This module computes the weights that will be multiplied by individual model predictions for a weighted average ensemble prediction using a Bayesian model combination approach. 
+You can provide custom trained weights for each member of the model ensemble to calculate the optimal weights for each member prediction. 
+
+Note: If using your own weights, folder provided should contain weight files for each of the 24 trained trained ensemble models in the format '{Model}_{img_size}\_up\_{crop_stat}.h5', where model is one of:
+(ResNet50, Xception, Inception, DenseNet, InceptionResNet, EfficientNet), img_size is one of (224, 331), and crop_stat is one of: (crop, uncrop).
 
 ```sh
-ensemble.py [-h] [-w WEIGHTS_PATH] [-d DATA_PATH]
+ensemble.py [-h] [-w WEIGHTS_PATH] [-d DATA_PATH] [-o OUTPUT_PATH]
 ```
 
 ```sh
-usage: ensemble.py [-h] --weight weight_path --data CROPPED_DATA_path
+usage: ensemble.py [-h] --weight weight_path --data DATA_path
+                   [--output prediction_output_path]
 
 Ensemble trained models to generate confusion matrices.
 
@@ -255,37 +275,119 @@ optional arguments:
   -h, --help            show this help message and exit
   --weight weight_path, -w weight_path
                         the path that contains trained weights.
-  --data CROPPED_DATA_path, -d CROPPED_DATA_path
+  --data DATA_path, -d DATA_path
                         the path that contains the entire dataset.
+  --output prediction_output_path, -o prediction_output_path
+                        the directory to output a csv file of predictions and
+                        pickled list of ensemble weights; if not provided will
+                        save to current working directory
 ```
 
-## Test DeepCOVID-XR on individual image
+###Ensemble weights of individual model architectures
 
-Provided a single image, a prediction can be made toward the possibility of covid positive using the ensembled model. 
+Our ensemble weights for weighting individual model predictions is provided as a pickled list [here](/ensemble_weights.pickle)
+This list is ordered as follows:
+
+`[ dense_224_uncrop,
+                  dense_224_crop,
+                  dense_331_uncrop,
+                  dense_331_crop,
+                  res_224_uncrop,
+                  res_224_crop,
+                  res_331_uncrop,
+                  res_331_crop,
+                  inception_224_uncrop,
+                  inception_224_crop,
+                  inception_331_uncrop,
+                  inception_331_crop,
+                  inceptionresnet_224_uncrop,
+                  inceptionresnet_224_crop,
+                  inceptionresnet_331_uncrop,
+                  inceptionresnet_331_crop,
+                  xception_224_uncrop,
+                  xception_224_crop,
+                  xception_331_uncrop,
+                  xception_331_crop,
+                  efficient_224_uncrop,
+                  efficient_224_crop,
+                  efficient_331_uncrop,
+                  efficient_331_crop] `
+
+
+### Evaluate Accuracy of DeepCOVID-XR on a test dataset
+Produces a csv file of predictions vs. actual labels for a test dataset organized in a subdirectory tree according to the schema provided above.
+Also generates a confusion matrix and ROC curve.
+
+Note: If using your own weights, folder provided should contain weight files for each of the 24 trained trained ensemble models in the format '{Model}_{img_size}\_up\_{crop_stat}.h5', where model is one of:
+(ResNet50, Xception, Inception, DenseNet, InceptionResNet, EfficientNet), img_size is one of (224, 331), and crop_stat is one of: (crop, uncrop).
 
 ```sh
-test.py [-h] [-w WEIGHTS_PATH] [-i IMAGE_PATH]
+evaluate.py [-h] [-w WEIGHTS_PATH] [-i IMAGE_PATH]
 ```
 
 ```sh
-usage: test.py [-h] --weight weight_path --image IMAGE_path
+usage: evaluate.py [-h] --weight weight_path --image IMAGE_path -o
+                   prediction_output_path
+                   [--ensemble_weight ensemble_weight_path] [--tta]
 
-Generates a prediction of COVID-19 positive or negative (using an output of >0.5 as a threshold for positivity) for each input image.
+For each input image, generates predictions of COVID-19 status.
 
 optional arguments:
   -h, --help            show this help message and exit
   --weight weight_path, -w weight_path
                         the path that contains trained weights.
   --image IMAGE_path, -i IMAGE_path
-                        the path to the image.
+                        the path to the image directory with subdirectory tree
+                        as indicated in the README file
+  -o prediction_output_path, --output prediction_output_path
+                        the directory to save results, including a csv of
+                        predictions, confusion matrix, and ROC curve
+  --ensemble_weight ensemble_weight_path, -e ensemble_weight_path
+                        the path to the ensemble weights as a pickled list, if
+                        not supplied uses our pretrained weights by default
+  --tta, -t             switch to turn on test-time augmentation, warning:
+                        this takes significantly longer as each model
+                        prediction is run 10 times
 ```
 
-### Download the trained weights
-[Google drive link to trained weights](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing)
 
+## DeepCOVID-XR Prediction On New Data
+Produces predictions of COVID-19 positivity or negativity on a folder of images or a single image. 
+After analysis is complete, the user will be prompted as to whether further predictions are desired. 
+
+Note: If using your own weights, folder provided should contain weight files for each of the 24 trained trained ensemble models in the format '{Model}_{img_size}\_up\_{crop_stat}.h5', where model is one of:
+(ResNet50, Xception, Inception, DenseNet, InceptionResNet, EfficientNet), img_size is one of (224, 331), and crop_stat is one of: (crop, uncrop).
+
+Note: GPU use is recommended. Loading model weights takes some time, but once loaded predictions on a single image take a matter of seconds on a single NVIDIA Titan V GPU. 
+
+```sh
+predict.py [-h] -w weight_path -i IMAGE_path
+                  [-e ensemble_weight_path] [-t tta]
+                  [-o prediction_output_path]
+```
+
+```sh
+usage: predict.py [-h] --weight weight_path --image IMAGE_path
+                  [--ensemble_weight ensemble_weight_path] [--tta]
+                  [--output prediction_output_path]
+
+For each input image, generates predictions of COVID-19 status.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --weight weight_path, -w weight_path
+                        the path that contains trained weights.
+  --image IMAGE_path, -i IMAGE_path
+                        the path to the image/folder of images.
+  --ensemble_weight ensemble_weight_path, -e ensemble_weight_path
+                        the path to the ensemble weights as a pickled list, if
+                        not supplied uses our pretrained weights
+  --tta_off, -t         switch to turn on test-time augmentation, warning:
+                        this takes significantly longer as each model
+```
 
 ## Grad-CAM Visualization 
-
+Note: GPU use is recommended as loading model weights takes some time.
 Grad-CAM heat maps can be generated for an individual image of a folder contains several images. 
 An example is provided as below
 

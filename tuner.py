@@ -5,6 +5,7 @@ from utils import imgUtils, trainFeatures
 from covid_models import hyperModel
 import kerastuner
 from kerastuner.tuners import BayesianOptimization
+import pickle
 
 def get_args():
     # Implement command line argument
@@ -24,8 +25,17 @@ def get_args():
     parser.add_argument('--path', '-p', dest='path', metavar='DATA_path', type=str, nargs=1,
                         required = True, help='the path that contains the dataset.')
     
-    parser.add_argument('--nihpath', '-n', dest='nih_path', metavar='NIH_weight_path', 
-                        type=str, nargs=1, required=True, help='the path to pretrained NIH weight file.')
+    parser.add_argument('--weights', '-w', dest='weight_path', metavar='weight_path',
+                        type=str, nargs=1, required=True, help='the path to pretrained weights, either NIH weight '
+                                                               'file if training from scratch or corresponding weight '
+                                                               'file from our pretrained weights if fine tuning '
+                                                               'DeepCOVID-XR.')
+
+    parser.add_argument('--output', '-o', dest='output', metavar='prediction_output_path', type=str,
+                        default=None, required=False, help='the directory to output best model weights and '
+                                                           'hyperparameters; if not provided will output to current '
+                                                           'working directory')
+
     return parser.parse_args()
 
 def make_path(data_dir, base, exp_name):
@@ -39,20 +49,22 @@ def make_path(data_dir, base, exp_name):
     if not os.path.isdir(os.path.join(base, 'tuner')):
         os.mkdir(os.path.join(base, 'tuner'))
         
-    freeze_save_path = os.path.join(base, '/tuner/initial_cps/{}.h5'.format(model_name))
-    unfreeze_save_path = os.path.join(base, '/tuner/cps/{}.h5'.format(model_name))
-    best_model_path = os.path.join(base, '/tuner/best_models_and_params/{}/model'.format(exp_name))
-    best_weight_path = os.path.join(base, '/tuner/best_models_and_params/{}/model_weights.h5'.format(exp_name))
-    best_param_path = os.path.join(base, '/tuner/best_models_and_params/{}/model_params'.format(exp_name))
-    
-    if not os.path.exists(os.path.join(base, '/tuner/initial_cps/{}'.format(exp_name))):
-        os.makedirs(os.path.join(base, '/tuner/initial_cps/{}'.format(exp_name)))
-        
-    if not os.path.exists(os.path.join(base, '/tuner/cps/{}'.format(exp_name))):
-        os.makedirs(os.path.join(base, '/tuner/cps/{}'.format(exp_name)))
-    
-    if not os.path.exists(os.path.join(base, '/tuner/best_models_and_params/{}/model'.format(exp_name))):
-        os.makedirs(os.path.join(base, '/tuner/best_models_and_params/{}/model'.format(exp_name)))
+    freeze_save_path = os.path.join(base, 'tuner', 'initial_cps', exp_name + '.h5')
+    unfreeze_save_path = os.path.join(base, 'tuner', 'cps', exp_name + '.h5')
+    best_model_path = os.path.join(base, 'tuner', 'best_models_and_params', exp_name, 'model')
+    best_weight_path = os.path.join(base, 'tuner', 'best_models_and_params', exp_name, 'model_weights.h5')
+    best_param_path = os.path.join(base, 'tuner', 'best_models_and_params', exp_name, 'model_params')
+
+    if not os.path.exists(os.path.dirname(freeze_save_path)):
+        os.makedirs(os.path.dirname(freeze_save_path), exist_ok=True)
+    if not os.path.exists(os.path.dirname(unfreeze_save_path)):
+        os.makedirs(os.path.dirname(unfreeze_save_path), exist_ok=True)
+    if not os.path.exists(best_model_path):
+        os.makedirs(best_model_path, exist_ok=True)
+    if not os.path.exists(os.path.dirname(best_weight_path)):
+        os.makedirs(os.path.dirname(best_weight_path), exist_ok=True)
+    if not os.path.exists(best_param_path):
+        os.makedirs(best_param_path, exist_ok=True)
     
     return train_path, valid_path, freeze_save_path, unfreeze_save_path, best_model_path, best_weight_path, best_param_path
         
@@ -65,21 +77,18 @@ if __name__=='__main__':
     
     args = get_args()
 
-    data_path = args.path[0]
+    data_path = os.path.normpath(args.path[0])
     model_name = args.model_name[0]
     img_size = args.img_size[0]
-    nih_weight = args.nih_path[0]
-    nih_name = 'nih_weights_{name}.h5'.format(name = model_name)
-    nih_weight = os.path.join(nih_weight, nih_name)
-    #nih_weight = 'nih_weights_{name}.h5'.format(name = model_name)
+    weights = os.path.normpath(args.weight_path[0])
+    output_path = args.output
+    if output_path is not None:
+        output_path = os.path.normpath(output_path)
+    else:
+        output_path = os.getcwd()
 
-    if not os.path.exists(nih_weight):
-        print('NIH weight does not exists.'
-              ' Please provide a NIH weight file in the format of nih_weights_[model name].h5')
-        exit()
-    
-    exp_name = 'tuner_pretrain'
-    base_dir = os.getcwd()
+    exp_name = model_name + '_' + str(img_size)
+    base_dir = output_path
     
     train_dir, valid_dir, freeze_dir, unfreeze_dir, model_dir, weight_dir, param_dir = make_path(data_path, base_dir, exp_name)
 
@@ -102,16 +111,16 @@ if __name__=='__main__':
     es = features.setES(monitor, patience_es, min_delta)
     cp = features.setCP(monitor, freeze_dir)
     
-    freeze_model, model, base = features.getModel(model_name, img_size, nih_weight)
+    freeze_model, model, base = features.getModel(model_name, img_size, weights)
     features.compileModel(freeze_model, lr, momentum, nestrov)
 
     model_history = features.generator(freeze_model, train_gen, val_gen, epoch, cp, rlr, es)
-    img_proc.plot_save(model_history, base_dir, exp_name)
+    img_proc.plot_save(model_history, base_dir)
 
     # Add dropout layer and run tuner with entire model
     
     model = features.load(model, freeze_dir)
-    model = features.unfreeze(freeze_model)
+    model = features.unfreeze(model)
 
     patience_es = 10
     
@@ -120,7 +129,7 @@ if __name__=='__main__':
 
     hp = hyperModel(base, freeze_dir)
 
-    TOTAL_TRIALS = 10
+    TOTAL_TRIALS = 1
     EXECUTION_PER_TRIAL = 1
     EPOCHS = 50
 
@@ -129,7 +138,7 @@ if __name__=='__main__':
         max_trials=TOTAL_TRIALS,
         objective=kerastuner.Objective("val_auc", direction="max"),
         executions_per_trial=EXECUTION_PER_TRIAL,
-        directory='bayesian',
+        directory=base_dir,
         project_name=exp_name
     )
 
@@ -141,16 +150,18 @@ if __name__=='__main__':
                             use_multiprocessing=False)
 
     # Save best model and weight
-    best_model = tuner.get_best_models(num_models=TOTAL_TRIALS)[0]
+    best_model = tuner.get_best_models()[0]
     best_config = best_model.optimizer.get_config()
-    
-    hyperparameters = tuner.get_best_hyperparameters(num_trials=TOTAL_TRIALS)
-    best_hyperparameters = hyperparameters[0].get_config()
-    
-    model.save(model_dir)
-    model.save_weights(weight_dir)
-    with open(param_dir, "w") as text_file:
+
+    best_hyperparameters = tuner.get_best_hyperparameters()[0].get_config()
+    best_hyperparameters_values = tuner.get_best_hyperparameters()[0].values
+
+    best_model.save(model_dir)
+    best_model.save_weights(weight_dir)
+
+    with open(os.path.join(param_dir, 'hyperparameters.txt'), "w") as text_file:
         text_file.write(str(best_hyperparameters))
 
-
+    pickle.dump(best_hyperparameters_values, open(os.path.join(param_dir,'hyperparameters.pickle'), 'wb'))
+    print('Done')
 
