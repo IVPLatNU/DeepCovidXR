@@ -68,10 +68,10 @@ $pip install -r requirements.txt
   * [Find best hyper parameters](#Find-best-hyper-parameters)
   * [Train model with best parameters](#Train-model-with-best-parameters)
   * [Ensemble models](#Ensemble-models)
-- [Test DeepCOVID-XR on individual image](#Test-DeepCOVID-XR-on-individual-image)
-  * [Download trained weights](#Download-the-well-trained-weights)
+  * [Evaluate ensemble model](#Evaluate-ensemble-model)
+- [DeepCOVID-XR Prediction On New Data](#DeepCOVID-XR-Prediction-On-New-Data)
+  * [Download trained weights](#Download-the-trained-weights)
 - [Grad-CAM Visualization](#Grad-CAM-Visualization)
-- [Citation](#citation)
 
 ## Train DeepCOVID-XR from Scratch
 
@@ -153,7 +153,6 @@ python resize_img.py -i [IMAGE INPUT PATH] -o [IMAGE OUTPUT PATH] -s [RESIZE SHA
 After cropping and resizing images, the resulting datasets will be 224_crop/224_uncrop/331_crop/331_uncrop, respectively.
 
 ### Pretrain with NIH dataset
-
 A base model without dropout layer can be trained with NIH dataset. The resulting weights will be saved and used for further training.
 If the NIH dataset already exists, you can provide a path to the dataset for training. If NIH does not exist, provide a path you would like to download the dataset to.
 
@@ -254,6 +253,7 @@ optional arguments:
 Our pretrained model weights are provided so that DeepCOVIDXR can be be fine tuned on external datasets.
 [Google drive link to trained weights](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing)
 
+
 ### Ensemble models
 This module computes the weights that will be multiplied by individual model predictions for a weighted average ensemble prediction using a Bayesian model combination approach. 
 You can provide custom trained weights for each member of the model ensemble to calculate the optimal weights for each member prediction. 
@@ -284,7 +284,6 @@ optional arguments:
 ```
 
 ###Ensemble weights of individual model architectures
-
 Our ensemble weights for weighting individual model predictions is provided as a pickled list [here](/ensemble_weights.pickle)
 This list is ordered as follows:
 
@@ -314,7 +313,7 @@ This list is ordered as follows:
                   efficient_331_crop] `
 
 
-### Evaluate Accuracy of DeepCOVID-XR on a test dataset
+### Evaluate ensemble model
 Produces a csv file of predictions vs. actual labels for a test dataset organized in a subdirectory tree according to the schema provided above.
 Also generates a confusion matrix and ROC curve.
 
