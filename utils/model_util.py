@@ -141,6 +141,29 @@ class trainFeatures():
         efficient_model = efficient.buildBaseModel(img_size)
         
         return res_model, xception_model, dense_model, inception_model, inceptionres_model, efficient_model
+
+    def getAllModelFast(self, img_size, weight_dir, crop_stat):
+        res_weight = os.path.join(weight_dir,
+                                  f'ResNet50_{img_size}_up_{crop_stat}.h5')
+        xception_weight = os.path.join(weight_dir,
+                                       f'Xception_{img_size}_up_{crop_stat}.h5')
+        dense_weight = os.path.join(weight_dir,
+                                    f'DenseNet_{img_size}_up_{crop_stat}.h5')
+        inception_weight = os.path.join(weight_dir,
+                                        f'Inception_{img_size}_up_{crop_stat}.h5')
+        inceptionres_weight = os.path.join(weight_dir,
+                                           f'InceptionResNet_{img_size}_up_{crop_stat}.h5')
+        efficient_weight = os.path.join(weight_dir,
+                                        f'EfficientNet_{img_size}_up_{crop_stat}.h5')
+
+        res_model = ResNet(res_weight).buildBaseModelFast()
+        xception_model = XceptionNet(xception_weight).buildBaseModelFast()
+        dense_model = DenseNet(dense_weight).buildBaseModelFast()
+        inception_model = InceptionNet(inception_weight).buildBaseModelFast()
+        inceptionres_model = InceptionResNet(inceptionres_weight).buildBaseModelFast()
+        efficient_model = EfficientNet(efficient_weight).buildBaseModelFast()
+
+        return res_model, xception_model, dense_model, inception_model, inceptionres_model, efficient_model
     
     def getAllDropModel(self, img_size, weight_dir, crop_stat, dropout):
         res_weight = os.path.join(weight_dir, 
@@ -228,7 +251,3 @@ class trainFeatures():
                     tf.keras.metrics.AUC(name='auc'), 
                     tf.keras.metrics.Precision(name='precision'), 
                     tf.keras.metrics.Recall(name='recall')])
-    
-
-        
-    

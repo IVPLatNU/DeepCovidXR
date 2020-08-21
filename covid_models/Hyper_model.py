@@ -19,7 +19,7 @@ class hyperModel(HyperModel):
         x = layers.Dropout(hp.Float('dropout_rate',
                                             min_value=0,
                                             max_value=0.5,
-                                            default=0))(x)
+                                            default=0.3))(x)
         predictions = layers.Dense(1, activation='sigmoid', name='last')(x)
         model = Model(inputs=base_model.input, outputs=predictions)
         model.load_weights(self.weight)
@@ -28,11 +28,11 @@ class hyperModel(HyperModel):
             loss='binary_crossentropy',
             optimizer=optimizers.SGD(
                                     learning_rate=hp.Float('learning_rate',
-                                            min_value=0.001,
-                                            max_value=0.01,
-                                            default=0.5),
+                                            min_value=0.00001,
+                                            max_value=0.1,
+                                            default=0.01),
                                     momentum=hp.Float('momentum',
-                                            min_value=0.5,
+                                            min_value=0,
                                             max_value=0.9,
                                             default=0.5)),
             metrics=['acc', 

@@ -3,7 +3,8 @@
 from tensorflow import keras
 from tensorflow.keras.models import Model
 from tensorflow.keras import layers
-import efficientnet.tfkeras as efn 
+import efficientnet.tfkeras as efn
+from tensorflow.keras.models import load_model
 
 class EfficientNet():
     def __init__(self, weights):
@@ -19,6 +20,10 @@ class EfficientNet():
         predictions = layers.Dense(1, activation='sigmoid', name='last')(x)
         model = Model(inputs=base_model.input, outputs=predictions)
         model.load_weights(self.weights)
+        return model
+
+    def buildBaseModelFast(self):
+        model = load_model(self.weights, compile=False)
         return model
     
     def buildNihModel(self, img_size, label_len):

@@ -3,6 +3,7 @@
 from tensorflow.keras.models import Model
 from tensorflow.keras import layers
 from tensorflow.keras.applications import Xception
+from tensorflow.keras.models import load_model
 
 class XceptionNet():
     def __init__(self, weights):
@@ -17,6 +18,10 @@ class XceptionNet():
         model = Model(inputs=base_model.input, outputs=predictions)
         if not self.weights == 'imagenet':
             model.load_weights(self.weights)
+        return model
+
+    def buildBaseModelFast(self):
+        model = load_model(self.weights, compile=False)
         return model
     
     def buildNihModel(self, img_size, label_len):

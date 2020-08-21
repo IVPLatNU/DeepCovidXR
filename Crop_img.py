@@ -1,14 +1,14 @@
 import numpy as np
-from skimage import morphology, io, color, exposure, img_as_float, transform, util
+from skimage import io, color, exposure, img_as_float, transform, util
 from matplotlib import pyplot as plt
 import pathlib
 import cv2
-import time
 import multiprocessing
 import time
 import argparse
 from keras.models import load_model
 from keras.preprocessing.image import ImageDataGenerator
+import os
 
 def load_CXR_from_list(filelist, im_shape):
     X = np.zeros((len(filelist), im_shape[0], im_shape[1], 1))
@@ -335,7 +335,7 @@ def single_img_crop(img, resized_raw_img, raw_img, file_path, UNet, result_folde
         Default to be 8, how many pixels to enlarge the bounding box. 
     debug_folder : preferrebly pathlib object
         path to debug images; if not specified, no debug images will be written to local
-    debug: bool
+    debugging: bool
         Default to be false. If true, will plot debugging images to screen instead of saving to local.
     Returns
     ----------
@@ -501,14 +501,14 @@ def adjust_process_num(length):
     return k_fold
 
 def lungseg_one_process(result_folder, UNet, filenames, 
-                        im_shape = (256, 256), debug_folder = None, cut_thresh = 0.02, out_pad_size = 3, debug = False):
+                        im_shape = (256, 256), debug_folder = None, cut_thresh = 0.02, out_pad_size = 8, debug = False):
     
     X, resized_raw, raw_images = load_CXR_from_list(filenames, im_shape)
     print('X shape = ', X.shape)  
     lungseg_fromdata(X, resized_raw, raw_images, filenames, UNet, result_folder, 
                         im_shape = im_shape, cut_thresh = cut_thresh, out_pad_size = out_pad_size, debug_folder = debug_folder, debugging = debug)
 
-def singlefolder_lungseg(data_path, result_folder, UNet, debug_folder = None, k_fold = None, cut_thresh = 0.02, out_pad_size = 3, debug = False, filenames = None):
+def singlefolder_lungseg(data_path, result_folder, UNet, debug_folder = None, k_fold = None, cut_thresh = 0.02, out_pad_size = 8, debug = False, filenames = None):
     '''
     Crop out the lung area from CXR\n
     lung prediction based on UNet: https://github.com/imlab-uiip/lung-segmentation-2d
@@ -607,7 +607,7 @@ def genlist(data_path_list, list_dict):
 if __name__ == '__main__':
     
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f','--folder', type=str, help = 'the directory of the image folder')
+    parser.add_argument('-f', '--folder', type=str, help = 'the directory of the image folder')
     parser.add_argument('-U', '--Unet', type = str, help = 'the directory of the saved Unet weights')
     parser.add_argument('-o', '--output', type = str, help = 'the directory of the resized image')
     args = parser.parse_args()
@@ -615,9 +615,11 @@ if __name__ == '__main__':
 
 
 
-    
-    # folder lung segmentation example
-    singlefolder_lungseg(args.folder, args.output, UNet_path, out_pad_size=8, debug=False)
+    if not os.path.isdir(args.folder):
+        containing_folder = os.path.dirname(args.folder)
+        singlefolder_lungseg(containing_folder, args.output, UNet_path, out_pad_size=8, debug=False, filenames=[pathlib.Path(args.folder)])
+    else:
+        singlefolder_lungseg(args.folder, args.output, UNet_path, out_pad_size=8, debug=False)
     print('Completed!')
     
 

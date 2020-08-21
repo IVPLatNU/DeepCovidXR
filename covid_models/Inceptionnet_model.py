@@ -3,6 +3,7 @@
 from tensorflow.keras.models import Model
 from tensorflow.keras import layers
 from tensorflow.keras.applications import InceptionV3
+from tensorflow.keras.models import load_model
 
 class InceptionNet():
     def __init__(self, weights):
@@ -17,7 +18,11 @@ class InceptionNet():
         model = Model(inputs=base_model.input, outputs=predictions)
         model.load_weights(self.weights)
         return model
-    
+
+    def buildBaseModelFast(self):
+        model = load_model(self.weights, compile=False)
+        return model
+
     def buildNihModel(self, img_size, label_len):
         base_model = InceptionV3(weights='imagenet', include_top=False, 
                                  input_shape = (img_size,img_size,3))
