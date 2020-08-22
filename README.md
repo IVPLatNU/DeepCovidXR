@@ -34,6 +34,8 @@ The algorithm was then fine tuned on over 14,000 clinical images (>4,000 COVID-1
 ## Performance 
 DeepCOVID-XR correctly classified images as COVID-19 positive or COVID-19 negative using RT-PCR for the SARS-COV2 virus as the reference standard with an accuracy of 83% and an area under the ROC curve of 0.899 on the hold-out test set, outperforming 3 individual experienced thoracic radiologists and with performance similar to that of the consensus of all 3 radiologists on a subsample of these images.  
 
+![](/img/ROC_curves.png)
+
 ## Table of Contents
 
 - [Train DeepCOVID-XR from Scratch](#Train-DeepCOVID-XR-from-Scratch)
