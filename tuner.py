@@ -129,7 +129,7 @@ if __name__=='__main__':
 
     hp = hyperModel(base, freeze_dir)
 
-    TOTAL_TRIALS = 1
+    TOTAL_TRIALS = 20
     EXECUTION_PER_TRIAL = 1
     EPOCHS = 50
 
