@@ -72,6 +72,7 @@ $pip install -r requirements.txt
   * [Find best hyper parameters](#Find-best-hyper-parameters)
   * [Train model with best parameters](#Train-model-with-best-parameters)
   * [Ensemble models](#Ensemble-models)
+    + [Ensemble weights](#Ensemble weights of individual model architectures)
   * [Evaluate ensemble model](#Evaluate-ensemble-model)
 - [DeepCOVID-XR Prediction On New Data](#DeepCOVID-XR-Prediction-On-New-Data)
   * [Download trained weights](#Download-the-trained-weights)
@@ -253,10 +254,6 @@ optional arguments:
 
 ```
 
-### Download the trained weights
-Our pretrained model weights are provided so that DeepCOVIDXR can be be fine tuned on external datasets.
-[Google drive link to trained weights](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing)
-
 
 ### Ensemble models
 This module computes the weights that will be multiplied by individual model predictions for a weighted average ensemble prediction using a Bayesian model combination approach. 
@@ -287,7 +284,7 @@ optional arguments:
                         save to current working directory
 ```
 
-###Ensemble weights of individual model architectures
+####Ensemble weights of individual model architectures
 Our ensemble weights for weighting individual model predictions is provided as a pickled list [here](/ensemble_weights.pickle)
 This list is ordered as follows:
 
@@ -388,6 +385,10 @@ optional arguments:
   --tta, -t         switch to turn on test-time augmentation, warning:
                         this takes significantly longer as each model
 ```
+
+### Download the trained weights
+Our pretrained model weights are provided so that DeepCOVIDXR can be be fine tuned on external datasets.
+[Google drive link to trained weights](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing)
 
 ## Grad-CAM Visualization 
 Note: GPU use is recommended as loading model weights takes some time.
