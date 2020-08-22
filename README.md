@@ -10,14 +10,6 @@ For those looking for the pre-trained model weights only, they can be downloaded
  
  **!! Note: This platform is not FDA approved for clinical use and is only intended to be used for research purposes.**
 
-## Dataset
-DeepCOVID-XR was first pretrained on 112,120 images from the NIH CXR-14 dataset. The NIH dataset is publicly available and can be downloaded [here](https://nihcc.app.box.com/v/ChestXray-NIHCC). The dataset contains  frontal CXR images that are labeled with 14 separate disease classifications. 
-
-The algorithm was then fine tuned on over 14,000 clinical images (>4,000 COVID-19 positive) from the COVID-19 era and tested on a hold out dataset of over 2,000 images (>1,000 COVID-19 positive) from a hold-out institution that the model was not exposed to during training. 
-
-## Performance 
-DeepCOVID-XR correctly classified images as COVID-19 positive or COVID-19 negative using RT-PCR for the SARS-COV2 virus as the reference standard with an accuracy of 83% and an area under the ROC curve of 0.899 on the hold-out test set, outperforming 3 individual experienced thoracic radiologists and with performance similar to that of the consensus of all 3 radiologists on a subsample of these images.  
-
 ## Model
 ![ensembled model](/img/Model.png)
 | Network Model | Original Paper | 
@@ -33,6 +25,14 @@ DeepCOVID-XR correctly classified images as COVID-19 positive or COVID-19 negati
 ![](header.png)
 
 Note the trained weights of each of the CNN members of the weighted ensemble are available [here](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing). The trained weights for averaging predictions of each of the models for ensembling purposes are available here. The instructions below walk through the entire process of training a model from scratch and also provide code for using our already trained weights for analyzing external datasets and/or images. 
+
+## Dataset
+DeepCOVID-XR was first pretrained on 112,120 images from the NIH CXR-14 dataset. The NIH dataset is publicly available and can be downloaded [here](https://nihcc.app.box.com/v/ChestXray-NIHCC). The dataset contains  frontal CXR images that are labeled with 14 separate disease classifications. 
+
+The algorithm was then fine tuned on over 14,000 clinical images (>4,000 COVID-19 positive) from the COVID-19 era and tested on a hold out dataset of over 2,000 images (>1,000 COVID-19 positive) from a hold-out institution that the model was not exposed to during training. 
+
+## Performance 
+DeepCOVID-XR correctly classified images as COVID-19 positive or COVID-19 negative using RT-PCR for the SARS-COV2 virus as the reference standard with an accuracy of 83% and an area under the ROC curve of 0.899 on the hold-out test set, outperforming 3 individual experienced thoracic radiologists and with performance similar to that of the consensus of all 3 radiologists on a subsample of these images.  
 
 ## Environment
 
