@@ -63,7 +63,7 @@ def get_generator(data_path):
 
 
 def create_member(model_name, model, generator_list):
-    '''Create members of model ensemble'''
+    '''Create a member of model ensemble'''
 
     name_parts = model_name.split("_")
     if "224" in name_parts and "uncrop" in name_parts:
@@ -83,6 +83,7 @@ def create_member(model_name, model, generator_list):
 
 
 def get_members(combined_generator_list, weight_path):
+    '''Creates the list of members for ensembling from a list of data generators and corresponding model weights'''
 
     model_list = get_model_list(weight_path)
 
@@ -121,6 +122,8 @@ def get_members(combined_generator_list, weight_path):
 
 
 def ensemble_members(member_list):
+    '''Calculates weights for each model of an ensemble for weighted averaging of predictions using random
+    search of a Dirichlet distribution'''
     wAvgEnsemble = DirichletEnsemble()
     wAvgEnsemble.add_members(member_list)
     wAvgEnsemble.fit()
@@ -156,6 +159,7 @@ if __name__ == '__main__':
     else:
         output_path = os.getcwd()
 
+    #Calculate model weights for weighted average ensemble
     print('Ensembling models...')
     combined_gen = get_generator(data_dir)
     member_list = get_members(combined_gen, weights)
@@ -163,6 +167,7 @@ if __name__ == '__main__':
     print(len(member_list))
     weights, ensemble_pred, ensemble_pred_round, results_individual = ensemble_members(member_list)
 
+    #Save results of weighted average ensemble
     print('Saving results...')
     files = combined_gen[0].filenames
     actual = combined_gen[0].classes

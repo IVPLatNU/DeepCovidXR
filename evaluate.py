@@ -36,6 +36,7 @@ def get_args():
 
 
 def locate_test_subdirs(img_dir):
+    '''Identify the test dataset directories from a parent directory'''
     dir_224_uncrop = os.path.join(img_dir, '224', 'uncrop', 'Test')
     dir_224_crop = os.path.join(img_dir, '224', 'crop', 'Test')
     dir_331_uncrop = os.path.join(img_dir, '331', 'uncrop', 'Test')
@@ -53,6 +54,13 @@ def get_datagenerators_folders(image_path_224,
                               image_path_331_crop,
                               tta=False,
                                batch_size = 100):
+    '''
+    Produces a list of datagenerators from paths to all 4 preprocessed versions of images
+    Parameters:
+        image_path_*: path to corresponding image data set
+        tta: switch to turn on test time augmentation, default is off
+        batch_size: mini-batch size for making predictions
+    '''
 
     img_util_224 = imgUtils(224)
     test_datagen_224_tta, test_datagen_224_notta = img_util_224.dataGen(rotation=15, h_shift=0.05, w_shift=0.05)
