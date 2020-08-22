@@ -34,36 +34,10 @@ The algorithm was then fine tuned on over 14,000 clinical images (>4,000 COVID-1
 ## Performance 
 DeepCOVID-XR correctly classified images as COVID-19 positive or COVID-19 negative using RT-PCR for the SARS-COV2 virus as the reference standard with an accuracy of 83% and an area under the ROC curve of 0.899 on the hold-out test set, outperforming 3 individual experienced thoracic radiologists and with performance similar to that of the consensus of all 3 radiologists on a subsample of these images.  
 
-## Environment
-
-### Dependencies
-- pandas==0.25.0
-- nibabel==3.1.0
-- efficientnet==1.1.0 https://github.com/qubvel/efficientnet
-- scikit_image==0.15.0
-- tqdm==4.46.0
-- keras_vis==0.5.0 [(installed directly from github link)](https://github.com/raghakot/keras-vis)
-- keras_tuner==1.0.1 https://keras-team.github.io/keras-tuner/
-- opencv_python==4.2.0.34 
-- matplotlib==3.2.1
-- numpy==1.17.0
-- Keras==2.3.1
-- tf_nightly_gpu_2.0_preview==2.0.0.dev20190814
-- deepstack==0.0.9 https://github.com/jcborges/DeepStack
-- Pillow==7.2.0
-- scikit_learn==0.23.2
-- skimage==0.0
-- tensorflow==2.3.0 
-- vis==0.0.5
-
-To set up the environment and install all the packages, run
-```sh
-$pip install -r requirements.txt
-```
-
 ## Table of Contents
 
 - [Train DeepCOVID-XR from Scratch](#Train-DeepCOVID-XR-from-Scratch)
+  * [Environment](#Environment)
   * [Preprocessing](#Preprocessing)
     + [Download Unet Weights](#Download-Unet-Weights)
     + [Crop images](#Crop-images)
@@ -130,6 +104,33 @@ To train DeepCOVID-XR, the dataset should be structured as below:
 The cropped and resized versions of dataset can be obtained with preprocessing. 
 If there is significant class imbalance in your dataset, you should consider oversampling the minority class to improve training. 
 Further details on oversampling can be found [here](https://www.tensorflow.org/tutorials/structured_data/imbalanced_data#oversample_the_minority_class).
+
+### Environment
+
+#### Dependencies
+- pandas==0.25.0
+- nibabel==3.1.0
+- efficientnet==1.1.0 https://github.com/qubvel/efficientnet
+- scikit_image==0.15.0
+- tqdm==4.46.0
+- keras_vis==0.5.0 [(installed directly from github link)](https://github.com/raghakot/keras-vis)
+- keras_tuner==1.0.1 https://keras-team.github.io/keras-tuner/
+- opencv_python==4.2.0.34 
+- matplotlib==3.2.1
+- numpy==1.17.0
+- Keras==2.3.1
+- tf_nightly_gpu_2.0_preview==2.0.0.dev20190814
+- deepstack==0.0.9 https://github.com/jcborges/DeepStack
+- Pillow==7.2.0
+- scikit_learn==0.23.2
+- skimage==0.0
+- tensorflow==2.3.0 
+- vis==0.0.5
+
+To set up the environment and install all the packages, run
+```sh
+$pip install -r requirements.txt
+```
 
 ### Preprocessing 
 Note: All input data should be in 8-bit png or jpeg format. DICOM/Nifti files should be converted to 8-bit png or jpeg files via appropriate preprocessing and windowing based on metadata.
