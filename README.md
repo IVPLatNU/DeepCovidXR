@@ -24,7 +24,7 @@ For those looking for the pre-trained model weights only, they can be downloaded
 
 ![](header.png)
 
-Note the trained weights of each of the CNN members of the weighted ensemble are available [here](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing). The trained weights for averaging predictions of each of the models for ensembling purposes are available here. The instructions below walk through the entire process of training a model from scratch and also provide code for using our already trained weights for analyzing external datasets and/or images. 
+Note the trained weights of each of the CNN members of the weighted ensemble are available [here](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing). The trained weights for averaging predictions of each of the models for ensembling purposes are available [here](/ensemble_weights.pickle). The instructions below walk through the entire process of training a model from scratch and also provide code for using our already trained weights for analyzing external datasets and/or images. 
 
 ## Dataset
 DeepCOVID-XR was first pretrained on 112,120 images from the NIH CXR-14 dataset. The NIH dataset is publicly available and can be downloaded [here](https://nihcc.app.box.com/v/ChestXray-NIHCC). The dataset contains  frontal CXR images that are labeled with 14 separate disease classifications. 
