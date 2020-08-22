@@ -74,8 +74,8 @@ $pip install -r requirements.txt
   * [Ensemble models](#Ensemble-models)
   * [Evaluate ensemble model](#Evaluate-ensemble-model)
 - [DeepCOVID-XR Prediction On New Data](#DeepCOVID-XR-Prediction-On-New-Data)
-  * [Download trained weights](#Download-the-trained-weights)
-  * [Ensemble weights](#Ensemble-weights-of-individual-model-architectures)
+  * [Trained model weights](#Trained-model-weights)
+  * [Ensemble weights](#Ensemble-weights)
 - [Grad-CAM Visualization](#Grad-CAM-Visualization)
 
 ## Train DeepCOVID-XR from Scratch
@@ -357,12 +357,12 @@ optional arguments:
                         this takes significantly longer as each model
 ```
 
-### Download the trained weights
-Our pretrained model weights are provided so that DeepCOVIDXR can be be fine tuned on external datasets.
+### Trained model weights
+Our trained model weights are provided so that DeepCOVIDXR can be be tested and/or fine tuned on external datasets.
 [Google drive link to trained weights](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing)
 
-### Ensemble weights of individual model architectures
-Our ensemble weights for weighting individual model predictions is provided as a pickled list [here](/ensemble_weights.pickle)
+### Ensemble weights
+Our ensemble weights for computing a weighted average of individual model predictions are provided as a pickled list [here](/ensemble_weights.pickle).
 This list is ordered as follows:
 
 `[ dense_224_uncrop,
