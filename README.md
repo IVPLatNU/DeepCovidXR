@@ -385,7 +385,7 @@ optional arguments:
   --ensemble_weight ensemble_weight_path, -e ensemble_weight_path
                         the path to the ensemble weights as a pickled list, if
                         not supplied uses our pretrained weights
-  --tta_off, -t         switch to turn on test-time augmentation, warning:
+  --tta, -t         switch to turn on test-time augmentation, warning:
                         this takes significantly longer as each model
 ```
 
