@@ -284,35 +284,6 @@ optional arguments:
                         save to current working directory
 ```
 
-####Ensemble weights of individual model architectures
-Our ensemble weights for weighting individual model predictions is provided as a pickled list [here](/ensemble_weights.pickle)
-This list is ordered as follows:
-
-`[ dense_224_uncrop,
-                  dense_224_crop,
-                  dense_331_uncrop,
-                  dense_331_crop,
-                  res_224_uncrop,
-                  res_224_crop,
-                  res_331_uncrop,
-                  res_331_crop,
-                  inception_224_uncrop,
-                  inception_224_crop,
-                  inception_331_uncrop,
-                  inception_331_crop,
-                  inceptionresnet_224_uncrop,
-                  inceptionresnet_224_crop,
-                  inceptionresnet_331_uncrop,
-                  inceptionresnet_331_crop,
-                  xception_224_uncrop,
-                  xception_224_crop,
-                  xception_331_uncrop,
-                  xception_331_crop,
-                  efficient_224_uncrop,
-                  efficient_224_crop,
-                  efficient_331_uncrop,
-                  efficient_331_crop] `
-
 
 ### Evaluate ensemble model
 Produces a csv file of predictions vs. actual labels for a test dataset organized in a subdirectory tree according to the schema provided above.
@@ -389,6 +360,35 @@ optional arguments:
 ### Download the trained weights
 Our pretrained model weights are provided so that DeepCOVIDXR can be be fine tuned on external datasets.
 [Google drive link to trained weights](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing)
+
+### Ensemble weights of individual model architectures
+Our ensemble weights for weighting individual model predictions is provided as a pickled list [here](/ensemble_weights.pickle)
+This list is ordered as follows:
+
+`[ dense_224_uncrop,
+                  dense_224_crop,
+                  dense_331_uncrop,
+                  dense_331_crop,
+                  res_224_uncrop,
+                  res_224_crop,
+                  res_331_uncrop,
+                  res_331_crop,
+                  inception_224_uncrop,
+                  inception_224_crop,
+                  inception_331_uncrop,
+                  inception_331_crop,
+                  inceptionresnet_224_uncrop,
+                  inceptionresnet_224_crop,
+                  inceptionresnet_331_uncrop,
+                  inceptionresnet_331_crop,
+                  xception_224_uncrop,
+                  xception_224_crop,
+                  xception_331_uncrop,
+                  xception_331_crop,
+                  efficient_224_uncrop,
+                  efficient_224_crop,
+                  efficient_331_uncrop,
+                  efficient_331_crop] `
 
 ## Grad-CAM Visualization 
 Note: GPU use is recommended as loading model weights takes some time.
