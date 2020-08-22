@@ -72,7 +72,7 @@ $pip install -r requirements.txt
   * [Find best hyper parameters](#Find-best-hyper-parameters)
   * [Train model with best parameters](#Train-model-with-best-parameters)
   * [Ensemble models](#Ensemble-models)
-    + [Ensemble weights](#Ensemble weights of individual model architectures)
+    + [Ensemble weights](#Ensemble-weights-of-individual-model-architectures)
   * [Evaluate ensemble model](#Evaluate-ensemble-model)
 - [DeepCOVID-XR Prediction On New Data](#DeepCOVID-XR-Prediction-On-New-Data)
   * [Download trained weights](#Download-the-trained-weights)
