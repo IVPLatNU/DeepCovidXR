@@ -3,7 +3,7 @@
 
 While findings on chest imaging are not sensitive nor specific enough to replace diagnostic testing for COVID-19, artificially intelligent (AI) systems for automated analysis of CXRs have a potential role in triage and infection control within a hospital setting. Much of the current evidence regarding AI platforms for analysis of CXRs is limited by very small datasets and/or publicly available data of questionable quality. 
 
-DeepCOVID-XR is a weighted ensemble of six popular CNN architectures - DenseNet-121, EfficientNet-B2, Inception-V3, Inception-ResNet-V2, ResNet-50 and Xception - trained and tested on a large clinical dataset from a major US healthcare system, the largest clinical dataset of CXRs from the COVID-19 era to date. 
+DeepCOVID-XR is a weighted ensemble of six popular CNN architectures - DenseNet-121, EfficientNet-B2, Inception-V3, Inception-ResNet-V2, ResNet-50 and Xception - trained and tested on a large clinical dataset from a major US healthcare system, the largest clinical dataset of CXRs from the COVID-19 era used to train a published AI system to date. 
 
 For those looking for the pre-trained model weights only, they can be downloaded here:
  [Google drive link to trained weights](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing)
@@ -24,7 +24,7 @@ For those looking for the pre-trained model weights only, they can be downloaded
 
 ![](header.png)
 
-Note the trained weights of each of the CNN members of the weighted ensemble are available [here](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing). The trained weights for averaging predictions of each of the models for ensembling purposes are available [here](/ensemble_weights.pickle). The instructions below walk through the entire process of training a model from scratch and also provide code for using our already trained weights for analyzing external datasets and/or images. 
+Note the trained weights of each of the CNN members of the weighted ensemble are available [here](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing). The trained weights for averaging predictions of each of the models for ensembling purposes are available [here](/ensemble_weights.pickle). The instructions below walk through the entire process of training a model from scratch and also provide code for using our already trained weights for analyzing external datasets and/or individual images. 
 
 ## Dataset
 DeepCOVID-XR was first pretrained on 112,120 images from the NIH CXR-14 dataset. The NIH dataset is publicly available and can be downloaded [here](https://nihcc.app.box.com/v/ChestXray-NIHCC). The dataset contains  frontal CXR images that are labeled with 14 separate disease classifications. 
@@ -32,7 +32,7 @@ DeepCOVID-XR was first pretrained on 112,120 images from the NIH CXR-14 dataset.
 The algorithm was then fine tuned on over 14,000 clinical images (>4,000 COVID-19 positive) from the COVID-19 era and tested on a hold out dataset of over 2,000 images (>1,000 COVID-19 positive) from a hold-out institution that the model was not exposed to during training. 
 
 ## Performance 
-DeepCOVID-XR correctly classified images as COVID-19 positive or COVID-19 negative using RT-PCR for the SARS-COV2 virus as the reference standard with an accuracy of 83% and an area under the ROC curve of 0.899 on the hold-out test set, outperforming 3 individual experienced thoracic radiologists and with performance similar to that of the consensus of all 3 radiologists on a subsample of these images.  
+DeepCOVID-XR correctly classified images as COVID-19 positive or COVID-19 negative using RT-PCR for the SARS-COV2 virus as the reference standard with an accuracy of 83% and an area under the ROC curve of 0.899 on a hold-out test set of 2,214 images for our institution. Additionally, the accuracy of the system on a random sample of 300 patients' images from the test set was 82%, compared to 76-81% for individual experienced thoracic radiologists. Furthermore, the algorithm performance was similar to the consensus (majority vote) of all 5 radiologists.  
 
 ![](/img/ROC_curves.png)
 
