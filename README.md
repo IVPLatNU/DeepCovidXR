@@ -31,11 +31,6 @@ DeepCOVID-XR was first pretrained on 112,120 images from the NIH CXR-14 dataset.
 
 The algorithm was then fine tuned on over 14,000 clinical images (>4,000 COVID-19 positive) from the COVID-19 era and tested on a hold out dataset of over 2,000 images (>1,000 COVID-19 positive) from a hold-out institution that the model was not exposed to during training. 
 
-## Performance 
-DeepCOVID-XR correctly classified images as COVID-19 positive or COVID-19 negative using RT-PCR for the SARS-COV2 virus as the reference standard with an accuracy of 83% and an area under the ROC curve of 0.899 on a hold-out test set of 2,214 images for our institution. Additionally, the accuracy of the system on a random sample of 300 patients' images from the test set was 82%, compared to 76-81% for individual experienced thoracic radiologists. Furthermore, the algorithm performance was similar to the consensus (majority vote) of all 5 radiologists.  
-
-![](/img/ROC_curves.png)
-
 ## Table of Contents
 
 - [Train DeepCOVID-XR from Scratch](#Train-DeepCOVID-XR-from-Scratch)
