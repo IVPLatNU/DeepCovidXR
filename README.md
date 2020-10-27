@@ -8,7 +8,7 @@ DeepCOVID-XR is a weighted ensemble of six popular CNN architectures - DenseNet-
 For those looking for the pre-trained model weights only, they can be downloaded here:
  [Google drive link to trained weights](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing)
  
- **!! Note: This platform is not FDA approved for clinical use and is only intended to be used for research purposes.**
+ **!! Note: This platform is not FDA approved for clinical use and is only intended to be used for research purposes. See our license for more details.**
 
 ## Model
 ![ensembled model](/img/Model.png)
