@@ -3,7 +3,7 @@
 
 While findings on chest imaging are not sensitive nor specific enough to replace diagnostic testing for COVID-19, artificially intelligent (AI) systems for automated analysis of CXRs have a potential role in triage and infection control within a hospital setting. Much of the current evidence regarding AI platforms for analysis of CXRs is limited by very small datasets and/or publicly available data of questionable quality. 
 
-DeepCOVID-XR is a weighted ensemble of six popular CNN architectures - DenseNet-121, EfficientNet-B2, Inception-V3, Inception-ResNet-V2, ResNet-50 and Xception - trained and tested on a large clinical dataset from a major US healthcare system, the largest clinical dataset of CXRs from the COVID-19 era used to train a published AI system to date. 
+DeepCOVID-XR is a weighted ensemble of six popular CNN architectures - DenseNet-121, EfficientNet-B2, Inception-V3, Inception-ResNet-V2, ResNet-50 and Xception - trained and tested on a large clinical dataset from a major US healthcare system, to our knowledge the largest clinical dataset of CXRs from the COVID-19 era used to train a published AI system to date. 
 
 For those looking for the pre-trained model weights only, they can be downloaded here:
  [Google drive link to trained weights](https://drive.google.com/drive/folders/1_FRViB9xnX1-8582WGfXquOLn2YuiR3k?usp=sharing)
