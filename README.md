@@ -103,6 +103,7 @@ If there is significant class imbalance in your dataset, you should consider ove
 Further details on oversampling can be found [here](https://www.tensorflow.org/tutorials/structured_data/imbalanced_data#oversample_the_minority_class).
 
 ### Environment
+Python version == 3.7
 
 #### Dependencies
 - pandas==0.25.0
@@ -116,12 +117,12 @@ Further details on oversampling can be found [here](https://www.tensorflow.org/t
 - matplotlib==3.2.1
 - numpy==1.17.0
 - Keras==2.3.1
-- tf_nightly_gpu_2.0_preview==2.0.0.dev20190814
+- tensorflow-gpu==2.0.0 
 - deepstack==0.0.9 https://github.com/jcborges/DeepStack
 - Pillow==7.2.0
 - scikit_learn==0.23.2
 - skimage==0.0
-- tensorflow==2.3.0 
+- tensorflow==2.0.0 
 - vis==0.0.5
 
 To set up the environment and install all the packages, run
