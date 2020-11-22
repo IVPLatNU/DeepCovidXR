@@ -612,14 +612,16 @@ if __name__ == '__main__':
     parser.add_argument('-o', '--output', type = str, help = 'the directory of the resized image')
     args = parser.parse_args()
     UNet_path = args.Unet
+    folder_path = os.path.normpath(args.folder)
+    output_path = os.path.normpath(args.output)
 
 
 
-    if not os.path.isdir(args.folder):
-        containing_folder = os.path.dirname(args.folder)
-        singlefolder_lungseg(containing_folder, args.output, UNet_path, out_pad_size=8, debug=False, filenames=[pathlib.Path(args.folder)])
+    if not os.path.isdir(folder_path):
+        containing_folder = os.path.dirname(folder_path)
+        singlefolder_lungseg(containing_folder, output_path, UNet_path, out_pad_size=8, debug=False, filenames=[pathlib.Path(folder_path)])
     else:
-        singlefolder_lungseg(args.folder, args.output, UNet_path, out_pad_size=8, debug=False)
+        singlefolder_lungseg(folder_path, output_path, UNet_path, out_pad_size=8, debug=False)
     print('Completed!')
     
 
