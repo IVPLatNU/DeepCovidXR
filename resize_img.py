@@ -22,8 +22,8 @@ if __name__ == '__main__':
     parser.add_argument('-o', '--output_path', type=str, help='the directory of the output path')
     parser.add_argument('-s', '--size', type=int, help='the cropping size')
     args = parser.parse_args()
-    input_path = args.input_path
-    output_path = args.output_path
+    input_path = os.path.normpath(args.input_path)
+    output_path = os.path.normpath(args.output_path)
     img_size = args.size
 
     resize_images(input_path, output_path, img_size)
