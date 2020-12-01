@@ -322,7 +322,7 @@ optional arguments:
 
 
 ## DeepCOVID-XR Prediction On New Data
-Produces predictions of COVID-19 positivity or negativity on a folder of images or a single image. 
+Produces predictions of COVID-19 positivity or negativity on a folder of images or a single image. Note this module performs all preprocessing steps including cropping and resizing - therefore original png images can be provided for analysis. 
 After analysis is complete, the user will be prompted as to whether further predictions are desired. 
 
 Note: If using your own weights, folder provided should contain weight files for each of the 24 trained trained ensemble models in the format '{Model}_{img_size}\_up\_{crop_stat}.h5', where model is one of:
