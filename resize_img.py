@@ -13,7 +13,7 @@ def resize_images(input_path, output_path, img_size):
         im = Image.open(file)
         im = im.resize((img_size, img_size), resample=Image.LANCZOS)
         im.save(os.path.join(output_path, filename))
-    print('Successfully resize {} images to {}*{}'.format(len(files), img_size, img_size))
+    print('Successfully resized {} images to {}*{}'.format(len(files), img_size, img_size))
 
 
 if __name__ == '__main__':

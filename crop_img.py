@@ -452,7 +452,7 @@ def lungseg_fromdata(X, resized_raw, raw_images, file_paths, UNet, result_folder
     # with tf.device('/GPU:0'):
     n_test = X.shape[0]
     inp_shape = X[0].shape
-    UNet = load_model(UNet)
+    UNet = load_model(UNet, compile=False)
     print('n_test = {}'.format(n_test))
     # For inference standard keras ImageGenerator can be used.
     test_gen = ImageDataGenerator(rescale=1.)
