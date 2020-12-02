@@ -137,6 +137,7 @@ We recommend using python version 3.6 or 3.7, as we have not tested this applica
 To set up the environment:
 
 Option1:
+
 Pull a docker image from DockerHub that contains all of the necessary dependencies. deepcovidxr:large is our production image and includes packages that are not necessary for this project. Warning: you must have 17.3GB free disk space to pull this docker image. 
 
 ```sh
@@ -421,7 +422,7 @@ This list is ordered as follows:
                   efficient_331_crop] `
 
 ## Grad-CAM Visualization 
-Note: GPU use is recommended as loading model weights takes some time.
+Note: GPU use is recommended. Loading model weights takes some time, but once loaded generating Grad-CAM heatmaps takes a matter of seconds per image on a GPU.
 Grad-CAM heat maps can be generated for an individual image of a folder contains several images. 
 An example is provided as below
 
