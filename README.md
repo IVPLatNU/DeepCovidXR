@@ -106,10 +106,15 @@ Further details on oversampling can be found [here](https://www.tensorflow.org/t
 This package was created within an environment specified by building a docker container on a Centos7 server with 5 NVIDIA TitanV GPUs. 
 
 The OS/drivers/software used to create this package were as follows:
+
 Ubuntu 18.04.2 LTS
+
 NVIDIA driver version: 410.93
+
 CUDA version: 10.0.130
+
 CUDNN version: 7.6.2
+
 Python version == 3.6.8
 
 We recommend using python version 3.6 or 3.7, as we have not tested this application on other versions. Additionally, the dependencies required to run this library are listed below:
