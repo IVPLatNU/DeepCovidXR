@@ -103,7 +103,16 @@ If there is significant class imbalance in your dataset, you should consider ove
 Further details on oversampling can be found [here](https://www.tensorflow.org/tutorials/structured_data/imbalanced_data#oversample_the_minority_class).
 
 ### Environment
-Python version == 3.7
+This package was created within an environment specified by building a docker container on a Centos7 server with 5 NVIDIA TitanV GPUs. 
+
+The OS/drivers/software used to create this package were as follows:
+Ubuntu 18.04.2 LTS
+NVIDIA driver version: 410.93
+CUDA version: 10.0.130
+CUDNN version: 7.6.2
+Python version == 3.6.8
+
+We recommend using python version 3.6 or 3.7, as we have not tested this application on other versions. Additionally, the dependencies required to run this library are listed below:
 
 #### Dependencies
 - pandas==0.25.0
@@ -125,10 +134,32 @@ Python version == 3.7
 - tensorflow==2.0.0 
 - vis==0.0.5
 
-To set up the environment and install all the packages, run
+To set up the environment:
+
+Option1:
+Pull a docker image from DockerHub that contains all of the necessary dependencies. deepcovidxr:large is our production image and includes packages that are not necessary for this project. Warning: you must have 17.3GB free disk space to pull this docker image. 
+
+```sh
+docker pull rwehbe/deepcovidxr:large
+```
+
+You can also pull a smaller version of a docker image that includes only dependencies necessary for this project. Note: this has not been extensively tested as has the larger image. Warning: you must have at least 5.48GB free disk space to pull this docker image.
+
+```sh
+docker pull rwehbe/deepcovidxr:small
+```
+
+[Link to DockerHub Repository](https://hub.docker.com/repository/docker/rwehbe/deepcovidxr/general)
+
+Option2:
+
+To install all the packages in a conda environment or virtualenv, run
+
 ```sh
 $pip install -r requirements.txt
 ```
+
+Note: This has not been as extensively tested as using the Docker images above. You may run into issues depending on your hardware/OS specifics. 
 
 ### Preprocessing 
 Note: All input data should be in 8-bit png or jpeg format. DICOM/Nifti files should be converted to 8-bit png or jpeg files via appropriate preprocessing and windowing based on metadata.
