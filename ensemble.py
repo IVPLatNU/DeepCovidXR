@@ -12,6 +12,15 @@ import pandas as pd
 import pickle
 
 def get_args():
+    """
+    This function gets various user input from command line. The user input variables
+    include the path to pretrained weight files, the path to the dataset and the path
+    where the output should be saved.
+    
+    Returns:
+        parser.parse_args() (list): a list of user input values.
+
+    """
     # Implement command line argument
     parser = argparse.ArgumentParser(description='Ensemble trained models to generate confusion matrices.')
     parser.add_argument('--weight', '-w', dest='weight_path', metavar='weight_path',
@@ -30,7 +39,21 @@ def get_args():
 
 
 def get_generator(data_path):
-    '''Create lists of validation and test generators'''
+    """
+    This function creates a list of validation and test image generators. 
+    
+    Parameters:
+        data_path (string): the path to the parent directory of the images.
+    
+    Returns:
+        combined_gen (list): a cmobined list of validation and test image generators.
+        The first four members are validation generators for uncropped 224x224 images,
+        cropped 224x224 images, uncropped 331x331 images and cropped 331x331 images.
+        The last four members are test generators for images in the same order as 
+        the first four members. All generators have batch size 16.
+        To learn more about the structure of the directories, check out Readme.md.
+
+    """
 
     crop_224_valid_dir = os.path.join(data_path, '224', 'crop', 'Validation')
     crop_224_test_dir = os.path.join(data_path, '224', 'crop', 'Test')
@@ -63,7 +86,21 @@ def get_generator(data_path):
 
 
 def create_member(model_name, model, generator_list):
-    '''Create a member of model ensemble'''
+    #'''Create a member of model ensemble'''
+    """
+    This function creates a member of model ensemble. 
+    
+    Parameters:
+        model_name (string): the name of the model. Must be a member of the model_name_list
+        as provided in the function get_members.
+        model (class): a keras model corresponds to the model name.
+        generator_list (list): a list of test and validation image generators.
+        
+    
+    Returns:
+        member (class): a member object for model ensembling.
+
+    """
 
     name_parts = model_name.split("_")
     if "224" in name_parts and "uncrop" in name_parts:
@@ -83,8 +120,21 @@ def create_member(model_name, model, generator_list):
 
 
 def get_members(combined_generator_list, weight_path):
-    '''Creates the list of members for ensembling from a list of data generators and corresponding model weights'''
+    #'''Creates the list of members for ensembling from a list of data generators and corresponding model weights'''
+    """
+    This function creates a list of ensembling memebers from data generators and
+    correspongding model weights. 
+    
+    Parameters:
+        combined_generator_list (list): a list of validation and test image data generators.
+        weight_path (string): the path to pretrained weight files.
+        
+    
+    Returns:
+        member_list (list): a list of model members for ensembling.
 
+    """
+    
     model_list = get_model_list(weight_path)
 
     model_name_list = ['dense_224_uncrop',
@@ -122,8 +172,30 @@ def get_members(combined_generator_list, weight_path):
 
 
 def ensemble_members(member_list):
-    '''Calculates weights for each model of an ensemble for weighted averaging of predictions using random
-    search of a Dirichlet distribution'''
+    """
+    This function calculates weights for each model of an ensemble for weighted 
+    averaging of predictions using random search of a Dirichlet distribution. 
+    
+    Parameters:
+        member_list (list): a list of model members for ensembling.
+        
+    
+    Returns:
+        wAvgEnsemble.bestweights (list): a list of float numbers which represents
+        the best weight for each ensembled model.
+        
+        ensemble_pred (float): the weighted sum of each ensembled member's predicted
+        probability for a single image.
+        
+        ensemble_pred_round (int): the rounded weighted sum of each emsembled 
+        member's predicted probability for a single image. Can either be 1 or 0.
+        
+        individual_preds (pandas dataframe): the predicted probability of each 
+        ensembled model for a single image.
+
+    """
+    #'''Calculates weights for each model of an ensemble for weighted averaging of predictions using random
+    #search of a Dirichlet distribution'''
     wAvgEnsemble = DirichletEnsemble()
     wAvgEnsemble.add_members(member_list)
     wAvgEnsemble.fit()
@@ -150,6 +222,12 @@ def ensemble_members(member_list):
 
 
 if __name__ == '__main__':
+    """
+    The main function ensembles individual models and store the trained results
+    for each model and each image to "individual_predictions.csv". The weighted 
+    sum of the predicted probability are saved to "ensemble_prediction.csv". 
+
+    """
     args = get_args()
     weights = os.path.normpath(args.weight_path[0])
     data_dir = os.path.normpath(args.data_path[0])

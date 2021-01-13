@@ -3,8 +3,24 @@ import argparse
 import os
 from utils import nihUtils, imgUtils, trainFeatures
 
+""" NIH pretrain
+
+This script will perform pretraining on one of the six models on the NIH dataset. 
+The dataset will be downloaded and unzipped if it does not exist in the input path. 
+
+The provided parameters are the model to be pretrained, the size of NIH images 
+and the path to the NIH dataset. A .csv file named "NIH_Data_Entry.csv" and a directory
+that contains the NIH images are required to start the pretrain. 
+
+The pretrain hyperparameters can be found in the main function, which includes: 
+    batch size (int), image augmentation parameters, learning rate (float), momentum (float),
+    Nesterov momentum (boolean), early stopping parameters, 
+The model will be trained with 50 epochs.
+"""
 def get_args():
-    # Implement command line argument
+    """
+    This function retrieves user input command line arguments. 
+    """
     parser = argparse.ArgumentParser(description='Pretrain a model on NIH dataset.')
     
     parser.add_argument('-m', '-model', dest='model_name', metavar = 'model_name', 
@@ -27,6 +43,9 @@ def get_args():
 
 if __name__=='__main__':
 
+    """
+    This  is the main function for NIH dataset processing and pretraining. 
+    """
     args = get_args()
     nih_path = os.path.normpath(args.path[0])
     img_size = args.img_size[0]
@@ -61,7 +80,7 @@ if __name__=='__main__':
                                                       train_df, val_df, labels)
 
     
-    # Train a given model on NIH dataset
+    # Pretrain a given model on NIH dataset
     lr = 0.001
     momentum = 0.9
     nestrov = True

@@ -6,6 +6,16 @@ import os
 import pandas as pd
 
 def get_args():
+    """
+    This function gets various user input form command line. The user input variables
+    include the path to pretrained weight files, the path to the iamge dataset, 
+    the path where the output should be saved, the path to ensembled weights as 
+    a pickled list and the test-time augmentation switch.
+    
+    Returns:
+        parser.parse_args() (list): a list of user input values.
+
+    """
     # Implement command line argument
     parser = argparse.ArgumentParser(
         description='For each input image, generates predictions of COVID-19 status.')
@@ -36,7 +46,19 @@ def get_args():
 
 
 def locate_test_subdirs(img_dir):
-    '''Identify the test dataset directories from a parent directory'''
+    """
+    This function identifies the test dataset directory from a parent directory. 
+    
+    Parameters:
+        img_dir (string): the path to the parent directory of the images.
+    
+    Returns:
+        dir_224/331_uncrop/crop (string): the path to the images which has the 
+        properties as specified in the directory name (224x224/331x331 in size
+                                                       and cropped or uncropped). 
+    """
+    
+    #'''Identify the test dataset directories from a parent directory'''
     dir_224_uncrop = os.path.join(img_dir, '224', 'uncrop', 'Test')
     dir_224_crop = os.path.join(img_dir, '224', 'crop', 'Test')
     dir_331_uncrop = os.path.join(img_dir, '331', 'uncrop', 'Test')
@@ -54,13 +76,18 @@ def get_datagenerators_folders(image_path_224,
                               image_path_331_crop,
                               tta=False,
                                batch_size = 100):
-    '''
-    Produces a list of datagenerators from paths to all 4 preprocessed versions of images
+    """
+    This function produces a list of datagenerators from paths to all 4 preprocessed 
+    versions of images
+    
     Parameters:
-        image_path_*: path to corresponding image data set
-        tta: switch to turn on test time augmentation, default is off
-        batch_size: mini-batch size for making predictions
-    '''
+        image_path_* (string): path to corresponding image data set
+        tta (boolean): switch to turn on test time augmentation, default is off
+        batch_size (int): mini-batch size for making predictions
+        
+    Returns:
+        datagen_list (list): a list of test data generators.
+    """
 
     img_util_224 = imgUtils(224)
     test_datagen_224_tta, test_datagen_224_notta = img_util_224.dataGen(rotation=15, h_shift=0.05, w_shift=0.05)
@@ -103,6 +130,13 @@ def get_datagenerators_folders(image_path_224,
 
 
 if __name__ == '__main__':
+    """
+    The main function generates predictions for a given test image dataset. The
+    results will be saved as "predictions.csv". A confusion matrix and ROC curve
+    will also be generated.
+
+    """
+    
     args = get_args()
     weights = os.path.normpath(args.weight_path)
     img_dir = os.path.normpath(args.img_path)

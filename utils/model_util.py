@@ -8,6 +8,23 @@ from covid_models import DenseNet, ResNet, XceptionNet, EfficientNet, InceptionN
 
 class trainFeatures():
     def getModel(self, model_name, img_size, weight):
+        """
+        
+        This function retrieves models that will later be used for training.
+        
+        Parameters:
+            model_name (string): the name of the model to retrieve.
+            img_size (int): the size of the input image (img_size, img_size).
+            weight (string): the path to pretrained weights. Can be empty.
+        
+        Returns:
+            freeze_model (class): model with all layers except for fully connected
+            layers freezed.
+            model (class): model with global average pooling layer and a dense 
+            layer with sigmoid activation function.
+            base (class): the model used for kears tuner. 
+            
+        """
         if model_name == 'ResNet-50':
             resnet = ResNet(weight)
             base = resnet.buildTunerModel(img_size)
@@ -47,6 +64,23 @@ class trainFeatures():
         return freeze_model, model, base
     
     def getNihModel(self, model_name, img_size, weight, label_len):
+        """
+        
+        This function retrieves models used for pretraining.
+        
+        Parameters:
+            model_name (string): the name of the model to retrieve.
+            img_size (int): the size of the input image (img_size, img_size).
+            weight (string): the path to pretrained weights. Can be empty.
+            label_len (int): the length of the labels from the NIH dataset.
+        
+        Returns:
+            freeze_model (class): model with all layers except for fully connected
+            layers freezed for pretraining.
+            model (class): model with global average pooling layer and a dense 
+            layer with sigmoid activation function.
+        """
+            
         if model_name == 'ResNet-50':
             resnet = ResNet(weight)
             model = resnet.buildNihModel(img_size, label_len)
@@ -81,6 +115,20 @@ class trainFeatures():
     
     
     def getDropoutModel(self, model_name, img_size, weight, dropout):
+        """
+        
+        This function retrieves models used for keras tuner.
+        
+        Parameters:
+            model_name (string): the name of the model to retrieve.
+            img_size (int): the size of the input image (img_size, img_size).
+            weight (string): the path to pretrained weights. Can be empty.
+            dropout (float): the drop out rate for the dropout layer. Must be less than 1.
+        
+        Returns:
+            drop_model (class): model with dropout layer.
+            
+        """
         if model_name == 'ResNet-50':
             resnet = ResNet(weight)
             drop_model = resnet.buildDropModel(img_size, dropout)
@@ -114,6 +162,21 @@ class trainFeatures():
         return drop_model
     
     def getAllModel(self, img_size, weight_dir, crop_stat):
+        """
+        
+        This function retrieves all six models includes a global average 
+        pooling layer and a dense layer with sigmoid activation function.
+        
+        Parameters:
+            img_size (int): the size of the input image (img_size, img_size).
+            weight_dir (string): the path to the directory with pretrained weights.
+            crop_stat (string): the size of cropped images in string format. In 
+            this case, it can be either "224" or "331".
+            
+        Returns:
+            ***_model: the individual model with pretrained weights loaded.
+            
+        """
         res_weight = os.path.join(weight_dir, 
                                   'ResNet50_{size}_up_{crop}.h5'.format(size = img_size, crop = crop_stat))
         xception_weight = os.path.join(weight_dir,
@@ -143,6 +206,20 @@ class trainFeatures():
         return res_model, xception_model, dense_model, inception_model, inceptionres_model, efficient_model
 
     def getAllModelFast(self, img_size, weight_dir, crop_stat):
+        """
+        
+        This function retrieves all six models with pretrained weights loaded.
+        
+        Parameters:
+            img_size (int): the size of the input image (img_size, img_size).
+            weight_dir (string): the path to the directory with pretrained weights.
+            crop_stat (string): the size of cropped images in string format. In 
+            this case, it can be either "224" or "331".
+            
+        Returns:
+            ***_model: the individual model with pretrained weights loaded.
+        """
+        
         res_weight = os.path.join(weight_dir,
                                   f'ResNet50_{img_size}_up_{crop_stat}.h5')
         xception_weight = os.path.join(weight_dir,
@@ -166,6 +243,20 @@ class trainFeatures():
         return res_model, xception_model, dense_model, inception_model, inceptionres_model, efficient_model
     
     def getAllDropModel(self, img_size, weight_dir, crop_stat, dropout):
+        """
+        
+        This function retrieves all six models with dropout layers.
+        
+        Parameters:
+            img_size (int): the size of the input image (img_size, img_size).
+            weight_dir (string): the path to the directory with pretrained weights.
+            crop_stat (string): the size of cropped images in string format. In 
+            this case, it can be either "224" or "331".
+            dropout (float): the drop out rate for the dropout layer. Must be less than 1.
+            
+        Returns:
+            ***_model: the individual model with a dropout layer.
+        """
         res_weight = os.path.join(weight_dir, 
                                   'ResNet50_{size}_up_{crop}.h5'.format(size = img_size, crop = crop_stat))
         xception_weight = os.path.join(weight_dir,
@@ -195,6 +286,20 @@ class trainFeatures():
         return res_model, xception_model, dense_model, inception_model, inceptionres_model, efficient_model
 
     def setCP(self, monitor, model_path):
+        """
+        
+        This function sets a model checkpoint to save model weights.
+        
+        Parameters:
+            monitor (string): the metrics which determines when to save the weight.
+            model_path (string): the path to the directory where the weight file
+            will be saved.
+            
+        Returns:
+            check_point (class): the object with check point information for 
+            saving weight files in middle of training.
+        """
+        
         checkpoint = ModelCheckpoint(
                                         filepath = model_path,
                                         verbose=1,
@@ -204,6 +309,21 @@ class trainFeatures():
         return checkpoint
     
     def setES(self, monitor, patience, min_delta):
+        """
+        
+        This function sets model early stopping conditions.
+        
+        Parameters:
+            monitor (string): the metrics which determines when stop early.
+            patience (int): number of epochs with no improvement after which 
+            training will be stopped.
+            min_delta (float): minimum change in the monitored quantity to qualify 
+            as an improvement
+            
+        Returns:
+            es (class): the model early stopping informations.
+            
+        """
         es = EarlyStopping(monitor=monitor, 
                    verbose=1, 
                    patience=patience, 
@@ -212,6 +332,21 @@ class trainFeatures():
         return es
     
     def setRLP(self, monitor, factor, patience):
+        """
+        
+        This function sets reduce learning rate conditions for a model.
+        
+        Parameters:
+            monitor (string): the metrics which determines when stop early.
+            patience (int): number of epochs with no improvement after which 
+            learning rate will be reduced.
+            min_delta (float): threshold for measuring the new optimum, to only 
+            focus on significant changes.
+            
+        Returns:
+            rlr (class): learning rate reducting information for a model.
+            
+        """
         rlr = ReduceLROnPlateau(monitor=monitor,
                         mode='max',
                         factor=factor,
@@ -219,6 +354,21 @@ class trainFeatures():
         return rlr
         
     def NIHgenerator(self, model, batch_size, train_gen, val_gen, epochs, cp, rlr, es):
+        """
+        
+        This function fits the model on data yielded batch-by-batch by a Python generator.
+        
+        Parameters:
+            model (class): the model to be fitted
+            batch_size (int): number of samples per batch.
+            train_gen (class): a batch of train set images and corresponding labels.
+            val_gen (class): a batch of validation set images and corresponding labels.
+            epochs (int): number of epochs the model will be trained.
+            cp (class): model check point for saving weights.
+            rlr (class): learning rate reducing information for the model.
+            es (class): early stopping information for the model.
+            
+        """
         model.fit_generator(train_gen,
               steps_per_epoch=len(train_gen.classes)/batch_size,
               validation_data=val_gen,
@@ -227,10 +377,29 @@ class trainFeatures():
               callbacks=[cp, rlr, es])
      
     def load(self, model, weights):
+        """
+        
+        This function loads a given weight to the model.
+        
+        Parameters:
+            model (class): the model to be loaded
+            weights (string): the path to the weight to be loaded.
+        """
         model.load_weights(weights)
         return model
     
     def unfreeze(self, model):
+        """
+        
+        This function unfreezes and make the entier input model trainable.
+        
+        Parameters:
+            model (class): the model to be unfreezed.
+            
+        Returns:
+            model (class): the model with all layers unfreezed.
+            
+        """
         for layer in model.layers[0:]:
             layer.trainable = True
         return model
@@ -243,6 +412,18 @@ class trainFeatures():
         return history
     
     def compileModel(self, model, lr, momentum, nestrov):
+        """
+        
+        This function configures a model for training. SGD is used for training.
+        
+        Parameters:
+            model (class): the model to be configured.
+            lr (float): the learning rate.
+            momentum (float): accelerates gradient descent in the relevant 
+            direction and dampens oscillations.
+            nestrov (boolean): Whether to apply Nesterov momentum.
+            
+        """
         model.compile(loss='binary_crossentropy', optimizer=optimizers.SGD(learning_rate=lr, 
                                              momentum=momentum,
                                              nesterov=nestrov,

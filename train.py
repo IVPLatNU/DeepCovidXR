@@ -4,8 +4,26 @@ import os
 from utils import imgUtils, trainFeatures
 import pickle
 
+"""Train model
+
+This script will train one of the six models used in ensemble with a given dataset.
+The fully connected layers will be freezed at first. Then all layers will be unfreezed.
+Hyperparameters can be changed in the main functions.
+
+"""
+
 def get_args():
-    # Implement command line argument
+    """
+    This function gets various user input form command line. The user input variables
+    include the name of the model to be trained, the size of the input images, 
+    the path to the iamge dataset, the output path where the results and trained
+    weights will be saved, the path to the weight from pretraining no NIH dataset
+    and the path to pickled hyper parameters.
+    
+    Returns:
+        parser.parse_args() (list): a list of user input values.
+    """
+    
     parser = argparse.ArgumentParser(description='Train a model on a given dataset.')
     
     parser.add_argument('-m', '--model', dest='model_name', metavar = 'model_name', 
@@ -37,6 +55,30 @@ def get_args():
     return parser.parse_args()
 
 def make_path(data_dir, base, exp_name):
+    
+    """
+    This function creates path to save the training results and weights.
+    
+    Parameters:
+        data_dir (string): the path to the parent directory of training and 
+        validation datasets.
+        
+        base (string): the path to the parent directory of saved weights.
+        
+        exp_name (string): a unique name for different experiment runs.
+        
+    Returns:
+        train_path (string): the path to the training dataset.
+        valid_path (string): the path to the validation dataset.
+        freeze_weight_save_path (string): the path to the trained weight with layers 
+        freezed.
+        unfreeze_weight_save_path (string): the path to the trained weight with all
+        layers unfreezed.
+        freeze_img_save_path (string): the path to the result images with layers
+        freezed. 
+        unfreeze_img_save_path (string): the path to the result images with all
+        layers unfreezed.
+    """
 
     train_path = os.path.join(data_dir, 'Train')
     valid_path = os.path.join(data_dir, 'Validation')
@@ -71,6 +113,15 @@ def make_path(data_dir, base, exp_name):
     return train_path, valid_path, freeze_weight_save_path, unfreeze_weight_save_path, freeze_img_save_path, unfreeze_img_save_path
 
 if __name__=='__main__':
+    
+    """
+    The main function sets vairous training parameters such as batch size
+    and image augmentation parameters. The fully connected layers are first trained
+    for 50 epochs and then the entire network is trained for another 50 epochs.
+    
+    The hyper parameters are set in this main function and can be changed below.
+    The result images will be saved.
+    """
     
     batch_size = 16
     rotation_range = 15
