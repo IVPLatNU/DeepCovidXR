@@ -7,7 +7,26 @@ import kerastuner
 from kerastuner.tuners import BayesianOptimization
 import pickle
 
+"""Tune model
+
+This script will use keras tuner to tune one of the six models used in ensemble 
+with a given dataset. The fully connected layers will be freezed at first. Then 
+all layers will be unfreezed. Hyperparameters can be changed in the main functions.
+
+"""
+
 def get_args():
+    
+    """
+    This function gets various user input form command line. The user input variables
+    include the name of the model to be tuned, the size of the input images, 
+    the path to the iamge dataset, the path to the pretrianed weight file, and the 
+    patht to the output directory where results will be saved.
+    
+    Returns:
+        parser.parse_args() (list): a list of user input values.
+    """
+    
     # Implement command line argument
     parser = argparse.ArgumentParser(description='Use keras tuner to find best hyper parameter.')
     
@@ -39,6 +58,31 @@ def get_args():
     return parser.parse_args()
 
 def make_path(data_dir, base, exp_name):
+    
+    """
+    This function creates path to save the training results and weights.
+    
+    Parameters:
+        data_dir (string): the path to the parent directory of training and 
+        validation datasets.
+        
+        base (string): the path to the parent directory of saved weights.
+        
+        exp_name (string): a unique name for different experiment runs.
+        
+    Returns:
+        train_path (string): the path to the training dataset.
+        valid_path (string): the path to the validation dataset.
+        freeze_weight_save_path (string): the path to the trained weight with layers 
+        freezed.
+        unfreeze_weight_save_path (string): the path to the trained weight with all
+        layers unfreezed.
+        freeze_img_save_path (string): the path to the result images with layers
+        freezed. 
+        unfreeze_img_save_path (string): the path to the result images with all
+        layers unfreezed.
+    """
+    
     train_path = os.path.join(data_dir, 'Train')
     valid_path = os.path.join(data_dir, 'Validation')
     
@@ -69,6 +113,16 @@ def make_path(data_dir, base, exp_name):
     return train_path, valid_path, freeze_save_path, unfreeze_save_path, best_model_path, best_weight_path, best_param_path
         
 if __name__=='__main__':
+    
+    """
+    The main function sets vairous tuner parameters such as batch size and image 
+    augmentation parameters. The fully connected layers are first trained for 50 
+    epochs and then the entire network is trained for another 50 epochs.
+    
+    The hyper parameters are set in this main function and can be changed below.
+    The best model hyperparameters will be pickled and saved. The best model and 
+    weights will also be saved.
+    """
     
     batch_size = 16
     rotation_range = 20

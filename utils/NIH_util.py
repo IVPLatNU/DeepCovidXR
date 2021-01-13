@@ -11,9 +11,26 @@ import pandas as pd
 import urllib
 
 
+
 class nihUtils():
-    # Create a direcotry for NIH dataset
+    """
+    This class contains functions for NIH dataset download, unzip and pretrain
+    preparations. 
+    
+    """
     def createDir(self, nih_dir):
+        """
+        This function checks if the user needs to creates a new directory to 
+        download and store NIH dataset. 
+        
+        Parameters:
+            nih_dir (string): the path contains the NIH dataset. 
+        
+        Returns:
+            nih_dir (string): the path contains the NIH dataset.
+            create (boolean): a flag to check if a path needs to be created for
+                              the NIH dataset.
+        """
         create = False
         if not os.path.isdir(nih_dir):
             create = True
@@ -21,6 +38,15 @@ class nihUtils():
         return nih_dir, create
 
     def reporthook(self, count, block_size, total_size):
+        """
+        This function shows progress bar, download speed and duration
+        when downloading the NIH dataset.
+        
+        Parameters:
+            count (int): the number of progress bar block.
+            block_size (int): the size of each progress bar block.
+            total_size (int): the total size of the downloading file.
+        """
         global start_time
         if count == 0:
             start_time = time.time()
@@ -33,10 +59,24 @@ class nihUtils():
                          (percent, progress_size / (1024 * 1024), speed, duration))
         sys.stdout.flush()
 
-        # Class for printing extraction progress
-
     def get_file_progress_file_object_class(self, on_progress):
+        """
+        This function returns a unzip progress object.
+        
+        Parameters:
+            on_progress (function): see description below.
+            
+        Returns:
+            FileProgressFileObject (class): 
+        """
         class FileProgressFileObject(tarfile.ExFileObject):
+            """
+            This class is used to get the unzip progress of a file.
+    
+            Attributes: 
+                tarfile.ExFileObject (class): File-like object for reading an archive member.
+            """
+            
             def read(self, size, *args):
                 on_progress(self.name, self.position, self.size)
                 return tarfile.ExFileObject.read(self, size, *args)
@@ -44,6 +84,15 @@ class nihUtils():
         return FileProgressFileObject
 
     def on_progress(self, filename, position, total_size):
+        """
+        This function prints information about current unzippping progress.
+        
+        Parameters:
+            filename (string): the name of the file being unzipped.
+            position (int): current unzipped file size.
+            total_size (string): total size of the unzipped file.
+        """
+        
         print("%s: %d of %s" %(filename, position, total_size), end='\r', flush=True)
 
     class ProgressFileObject(io.FileIO):
@@ -55,8 +104,15 @@ class nihUtils():
             print("Overall process: %d of %d" % (self.tell(), self._total_size), end='\r', flush=True)
             return io.FileIO.read(self, size)
 
-    # Download NIH dataset
     def nihDownload(self, nih_dir):
+        """
+        This function downloads the entire NIH dataset and unzip the files.
+        This process may take a few hours. 
+        
+        Parameters:
+            nih_dir (string): the path the NIH dataset will be downloaded and 
+                              unzipped in.
+        """
         links = [
             'https://nihcc.box.com/shared/static/vfk49d74nhbxq3nqjg0900w5nvkorp5c.gz',
             'https://nihcc.box.com/shared/static/i28rlmbvmfjbl8p2n3ril0pptcmcu9d1.gz',
@@ -90,6 +146,20 @@ class nihUtils():
 
     # Split NIH dataset into train set and validation set
     def nihSplit(self, csv_name, img_path):
+        """
+        This function splits the NIH dataset into train set and validation set.
+        20% of the images will be split into validation set. 
+        
+        Parameters:
+            csv_name (string): the name of the csv file which contains the 
+                               labels of the images.
+            img_path (string): the path to the NIH dataset images.
+            
+        Returns:
+            train_df (dataframe): the dataframe that contains information of the train set.
+            valid_df (dataframe): the dataframe that contains information of the test set.
+            labels (string array): an array of class labels for each image in the dataset.
+        """
         df = pd.read_csv(csv_name)
         data_image_paths = {os.path.basename(x): x for x in glob(os.path.join(img_path, '*.png'))}
         df['Finding Labels'] = df['Finding Labels'].map(lambda x: x.replace('No Finding', ''))
@@ -118,6 +188,25 @@ class nihUtils():
         return train_df, valid_df, labels
 
     def nihGenerator(self, image_size, batch_size, train, val, train_df, valid_df, labels):
+        """
+        This function generates train set and validation set batch.
+        
+        Parameters:
+            image_size (int): the size of the images in the batch
+            batch_size (int): the size of the batches of images
+            train (class): the keras image data generator class object for 
+                           train set which generate batches of tensor image 
+                           data with real-time data augmentation.
+            val (class): the keras image data generator class object for 
+                           validation set.
+            train_df (dataframe): the dataframe that contains information of the train set.
+            valid_df (dataframe): the dataframe that contains information of the validation set.
+            labels (array): an array of class labels for each image in the dataset.
+            
+        Returns:
+            train_gen (dataframeiterator): a batch of train set images and corresponding labels.
+            valid_gen (dataframeiterator): a batch of validation set images and corresponding labels.
+        """
         train_gen = train.flow_from_dataframe(dataframe=train_df,
                                               directory=None,
                                               x_col='path',

@@ -15,8 +15,25 @@ import pathlib
 
 os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
 
+"""Image probability prediction
+
+This script will predict the probability of COVID-19 positive for a image test set.
+
+The result will be predicted with a trained ensembled model. The image can be optionally
+resized to 224x224 and 331x331. To modify this, check more details in the main function.
+"""
 
 def get_args():
+    """
+    This function gets various user input form command line. The user input variables
+    include the path to pretrained weight files, the path to the dataset, the path
+    where the output should be saved, the test-time augmentation switch and the 
+    path to the ensemble weights as a pickled list.
+    
+    Returns:
+        parser.parse_args() (list): a list of user input values.
+    """
+    
     # Implement command line argument
     parser = argparse.ArgumentParser(
         description='For each input image, generates predictions of COVID-19 status.')
@@ -44,10 +61,18 @@ def get_args():
 
     return parser.parse_args()
 
-
-# =============================================================================
-
 def mkdirs(img_dir):
+    """
+    This function creates directories for different types of image augmentation.
+    
+    Parameters:
+        img_dir (string): the path to the dataset parent directory.
+    
+    Returns:
+        dir_224/331_crop/uncrop (string): the new paths created for different image
+        augmentations.
+    """
+    
     img_dir = os.path.dirname(img_dir)
 
     dir_224 = os.path.join(img_dir, '224')
@@ -78,7 +103,17 @@ def mkdirs(img_dir):
 
 
 def get_crop(input_path):
-    # Run Crop_img to get a new cropped image
+    """
+    This function crops out lung field for a given set of x-ray images.
+    
+    Parameters:
+        input_path (string): the path to the x-ray image dataset to be cropped.
+    
+    Returns:
+        output_dir (string): the path to the cropped image dataset.
+        augmentations.
+    """
+    
     current_path = os.path.dirname(__file__)
     unet_path = pathlib.Path(os.path.join(current_path, 'trained_unet_model.hdf5'))
     output_dir = pathlib.Path(os.path.dirname(input_path))
@@ -94,6 +129,16 @@ def get_crop(input_path):
 
 
 def get_model_list(weight_path):
+    """
+    This function creates a list of models used in ensembling.
+    
+    Parameters:
+        weight_path (string): the path to the directory with pretrained weights.
+    
+    Returns:
+        model_list (list): a list of keras models used in ensembling.
+    """
+    
     features = trainFeatures()
     res_224_crop, xception_224_crop, dense_224_crop, inception_224_crop, inceptionresnet_224_crop, efficient_224_crop = features.getAllModelFast(
         224, weight_path, 'crop')
@@ -136,6 +181,31 @@ def get_model_list(weight_path):
 
 
 def get_pred(data_generators, model_list, weight_list, tta=False):
+    """
+    This function generates prediction for an image.
+    
+    Parameters:
+        data_generators (list): a list of image data generators corresponding to 
+        each model in model_list.
+        
+        model_list (list): a list of keras models used in ensembling.
+        
+        weight_list (list): a list of ensemble weight for each individual model.
+        
+        tta (boolean): a flag to check if test-time augmentation should be applied
+        or not.
+    
+    Returns:
+        ensemble_pred (float): the weighted sum of predicted probability generated
+        from the ensembled model.
+        
+        ensemble_pred_round (int): the rounded weighted sum of predicted probability
+        generated from the ensembled model. Can either be 1 or 0.
+        
+        predictions (list): a list of predicted probability of each ensembled model 
+        for a single image.
+    """
+    
     combined_weighted_probs = []
 
     if tta:
@@ -166,6 +236,23 @@ def get_datagenerators_folder(image_path_224,
                               image_path_331,
                               image_path_331_crop,
                               tta=False):
+    
+    """
+    This function creates a list of image data generators corresponds to each model
+    used to ensemble using the path to directories with different types of augmentation
+    (224x224 or 331x331 in size, cropped or uncopped).
+    
+    Parameters:
+        image_path_224/331_crop/NONE (string): the path to images with different
+        augmentations.
+        
+        tta (boolean): a flag to check if test-time augmentation should be applied
+        or not.
+    
+    Returns:
+        datagenlist (list): a list of image data generators corresponds to each model 
+        used to ensemble.
+    """
 
     img_util_224 = imgUtils(224)
     test_datagen_224_tta, test_datagen_224_notta = img_util_224.dataGen(rotation=15, h_shift=0.05, w_shift=0.05)
@@ -224,6 +311,22 @@ def get_datagenerators_folder(image_path_224,
 
 
 def get_datagenerators_file(image_path_uncrop, image_path_crop, tta=False):
+    """
+    This function creates a list of image data generators corresponds to each model
+    used to ensemble with different types of augmentation (cropped or uncopped).
+    
+    Parameters:
+        image_path_crop/uncrop (string): the path to images with different
+        augmentations.
+        
+        tta (boolean): a flag to check if test-time augmentation should be applied
+        or not.
+    
+    Returns:
+        datagenlist (list): a list of image data generators corresponds to each model 
+        used to ensemble.
+    """
+    
     img_util_224 = imgUtils(224)
     img_util_331 = imgUtils(331)
     img_224 = img_util_224.proc_img(image_path_uncrop)
@@ -264,6 +367,13 @@ def get_datagenerators_file(image_path_uncrop, image_path_crop, tta=False):
 
 
 if __name__ == '__main__':
+    """
+    The main function preprocesses a test image dataset and generates predictions
+    for the dataset. The results are saved as a .csv file. The images can optionally 
+    be resized to 224x224 and 331x331. 
+
+    """
+    
     args = get_args()
     weights = os.path.normpath(args.weight_path)
     img_dir = os.path.normpath(args.img_path)

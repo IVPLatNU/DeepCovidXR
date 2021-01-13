@@ -9,7 +9,23 @@ from vis.visualization import overlay
 from utils import imgUtils, trainFeatures
 import gc
 
+"""Grad-CAM Visualization
+
+This script will generate a grad-CAM image overlayed on the original image.
+
+"""
+
 def get_args():
+    
+    """
+    This function gets various user input form command line. The user input variables
+    include the path to the trained weight file, the path to a image and the path 
+    where the result will be saved.
+    
+    Returns:
+        parser.parse_args() (list): a list of user input values.
+    """
+    
     # Implement command line argument
     parser = argparse.ArgumentParser(description='For each input image, generates and saves a grad-CAM image.')
     parser.add_argument('--weight', '-w', dest='weight_path', metavar='weight_path',
@@ -25,6 +41,20 @@ def get_args():
 
 
 def generate_gradCAM(input_path, img_size, models, output_path=os.getcwd()):
+    
+    """
+    This function generates a Grad-CAM image for a given image. The Grad-CAM image
+    is overlayed on the original image. The image will be demonstrated and saved
+    in a given path.
+    
+    Parameters:
+        input_path (string): the path to the image.
+        img_size (int): the size of the input image.
+        models (list): a list of models used to generate the Grad-CAM image.
+        output_path (string): the path to save the output image.
+        
+    """
+    
     img_list = []
     img_array_list = []
     img_name_list = []
@@ -94,6 +124,13 @@ def generate_gradCAM(input_path, img_size, models, output_path=os.getcwd()):
 
 
 if __name__ == '__main__':
+    
+    """
+    The main function load all models and generates an overlayed Grad-CAM image.
+    This process can be repeated on multiple images.
+    
+    """
+    
     args = get_args()
     input_path = os.path.normpath(args.img_path[0])
     weights = os.path.normpath(args.weight_path[0])
